@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/A.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-minimal.min.css">
+  <script src="/lib/pace/pace.min.js"></script>
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"yoursite.com","root":"/","scheme":"Pisces","version":"7.7.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="使用java操作HDFS">
+<meta property="og:type" content="article">
+<meta property="og:title" content="HDFS-java-API操作">
+<meta property="og:url" content="http://yoursite.com/2019/10/28/Hadoop/HDFS-java-API%E6%93%8D%E4%BD%9C/index.html">
+<meta property="og:site_name" content="Moneyna 的杂货铺">
+<meta property="og:description" content="使用java操作HDFS">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://yoursite.com/images/pasted-55.png">
+<meta property="og:image" content="http://yoursite.com/images/pasted-56.png">
+<meta property="article:published_time" content="2019-10-28T08:38:32.000Z">
+<meta property="article:modified_time" content="2020-03-16T14:02:05.494Z">
+<meta property="article:author" content="Mona">
+<meta property="article:tag" content="HDFS Hadoop">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://yoursite.com/images/pasted-55.png">
+
+<link rel="canonical" href="http://yoursite.com/2019/10/28/Hadoop/HDFS-java-API%E6%93%8D%E4%BD%9C/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true
+  };
+</script>
+
+  <title>HDFS-java-API操作 | Moneyna 的杂货铺</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Moneyna 的杂货铺</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">人生得意需尽欢</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+  </ul>
+
+</nav>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/10/28/Hadoop/HDFS-java-API%E6%93%8D%E4%BD%9C/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/A.png">
+      <meta itemprop="name" content="Mona">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Moneyna 的杂货铺">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          HDFS-java-API操作
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2019-10-28 16:38:32" itemprop="dateCreated datePublished" datetime="2019-10-28T16:38:32+08:00">2019-10-28</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Hadoop/" itemprop="url" rel="index"><span itemprop="name">Hadoop</span></a>
+                </span>
+            </span>
+
+          
+            <div class="post-description">使用java操作HDFS</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h4 id="1-前期准备（使用IDEA）"><a href="#1-前期准备（使用IDEA）" class="headerlink" title="1 前期准备（使用IDEA）"></a>1 前期准备（使用IDEA）</h4><ul>
+<li>创建一个新的maven项目</li>
+<li>在pom.xml中写入</li>
+</ul>
+<p>注释：<br>a. plugin部分的作用是，将hadoop-common与hadoop-hdfs两个jar包导入到同一个文件，免于两个文件的同名部分互相覆盖的问题<br>b.dependency是必要部分</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br></pre></td><td class="code"><pre><span class="line">&lt;?xml version&#x3D;&quot;1.0&quot; encoding&#x3D;&quot;UTF-8&quot;?&gt;</span><br><span class="line">&lt;project xmlns&#x3D;&quot;http:&#x2F;&#x2F;maven.apache.org&#x2F;POM&#x2F;4.0.0&quot;</span><br><span class="line">         xmlns:xsi&#x3D;&quot;http:&#x2F;&#x2F;www.w3.org&#x2F;2001&#x2F;XMLSchema-instance&quot;</span><br><span class="line">         xsi:schemaLocation&#x3D;&quot;http:&#x2F;&#x2F;maven.apache.org&#x2F;POM&#x2F;4.0.0 http:&#x2F;&#x2F;maven.apache.org&#x2F;xsd&#x2F;maven-4.0.0.xsd&quot;&gt;</span><br><span class="line">    &lt;modelVersion&gt;4.0.0&lt;&#x2F;modelVersion&gt;</span><br><span class="line"></span><br><span class="line">    &lt;groupId&gt;test2019&lt;&#x2F;groupId&gt;</span><br><span class="line">    &lt;artifactId&gt;test&lt;&#x2F;artifactId&gt;</span><br><span class="line">    &lt;version&gt;1.0-SNAPSHOT&lt;&#x2F;version&gt;</span><br><span class="line"></span><br><span class="line">    &lt;build&gt;</span><br><span class="line">        &lt;plugins&gt;</span><br><span class="line">            &lt;plugin&gt;</span><br><span class="line">                &lt;groupId&gt;org.apache.maven.plugins&lt;&#x2F;groupId&gt;</span><br><span class="line">                &lt;artifactId&gt;maven-shade-plugin&lt;&#x2F;artifactId&gt;</span><br><span class="line">                &lt;version&gt;2.3&lt;&#x2F;version&gt;</span><br><span class="line">                &lt;executions&gt;</span><br><span class="line">                    &lt;execution&gt;</span><br><span class="line">                        &lt;phase&gt;package&lt;&#x2F;phase&gt;</span><br><span class="line">                        &lt;goals&gt;</span><br><span class="line">                            &lt;goal&gt;shade&lt;&#x2F;goal&gt;</span><br><span class="line">                        &lt;&#x2F;goals&gt;</span><br><span class="line">                        &lt;configuration&gt;</span><br><span class="line">                            &lt;transformers&gt;</span><br><span class="line">                                &lt;transformer implementation&#x3D;&quot;org.apache.maven.plugins.shade.resource.ServicesResourceTransformer&quot;&#x2F;&gt;</span><br><span class="line">                            &lt;&#x2F;transformers&gt;</span><br><span class="line">                        &lt;&#x2F;configuration&gt;</span><br><span class="line">                    &lt;&#x2F;execution&gt;</span><br><span class="line">                &lt;&#x2F;executions&gt;</span><br><span class="line">            &lt;&#x2F;plugin&gt;</span><br><span class="line">        &lt;&#x2F;plugins&gt;</span><br><span class="line">    &lt;&#x2F;build&gt;</span><br><span class="line"></span><br><span class="line">    &lt;dependencies&gt;</span><br><span class="line">        &lt;dependency&gt;</span><br><span class="line">            &lt;groupId&gt;org.apache.hadoop&lt;&#x2F;groupId&gt;</span><br><span class="line">            &lt;artifactId&gt;hadoop-common&lt;&#x2F;artifactId&gt;</span><br><span class="line">            &lt;version&gt;3.1.2&lt;&#x2F;version&gt;</span><br><span class="line">        &lt;!--&lt;scope&gt;provided&lt;&#x2F;scope&gt;--&gt;</span><br><span class="line">        &lt;&#x2F;dependency&gt;</span><br><span class="line"></span><br><span class="line">        &lt;dependency&gt;</span><br><span class="line">            &lt;groupId&gt;org.apache.hadoop&lt;&#x2F;groupId&gt;</span><br><span class="line">            &lt;artifactId&gt;hadoop-hdfs&lt;&#x2F;artifactId&gt;</span><br><span class="line">            &lt;version&gt;3.1.2&lt;&#x2F;version&gt;</span><br><span class="line">        &lt;&#x2F;dependency&gt;</span><br><span class="line">    &lt;&#x2F;dependencies&gt;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">&lt;&#x2F;project&gt;</span><br></pre></td></tr></table></figure>
+<h4 id="2-任务列表"><a href="#2-任务列表" class="headerlink" title="2 任务列表"></a>2 任务列表</h4><p><img src="/images/pasted-55.png" alt="任务1"><br><img src="/images/pasted-56.png" alt="任务2+任务3"></p>
+<h4 id="3-代码部分及相应解释"><a href="#3-代码部分及相应解释" class="headerlink" title="3 代码部分及相应解释"></a>3 代码部分及相应解释</h4><ul>
+<li>传输文本文件【对于已有同名文件，通过不同参数选择重写还是不操作】<br>（本地上传的文件选择使用文件选择器）</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br></pre></td><td class="code"><pre><span class="line">import org.apache.hadoop.conf.Configuration;</span><br><span class="line">import org.apache.hadoop.fs.*;</span><br><span class="line">import org.apache.hadoop.io.IOUtils;</span><br><span class="line">import org.apache.hadoop.util.Progressable;</span><br><span class="line">import javax.swing.JFileChooser;</span><br><span class="line">import javax.swing.filechooser.FileFilter;</span><br><span class="line">import javax.swing.filechooser.FileNameExtensionFilter;</span><br><span class="line"></span><br><span class="line">import java.io.*;</span><br><span class="line"></span><br><span class="line">import java.net.URI;</span><br><span class="line">import java.net.URISyntaxException;</span><br><span class="line">import java.util.HashMap;</span><br><span class="line">import java.util.Scanner;</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F;测试类</span><br><span class="line">public class HadoopTest &#123;</span><br><span class="line">    public static void main(String[] args) throws IOException,URISyntaxException</span><br><span class="line">    &#123;</span><br><span class="line">        Scanner scanner&#x3D;new Scanner(System.in);</span><br><span class="line">        HdfsOpertion hdfs&#x3D;new HdfsOpertion();</span><br><span class="line"></span><br><span class="line">       &#x2F;&#x2F; String fileName&#x3D;scanner.nextLine();</span><br><span class="line">        boolean ifOverwrite&#x3D; scanner.nextBoolean();</span><br><span class="line"></span><br><span class="line">        hdfs.writeLocalFileToHDFS_overWrite(ifOverwrite);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F;封装操作类</span><br><span class="line">class HdfsOpertion</span><br><span class="line">&#123;</span><br><span class="line">    private Configuration conf;</span><br><span class="line">    private FileSystem fileSystem;</span><br><span class="line">    private Path filePath;</span><br><span class="line">    private boolean ifHaveAFilePath;</span><br><span class="line">    private Path default_FilePath;</span><br><span class="line">    private HashMap&lt;Integer,Path&gt; uploadFileLists;</span><br><span class="line"></span><br><span class="line">   构造函数</span><br><span class="line">    public HdfsOpertion() throws IOException, URISyntaxException</span><br><span class="line">    &#123;</span><br><span class="line">        conf&#x3D;new Configuration();</span><br><span class="line"></span><br><span class="line">        fileSystem&#x3D;FileSystem.get(URI.create(&quot;hdfs:&#x2F;&#x2F;localhost:9000&#x2F;&quot;),conf);</span><br><span class="line">        </span><br><span class="line">        default_FilePath&#x3D;new Path(&quot;hdfs:&#x2F;&#x2F;localhost:9000&#x2F;defualte_file&quot;);</span><br><span class="line">        ifHaveAFilePath&#x3D;false;</span><br><span class="line">        filePath&#x3D;null;</span><br><span class="line"></span><br><span class="line">        uploadFileLists&#x3D;new HashMap&lt;Integer, Path&gt;();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    &#x2F;***</span><br><span class="line">     * 指定存储路径</span><br><span class="line">     * @param addfilePath</span><br><span class="line">     * @throws IOException</span><br><span class="line">     *&#x2F;</span><br><span class="line"></span><br><span class="line">    public void createFilePath(String addfilePath) throws IOException</span><br><span class="line">    &#123;</span><br><span class="line">        Path path&#x3D;new Path(&quot;hdfs:&#x2F;&#x2F;localhost:9000&quot;+addfilePath);</span><br><span class="line">        filePath&#x3D;path;</span><br><span class="line">        ifHaveAFilePath&#x3D;true;</span><br><span class="line">        if(fileSystem.mkdirs(path))&#123;</span><br><span class="line">            System.out.println(&quot;文件目录&quot;+path.toString()+&quot;创建成功&quot;);</span><br><span class="line">        &#125;else&#123;</span><br><span class="line">            System.out.println(&quot;文件目录&quot;+path.toString()+&quot;创建失败&quot;);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    &#x2F;***</span><br><span class="line">     * 将本地文件上传HDFS</span><br><span class="line">     * @param overwrite 是否重写</span><br><span class="line">     * @throws IOException</span><br><span class="line">     *&#x2F;</span><br><span class="line"></span><br><span class="line">    public void writeLocalFileToHDFS_overWrite(boolean overwrite) throws IOException</span><br><span class="line">    &#123;</span><br><span class="line">        JFileChooser fd&#x3D;new JFileChooser();</span><br><span class="line">        FileFilter filter&#x3D;new FileNameExtensionFilter(&quot;纯文本文件(txt)&quot;,&quot;txt&quot;);</span><br><span class="line">        fd.setFileFilter(filter);</span><br><span class="line"></span><br><span class="line">        fd.showDialog(null,null);</span><br><span class="line">        File f&#x3D;fd.getSelectedFile();</span><br><span class="line">        if(f&#x3D;&#x3D;null)</span><br><span class="line">        &#123;</span><br><span class="line">            System.out.println(&quot;未选择需上传文本文件！&quot;);</span><br><span class="line">            return;</span><br><span class="line">        &#125;</span><br><span class="line">        String fileName&#x3D;f.getAbsolutePath();</span><br><span class="line"></span><br><span class="line">        Path localPath&#x3D;new Path(fileName);</span><br><span class="line"></span><br><span class="line">        fileName&#x3D;fileName.substring(fileName.lastIndexOf(File.separator)+1);</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">        Path hdfsWritePath;</span><br><span class="line">        if(ifHaveAFilePath)</span><br><span class="line">        &#123;</span><br><span class="line">            hdfsWritePath&#x3D;new Path(filePath.toString()+File.separator+fileName);</span><br><span class="line">        &#125;else&#123;</span><br><span class="line">            hdfsWritePath&#x3D;new Path(default_FilePath.toString()+File.separator+fileName);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        &#x2F;&#x2F;System.out.println(hdfsWritePath.toString());</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">        InputStream inputStream &#x3D; new BufferedInputStream(new FileInputStream(localPath.toString()));</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">           if(fileSystem.exists(hdfsWritePath))</span><br><span class="line">           &#123;</span><br><span class="line">               if(overwrite)</span><br><span class="line">               &#123;</span><br><span class="line">                    fileSystem.delete(hdfsWritePath,true);</span><br><span class="line">                   System.out.println(&quot;文件已存在！（覆盖原有文件）&quot;);</span><br><span class="line">               &#125;else&#123;</span><br><span class="line">                   System.out.println(&quot;文件已存在！（不做操作）&quot;);</span><br><span class="line">                   return;</span><br><span class="line">               &#125;</span><br><span class="line">           &#125;</span><br><span class="line"></span><br><span class="line">        OutputStream outputStream&#x3D;fileSystem.create(hdfsWritePath,</span><br><span class="line">                new Progressable() &#123;</span><br><span class="line">                    @Override</span><br><span class="line">                    public void progress() &#123;</span><br><span class="line">                        System.out.println(&quot;创建成功！&quot;);</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;);</span><br><span class="line">        try&#123;</span><br><span class="line">            IOUtils.copyBytes(inputStream,outputStream,conf,false);</span><br><span class="line">        &#125;</span><br><span class="line">        finally &#123;</span><br><span class="line">            IOUtils.closeStreams(inputStream,outputStream);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>传输文本文件【若文件已存在，拓展该文件】<br>（本地上传的文件选择使用文件选择器）<br>最终要的一句代码为</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">fileSystem.setReplication(hdfsAppendPath,(short)1);</span><br></pre></td></tr></table></figure>
+<p>完整函数</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br></pre></td><td class="code"><pre><span class="line">public void appendLocalFileToHDFS() throws IOException</span><br><span class="line">   &#123;</span><br><span class="line">       JFileChooser fd&#x3D;new JFileChooser(&quot;&#x2F;home&#x2F;hadoop&#x2F;HadoopTest&quot;);</span><br><span class="line">       FileFilter filter&#x3D;new FileNameExtensionFilter(&quot;纯文本文件(txt)&quot;,&quot;txt&quot;);</span><br><span class="line">       fd.setFileFilter(filter);</span><br><span class="line"></span><br><span class="line">       fd.showDialog(null,null);</span><br><span class="line">       File f&#x3D;fd.getSelectedFile();</span><br><span class="line">       if(f&#x3D;&#x3D;null)</span><br><span class="line">       &#123;</span><br><span class="line">           System.out.println(&quot;未选择需上传文本文件！&quot;);</span><br><span class="line">           return;</span><br><span class="line">       &#125;</span><br><span class="line">       String fileName&#x3D;f.getAbsolutePath();</span><br><span class="line"></span><br><span class="line">       Path localPath&#x3D;new Path(fileName);</span><br><span class="line"></span><br><span class="line">       fileName&#x3D;fileName.substring(fileName.lastIndexOf(File.separator)+1);</span><br><span class="line"></span><br><span class="line">       Path hdfsAppendPath;</span><br><span class="line">       if(ifHaveAFilePath)</span><br><span class="line">       &#123;</span><br><span class="line">           hdfsAppendPath&#x3D;new Path(filePath.toString()+File.separator+fileName);</span><br><span class="line">       &#125;else&#123;</span><br><span class="line">           hdfsAppendPath&#x3D;new Path(default_FilePath.toString()+File.separator+fileName);</span><br><span class="line">       &#125;</span><br><span class="line"></span><br><span class="line">       &#x2F;&#x2F;System.out.println(hdfsAppendPath.toString());</span><br><span class="line">       InputStream inputStream &#x3D; new BufferedInputStream(new FileInputStream(localPath.toString()));</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">       if(fileSystem.exists(hdfsAppendPath))</span><br><span class="line">       &#123;</span><br><span class="line">           System.out.println(&quot;选择拓展！&quot;);</span><br><span class="line">           fileSystem.setReplication(hdfsAppendPath,(short)1);</span><br><span class="line">           FSDataOutputStream fsDataOutputStream&#x3D;fileSystem.append(hdfsAppendPath);</span><br><span class="line">           try &#123;</span><br><span class="line">               IOUtils.copyBytes(inputStream, fsDataOutputStream, conf, false);</span><br><span class="line">           &#125; finally &#123;</span><br><span class="line">               IOUtils.closeStreams(inputStream, fsDataOutputStream);</span><br><span class="line">           &#125;</span><br><span class="line"></span><br><span class="line">       &#125;else &#123;</span><br><span class="line">           OutputStream outputStream &#x3D; fileSystem.create(hdfsAppendPath,</span><br><span class="line">                   new Progressable() &#123;</span><br><span class="line">                       @Override</span><br><span class="line">                       public void progress() &#123;</span><br><span class="line">                           System.out.println(&quot;创建成功！&quot;);</span><br><span class="line">                       &#125;</span><br><span class="line">                   &#125;);</span><br><span class="line">           try &#123;</span><br><span class="line">               IOUtils.copyBytes(inputStream, outputStream, conf, false);</span><br><span class="line">           &#125; finally &#123;</span><br><span class="line">               IOUtils.closeStreams(inputStream, outputStream);</span><br><span class="line">           &#125;</span><br><span class="line">       &#125;</span><br><span class="line">       System.out.println(&quot;拓展完成！&quot;);</span><br><span class="line">   &#125;</span><br></pre></td></tr></table></figure>
+<p>=====================================================</p>
+<p>懒得整理直接上全部代码</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br><span class="line">175</span><br><span class="line">176</span><br><span class="line">177</span><br><span class="line">178</span><br><span class="line">179</span><br><span class="line">180</span><br><span class="line">181</span><br><span class="line">182</span><br><span class="line">183</span><br><span class="line">184</span><br><span class="line">185</span><br><span class="line">186</span><br><span class="line">187</span><br><span class="line">188</span><br><span class="line">189</span><br><span class="line">190</span><br><span class="line">191</span><br><span class="line">192</span><br><span class="line">193</span><br><span class="line">194</span><br><span class="line">195</span><br><span class="line">196</span><br><span class="line">197</span><br><span class="line">198</span><br><span class="line">199</span><br><span class="line">200</span><br><span class="line">201</span><br><span class="line">202</span><br><span class="line">203</span><br><span class="line">204</span><br><span class="line">205</span><br><span class="line">206</span><br><span class="line">207</span><br><span class="line">208</span><br><span class="line">209</span><br><span class="line">210</span><br><span class="line">211</span><br><span class="line">212</span><br><span class="line">213</span><br><span class="line">214</span><br><span class="line">215</span><br><span class="line">216</span><br><span class="line">217</span><br><span class="line">218</span><br><span class="line">219</span><br><span class="line">220</span><br><span class="line">221</span><br><span class="line">222</span><br><span class="line">223</span><br><span class="line">224</span><br><span class="line">225</span><br><span class="line">226</span><br><span class="line">227</span><br><span class="line">228</span><br><span class="line">229</span><br><span class="line">230</span><br><span class="line">231</span><br><span class="line">232</span><br><span class="line">233</span><br><span class="line">234</span><br><span class="line">235</span><br><span class="line">236</span><br><span class="line">237</span><br><span class="line">238</span><br><span class="line">239</span><br><span class="line">240</span><br><span class="line">241</span><br><span class="line">242</span><br><span class="line">243</span><br><span class="line">244</span><br><span class="line">245</span><br><span class="line">246</span><br><span class="line">247</span><br><span class="line">248</span><br><span class="line">249</span><br><span class="line">250</span><br><span class="line">251</span><br><span class="line">252</span><br><span class="line">253</span><br><span class="line">254</span><br><span class="line">255</span><br><span class="line">256</span><br><span class="line">257</span><br><span class="line">258</span><br><span class="line">259</span><br><span class="line">260</span><br><span class="line">261</span><br><span class="line">262</span><br><span class="line">263</span><br><span class="line">264</span><br><span class="line">265</span><br><span class="line">266</span><br><span class="line">267</span><br><span class="line">268</span><br><span class="line">269</span><br><span class="line">270</span><br><span class="line">271</span><br><span class="line">272</span><br><span class="line">273</span><br><span class="line">274</span><br><span class="line">275</span><br><span class="line">276</span><br><span class="line">277</span><br><span class="line">278</span><br><span class="line">279</span><br><span class="line">280</span><br><span class="line">281</span><br><span class="line">282</span><br><span class="line">283</span><br><span class="line">284</span><br><span class="line">285</span><br><span class="line">286</span><br><span class="line">287</span><br><span class="line">288</span><br><span class="line">289</span><br><span class="line">290</span><br><span class="line">291</span><br><span class="line">292</span><br><span class="line">293</span><br><span class="line">294</span><br><span class="line">295</span><br><span class="line">296</span><br><span class="line">297</span><br><span class="line">298</span><br><span class="line">299</span><br><span class="line">300</span><br><span class="line">301</span><br><span class="line">302</span><br><span class="line">303</span><br><span class="line">304</span><br><span class="line">305</span><br><span class="line">306</span><br><span class="line">307</span><br><span class="line">308</span><br><span class="line">309</span><br><span class="line">310</span><br><span class="line">311</span><br><span class="line">312</span><br><span class="line">313</span><br><span class="line">314</span><br><span class="line">315</span><br><span class="line">316</span><br><span class="line">317</span><br><span class="line">318</span><br><span class="line">319</span><br><span class="line">320</span><br><span class="line">321</span><br><span class="line">322</span><br><span class="line">323</span><br><span class="line">324</span><br><span class="line">325</span><br><span class="line">326</span><br><span class="line">327</span><br><span class="line">328</span><br><span class="line">329</span><br><span class="line">330</span><br><span class="line">331</span><br><span class="line">332</span><br><span class="line">333</span><br><span class="line">334</span><br><span class="line">335</span><br><span class="line">336</span><br><span class="line">337</span><br><span class="line">338</span><br><span class="line">339</span><br><span class="line">340</span><br><span class="line">341</span><br><span class="line">342</span><br><span class="line">343</span><br><span class="line">344</span><br><span class="line">345</span><br><span class="line">346</span><br><span class="line">347</span><br><span class="line">348</span><br><span class="line">349</span><br><span class="line">350</span><br><span class="line">351</span><br><span class="line">352</span><br><span class="line">353</span><br><span class="line">354</span><br><span class="line">355</span><br><span class="line">356</span><br><span class="line">357</span><br><span class="line">358</span><br><span class="line">359</span><br><span class="line">360</span><br><span class="line">361</span><br><span class="line">362</span><br><span class="line">363</span><br><span class="line">364</span><br><span class="line">365</span><br><span class="line">366</span><br><span class="line">367</span><br><span class="line">368</span><br><span class="line">369</span><br><span class="line">370</span><br><span class="line">371</span><br><span class="line">372</span><br><span class="line">373</span><br><span class="line">374</span><br><span class="line">375</span><br><span class="line">376</span><br><span class="line">377</span><br><span class="line">378</span><br><span class="line">379</span><br><span class="line">380</span><br><span class="line">381</span><br><span class="line">382</span><br><span class="line">383</span><br><span class="line">384</span><br><span class="line">385</span><br><span class="line">386</span><br><span class="line">387</span><br><span class="line">388</span><br><span class="line">389</span><br><span class="line">390</span><br><span class="line">391</span><br><span class="line">392</span><br><span class="line">393</span><br><span class="line">394</span><br><span class="line">395</span><br><span class="line">396</span><br><span class="line">397</span><br><span class="line">398</span><br><span class="line">399</span><br><span class="line">400</span><br><span class="line">401</span><br><span class="line">402</span><br><span class="line">403</span><br><span class="line">404</span><br><span class="line">405</span><br><span class="line">406</span><br><span class="line">407</span><br><span class="line">408</span><br><span class="line">409</span><br><span class="line">410</span><br><span class="line">411</span><br><span class="line">412</span><br><span class="line">413</span><br><span class="line">414</span><br><span class="line">415</span><br><span class="line">416</span><br><span class="line">417</span><br><span class="line">418</span><br><span class="line">419</span><br><span class="line">420</span><br><span class="line">421</span><br><span class="line">422</span><br><span class="line">423</span><br><span class="line">424</span><br><span class="line">425</span><br><span class="line">426</span><br><span class="line">427</span><br><span class="line">428</span><br><span class="line">429</span><br><span class="line">430</span><br><span class="line">431</span><br><span class="line">432</span><br><span class="line">433</span><br><span class="line">434</span><br><span class="line">435</span><br><span class="line">436</span><br><span class="line">437</span><br><span class="line">438</span><br><span class="line">439</span><br><span class="line">440</span><br><span class="line">441</span><br><span class="line">442</span><br><span class="line">443</span><br><span class="line">444</span><br><span class="line">445</span><br><span class="line">446</span><br><span class="line">447</span><br><span class="line">448</span><br><span class="line">449</span><br><span class="line">450</span><br><span class="line">451</span><br><span class="line">452</span><br><span class="line">453</span><br><span class="line">454</span><br><span class="line">455</span><br><span class="line">456</span><br><span class="line">457</span><br><span class="line">458</span><br><span class="line">459</span><br><span class="line">460</span><br><span class="line">461</span><br><span class="line">462</span><br><span class="line">463</span><br><span class="line">464</span><br><span class="line">465</span><br><span class="line">466</span><br><span class="line">467</span><br><span class="line">468</span><br><span class="line">469</span><br><span class="line">470</span><br><span class="line">471</span><br><span class="line">472</span><br><span class="line">473</span><br><span class="line">474</span><br><span class="line">475</span><br><span class="line">476</span><br><span class="line">477</span><br></pre></td><td class="code"><pre><span class="line">import org.apache.hadoop.conf.Configuration;</span><br><span class="line">import org.apache.hadoop.fs.*;</span><br><span class="line">import org.apache.hadoop.io.IOUtils;</span><br><span class="line">import org.apache.hadoop.util.Progressable;</span><br><span class="line">import javax.swing.JFileChooser;</span><br><span class="line">import javax.swing.filechooser.FileFilter;</span><br><span class="line">import javax.swing.filechooser.FileNameExtensionFilter;</span><br><span class="line"></span><br><span class="line">import java.io.*;</span><br><span class="line"></span><br><span class="line">import java.net.URI;</span><br><span class="line">import java.net.URISyntaxException;</span><br><span class="line">import java.text.SimpleDateFormat;</span><br><span class="line">import java.util.HashMap;</span><br><span class="line">import java.util.Scanner;</span><br><span class="line"></span><br><span class="line">public class HadoopTest &#123;</span><br><span class="line">    public static void main(String[] args) throws IOException,URISyntaxException</span><br><span class="line">    &#123;</span><br><span class="line">        Scanner scanner&#x3D;new Scanner(System.in);</span><br><span class="line">        HdfsOpertion hdfs&#x3D;new HdfsOpertion();</span><br><span class="line"></span><br><span class="line">        Path hdfsPath&#x3D;new Path(&quot;hdfs:&#x2F;&#x2F;localhost:9000&#x2F;testData&#x2F;delete.txt&quot;);</span><br><span class="line">        Path hdfsPath1&#x3D;new Path(&quot;hdfs:&#x2F;&#x2F;localhost:9000&#x2F;testData&#x2F;mvTest&#x2F;AAA.txt&quot;);</span><br><span class="line">        Path hdfsPath3&#x3D;new Path(&quot;hdfs:&#x2F;&#x2F;localhost:9000&#x2F;test1&#x2F;test2&#x2F;test3&#x2F;AFile.txt&quot;);</span><br><span class="line">        Path localPath&#x3D;new Path(&quot;&#x2F;home&#x2F;hadoop&#x2F;HadoopTest&#x2F;Alice.txt&quot;);</span><br><span class="line"></span><br><span class="line">        &#x2F;&#x2F;上传任意文件,对于已存在，用户选择追加还是覆盖</span><br><span class="line">        &#x2F;&#x2F;hdfs.writeLocalFileToHDFS_overWrite();</span><br><span class="line"></span><br><span class="line">        &#x2F;&#x2F;下载任意文件，对于已有同名文件，自动修改文件名</span><br><span class="line">        &#x2F;&#x2F;hdfs.downloadFromHDFS(hdfsPath);</span><br><span class="line"></span><br><span class="line">        &#x2F;&#x2F;将HDFS指定内容输出到终端</span><br><span class="line">        &#x2F;&#x2F;hdfs.cat(hdfsPath);</span><br><span class="line"></span><br><span class="line">        &#x2F;&#x2F;显示HDFS指定文件的读写权限、大小、创建时间、路径等信息</span><br><span class="line">        &#x2F;&#x2F;hdfs.getFileStatus(hdfsPath);</span><br><span class="line"></span><br><span class="line">        &#x2F;&#x2F;显示HDFS指定文件夹的读写权限、大小、创建时间、路径等信息，且递归输出所有相关的文件的信息</span><br><span class="line">        &#x2F;&#x2F;hdfs.getWholeFileStatus(new Path(&quot;hdfs:&#x2F;&#x2F;localhost:9000&#x2F;&quot;));</span><br><span class="line"></span><br><span class="line">        &#x2F;&#x2F;提供一个HDFS内的文件的路径，对该文件进行创建和删除操作。如果文件所在目录不存在，则自动创建目录</span><br><span class="line">        &#x2F;&#x2F;hdfs.createFile_deleteFile(hdfsPath3);</span><br><span class="line"></span><br><span class="line">        &#x2F;&#x2F;提供一个HDFS的目录的路径，对该目录进行创建和删除操作。创建目录时，如果目录文件所在目录不存在，则自动创建相应目录；删除目录时，由用户指定当该目录不为空时是否还删除该目录；</span><br><span class="line">        &#x2F;&#x2F;hdfs.createOrDeleteWholePath(new Path(&quot;hdfs:&#x2F;&#x2F;localhost:9000&#x2F;test1&#x2F;test2&#x2F;test3&quot;));</span><br><span class="line"></span><br><span class="line">        &#x2F;&#x2F;向HDFS中指定的文件追加内容，由用户指定内容追加到原有文件的开头或结尾；</span><br><span class="line">        &#x2F;&#x2F;hdfs.cat(hdfsPath);</span><br><span class="line">        &#x2F;&#x2F;hdfs.appendFile_front_end(hdfsPath,localPath);</span><br><span class="line">        &#x2F;&#x2F;hdfs.cat(hdfsPath);</span><br><span class="line"></span><br><span class="line">        &#x2F;&#x2F;删除HDFS中指定的文件；</span><br><span class="line">        &#x2F;&#x2F;hdfs.createFile_deleteFile(hdfsPath3);</span><br><span class="line">        &#x2F;&#x2F;hdfs.delete(hdfsPath3,false);</span><br><span class="line"></span><br><span class="line">        &#x2F;&#x2F;在HDFS中，将文件从源路径移动到目的路径。</span><br><span class="line">        &#x2F;&#x2F;hdfs.mv(hdfsPath,hdfsPath1);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">class HdfsOpertion</span><br><span class="line">&#123;</span><br><span class="line">    private Configuration conf;</span><br><span class="line">    private FileSystem fileSystem;</span><br><span class="line">    private Path filePath;</span><br><span class="line"> &#x2F;&#x2F;   private boolean ifHaveAFilePath;</span><br><span class="line">    private Path default_FilePath;</span><br><span class="line">    private HashMap&lt;Integer,Path&gt; uploadFileLists;</span><br><span class="line"></span><br><span class="line">    private Path downloadFilePath;</span><br><span class="line">    private int maySameCount;</span><br><span class="line"></span><br><span class="line">    private Scanner scanner;</span><br><span class="line"></span><br><span class="line">    private Path lsWholeDir;</span><br><span class="line"></span><br><span class="line">    public HdfsOpertion() throws IOException</span><br><span class="line">    &#123;</span><br><span class="line">        conf&#x3D;new Configuration();</span><br><span class="line"></span><br><span class="line">        fileSystem&#x3D;FileSystem.get(URI.create(&quot;hdfs:&#x2F;&#x2F;localhost:9000&#x2F;&quot;),conf);</span><br><span class="line">        </span><br><span class="line">        default_FilePath&#x3D;new Path(&quot;hdfs:&#x2F;&#x2F;localhost:9000&#x2F;default_file&quot;);</span><br><span class="line">       &#x2F;&#x2F; ifHaveAFilePath&#x3D;false;</span><br><span class="line">        filePath&#x3D;null;</span><br><span class="line"></span><br><span class="line">        uploadFileLists&#x3D;new HashMap&lt;Integer, Path&gt;();</span><br><span class="line">        downloadFilePath&#x3D;new Path(&quot;hdfs:&#x2F;&#x2F;localhost:9000&#x2F;defualt_file&#x2F;Alice.txt&quot;);</span><br><span class="line"></span><br><span class="line">        lsWholeDir&#x3D;new Path(&quot;hdfs:&#x2F;&#x2F;localhost:9000&#x2F;&quot;);</span><br><span class="line"></span><br><span class="line">        maySameCount&#x3D;1;</span><br><span class="line">        scanner&#x3D;new Scanner(System.in);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    public void writeLocalFileToHDFS_overWrite() throws IOException</span><br><span class="line">    &#123;</span><br><span class="line">        JFileChooser fd&#x3D;new JFileChooser();</span><br><span class="line">        FileFilter filter&#x3D;new FileNameExtensionFilter(&quot;纯文本文件(txt)&quot;,&quot;txt&quot;);</span><br><span class="line">        fd.setFileFilter(filter);</span><br><span class="line"></span><br><span class="line">        fd.showDialog(null,null);</span><br><span class="line">        File f&#x3D;fd.getSelectedFile();</span><br><span class="line">        if(f&#x3D;&#x3D;null)</span><br><span class="line">        &#123;</span><br><span class="line">            System.out.println(&quot;未选择需上传文本文件！&quot;);</span><br><span class="line">            return;</span><br><span class="line">        &#125;</span><br><span class="line">        String fileName&#x3D;f.getAbsolutePath();</span><br><span class="line"></span><br><span class="line">        Path localPath&#x3D;new Path(fileName);</span><br><span class="line"></span><br><span class="line">        fileName&#x3D;fileName.substring(fileName.lastIndexOf(File.separator)+1);</span><br><span class="line"></span><br><span class="line">        Path hdfsAppendPath;</span><br><span class="line"></span><br><span class="line">        hdfsAppendPath&#x3D;new Path(default_FilePath.toString()+File.separator+fileName);</span><br><span class="line"></span><br><span class="line">        InputStream inputStream &#x3D; new BufferedInputStream(new FileInputStream(localPath.toString()));</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">           if(fileSystem.exists(hdfsAppendPath))</span><br><span class="line">           &#123;</span><br><span class="line">               System.out.println(&quot;文件已存在，选择覆盖或拓展？（O|E）&quot;);</span><br><span class="line">               String putIn&#x3D;scanner.next();</span><br><span class="line">               boolean overwrite&#x3D;putIn.equals(&quot;O&quot;)?true:false;</span><br><span class="line">               if(overwrite)</span><br><span class="line">               &#123;</span><br><span class="line">                    fileSystem.delete(hdfsAppendPath,true);</span><br><span class="line">                    System.out.println(&quot;文件已存在！（覆盖原有文件）&quot;);</span><br><span class="line">               &#125;else&#123;</span><br><span class="line">                   appendLocalFileToHDFS(hdfsAppendPath,localPath);</span><br><span class="line">                   return;</span><br><span class="line">               &#125;</span><br><span class="line">           &#125;</span><br><span class="line"></span><br><span class="line">        OutputStream outputStream&#x3D;fileSystem.create(hdfsAppendPath,</span><br><span class="line">                new Progressable() &#123;</span><br><span class="line">                    @Override</span><br><span class="line">                    public void progress() &#123;</span><br><span class="line">                        System.out.println(&quot;创建成功！&quot;);</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;);</span><br><span class="line">        try&#123;</span><br><span class="line">            IOUtils.copyBytes(inputStream,outputStream,conf,false);</span><br><span class="line">        &#125;</span><br><span class="line">        finally &#123;</span><br><span class="line">            IOUtils.closeStreams(inputStream,outputStream);</span><br><span class="line">        &#125;</span><br><span class="line">        uploadFileLists.put(uploadFileLists.size(),hdfsAppendPath);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public void appendLocalFileToHDFS(Path hdfsAppendPath,Path localPath) throws IOException</span><br><span class="line">    &#123;</span><br><span class="line">        InputStream inputStream &#x3D; new BufferedInputStream(new FileInputStream(localPath.toString()));</span><br><span class="line"></span><br><span class="line">        if(fileSystem.exists(hdfsAppendPath))</span><br><span class="line">        &#123;</span><br><span class="line">            System.out.println(&quot;选择拓展！&quot;);</span><br><span class="line">            fileSystem.setReplication(hdfsAppendPath,(short)1);</span><br><span class="line">            FSDataOutputStream fsDataOutputStream&#x3D;fileSystem.append(hdfsAppendPath);</span><br><span class="line">            try &#123;</span><br><span class="line">                IOUtils.copyBytes(inputStream, fsDataOutputStream, conf, false);</span><br><span class="line">            &#125; finally &#123;</span><br><span class="line">                IOUtils.closeStreams(inputStream, fsDataOutputStream);</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">        &#125;else &#123;</span><br><span class="line">            OutputStream outputStream &#x3D; fileSystem.create(hdfsAppendPath,</span><br><span class="line">                    new Progressable() &#123;</span><br><span class="line">                        @Override</span><br><span class="line">                        public void progress() &#123;</span><br><span class="line">                            System.out.println(&quot;创建成功！&quot;);</span><br><span class="line">                        &#125;</span><br><span class="line">                    &#125;);</span><br><span class="line">            try &#123;</span><br><span class="line">                IOUtils.copyBytes(inputStream, outputStream, conf, false);</span><br><span class="line">            &#125; finally &#123;</span><br><span class="line">                IOUtils.closeStreams(inputStream, outputStream);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        System.out.println(&quot;拓展完成！&quot;);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public void downloadFromHDFS(Path  sourcePath) throws IOException</span><br><span class="line">    &#123;</span><br><span class="line">        JFileChooser jFc&#x3D;new JFileChooser(&quot;&#x2F;home&#x2F;hadoop&#x2F;HadoopTest&quot;);</span><br><span class="line"></span><br><span class="line">        FileFilter filter&#x3D;new FileNameExtensionFilter(&quot;纯文本文件(txt)&quot;,&quot;txt&quot;);</span><br><span class="line">        jFc.setFileFilter(filter);</span><br><span class="line"></span><br><span class="line">        int option&#x3D;jFc.showSaveDialog(null);</span><br><span class="line"></span><br><span class="line">        if(option&#x3D;&#x3D;JFileChooser.APPROVE_OPTION)</span><br><span class="line">        &#123;</span><br><span class="line">            File file&#x3D;jFc.getSelectedFile();</span><br><span class="line">            &#x2F;&#x2F;System.out.println(file.getAbsolutePath());</span><br><span class="line">            Path det&#x3D;null;</span><br><span class="line">           &#x2F;&#x2F; File file2&#x3D;new File(file.getAbsolutePath());</span><br><span class="line">            if((file.getAbsolutePath().lastIndexOf(&quot;.&quot;)&#x3D;&#x3D;-1))</span><br><span class="line">                file&#x3D;new File(file.getAbsolutePath()+&quot;.txt&quot;);</span><br><span class="line"></span><br><span class="line">            if(!file.exists()) &#123;</span><br><span class="line">                det &#x3D; new Path(file.getAbsolutePath());</span><br><span class="line">            &#125;else&#123;</span><br><span class="line">                &#x2F;&#x2F;full Path</span><br><span class="line">                String d1&#x3D;file.getAbsolutePath();</span><br><span class="line">                &#x2F;&#x2F;path</span><br><span class="line">                String d2&#x3D;d1.substring(0,d1.lastIndexOf(File.separator)+1);</span><br><span class="line">                &#x2F;&#x2F;fileName+suffix</span><br><span class="line">                String d3&#x3D;d1.substring(d1.lastIndexOf(File.separator)+1);</span><br><span class="line">                &#x2F;&#x2F;fileName</span><br><span class="line">                String d4&#x3D;d3.substring(0, d3.lastIndexOf(&quot;.&quot;));</span><br><span class="line">                String d5;</span><br><span class="line">                maySameCount&#x3D;1;</span><br><span class="line">                do &#123;</span><br><span class="line">                    d5 &#x3D;d4+ &quot;(&quot; + maySameCount + &quot;).txt&quot;;</span><br><span class="line">                    maySameCount++;</span><br><span class="line">                    file&#x3D;new File(d2+d5);</span><br><span class="line">                &#125;while(file.exists());</span><br><span class="line">                det&#x3D;new Path(file.getAbsolutePath());</span><br><span class="line">            &#125;</span><br><span class="line">            System.out.println(det.toString());</span><br><span class="line"></span><br><span class="line">            fileSystem.copyToLocalFile(false, sourcePath, det);</span><br><span class="line">            System.out.println(&quot;下载成功！&quot;);</span><br><span class="line"></span><br><span class="line">        &#125;else&#123;</span><br><span class="line">            System.out.println(&quot;未选择需保存路径&quot;);</span><br><span class="line">            return;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public void cat(Path filePath) throws IOException</span><br><span class="line">    &#123;</span><br><span class="line">        FSDataInputStream in&#x3D;fileSystem.open(filePath);</span><br><span class="line">        BufferedReader reader&#x3D;new BufferedReader(new InputStreamReader(in));</span><br><span class="line">        String line&#x3D;null;</span><br><span class="line">        while((line&#x3D;reader.readLine())!&#x3D;null)</span><br><span class="line">        &#123;</span><br><span class="line">            System.out.println(line);</span><br><span class="line">        &#125;</span><br><span class="line">        reader.close();</span><br><span class="line">        in.close();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public void getFileStatus (Path detPath) throws IOException</span><br><span class="line">    &#123;</span><br><span class="line">        FileStatus[] fileStatuses&#x3D;fileSystem.listStatus(detPath);</span><br><span class="line">        for(FileStatus fs:fileStatuses)</span><br><span class="line">        &#123;</span><br><span class="line">            System.out.println(&quot;文件路径：&quot;+fs.getPath().toString());</span><br><span class="line">            System.out.println(&quot;文件大小：&quot;+fs.getLen());</span><br><span class="line">            System.out.println(&quot;文件权限：&quot;+fs.getPermission().toString());</span><br><span class="line"></span><br><span class="line">            Long timeStamp&#x3D;fs.getModificationTime();</span><br><span class="line">            SimpleDateFormat format&#x3D;new SimpleDateFormat(&quot;yyyy-MM-dd HH:mm:ss&quot;);</span><br><span class="line">            System.out.println(&quot;创建时间：&quot;+format.format(timeStamp));</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public void getWholeFileStatus(Path detPath) throws IOException</span><br><span class="line">    &#123;</span><br><span class="line">        RemoteIterator&lt;LocatedFileStatus&gt; remoteIterator&#x3D;fileSystem.listFiles(detPath,true);</span><br><span class="line">        while(remoteIterator.hasNext())</span><br><span class="line">        &#123;</span><br><span class="line">            FileStatus fs&#x3D;remoteIterator.next();</span><br><span class="line">            System.out.println(&quot;文件路径：&quot;+fs.getPath().toString());</span><br><span class="line">            System.out.println(&quot;文件大小：&quot;+fs.getLen());</span><br><span class="line">            System.out.println(&quot;文件权限：&quot;+fs.getPermission().toString());</span><br><span class="line"></span><br><span class="line">            Long timeStamp&#x3D;fs.getModificationTime();</span><br><span class="line">            SimpleDateFormat format&#x3D;new SimpleDateFormat(&quot;yyyy-MM-dd HH:mm:ss&quot;);</span><br><span class="line">            System.out.println(&quot;创建时间：&quot;+format.format(timeStamp));</span><br><span class="line"></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public void createFile_deleteFile(Path detPath) throws IOException &#123;</span><br><span class="line">        if(fileSystem.exists(detPath))</span><br><span class="line">        &#123;</span><br><span class="line">            deleteFilePath(detPath);</span><br><span class="line">        &#125;else&#123;</span><br><span class="line">            createFilePath(detPath);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public void createFilePath(Path path) throws IOException</span><br><span class="line">    &#123;</span><br><span class="line">        if(fileSystem.mkdirs(path))&#123;</span><br><span class="line">            System.out.println(&quot;文件目录&quot;+path.toString()+&quot;创建成功&quot;);</span><br><span class="line">        &#125;else&#123;</span><br><span class="line">            System.out.println(&quot;文件目录&quot;+path.toString()+&quot;创建失败&quot;);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public void deleteFilePath(Path path) throws IOException</span><br><span class="line">    &#123;</span><br><span class="line">        if(fileSystem.exists(path))</span><br><span class="line">        &#123;</span><br><span class="line">            if(fileSystem.delete(path,true))&#123;</span><br><span class="line">                System.out.println(&quot;文件目录&quot;+path.toString()+&quot;删除成功！&quot;);</span><br><span class="line">            &#125;else&#123;</span><br><span class="line">                System.out.println(&quot;文件目录&quot;+path.toString()+&quot;删除失败！&quot;);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;else&#123;</span><br><span class="line">            System.out.println(&quot;文件路径不存在！&quot;);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public void createOrDeleteWholePath(Path detPath) throws IOException</span><br><span class="line">    &#123;</span><br><span class="line">        boolean goon&#x3D;false;</span><br><span class="line">        if(!fileSystem.exists(detPath))</span><br><span class="line">        &#123;</span><br><span class="line">            &#x2F;&#x2F;create</span><br><span class="line">            if (fileSystem.mkdirs(detPath)) &#123;</span><br><span class="line">                System.out.println(&quot;文件目录&quot; + detPath.toString() + &quot;创建成功！&quot;);</span><br><span class="line">            &#125; else &#123;</span><br><span class="line">                System.out.println(&quot;文件目录&quot; + detPath.toString() + &quot;创建失败！&quot;);</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">        &#125;else&#123;</span><br><span class="line">            &#x2F;&#x2F;delete</span><br><span class="line">            RemoteIterator&lt;LocatedFileStatus&gt; remoteIterator&#x3D;fileSystem.listFiles(detPath,true);</span><br><span class="line">            if(remoteIterator.hasNext())</span><br><span class="line">            &#123;</span><br><span class="line">                System.out.println(&quot;选择删除的路径不为空，是否坚持删除（Y|N）:&quot;);</span><br><span class="line">                String choice&#x3D;scanner.next();</span><br><span class="line"></span><br><span class="line">                goon&#x3D;(choice.equals(&quot;Y&quot;)?true:false);</span><br><span class="line">                if(goon)</span><br><span class="line">                &#123;</span><br><span class="line">                    if(fileSystem.delete(detPath,true))</span><br><span class="line">                    &#123;</span><br><span class="line">                        System.out.println(&quot;文件目录&quot;+detPath.toString()+&quot;删除成功！&quot;);</span><br><span class="line">                    &#125;else&#123;</span><br><span class="line">                        System.out.println(&quot;文件目录&quot;+detPath.toString()+&quot;删除失败！&quot;);</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;else&#123;</span><br><span class="line">                    System.out.println(&quot;选择不删除该非空文件！&quot;);</span><br><span class="line">                &#125;</span><br><span class="line"></span><br><span class="line">            &#125;else&#123;</span><br><span class="line">                if(fileSystem.delete(detPath,true))</span><br><span class="line">                &#123;</span><br><span class="line">                    System.out.println(&quot;文件目录&quot;+detPath.toString()+&quot;删除成功！&quot;);</span><br><span class="line">                &#125;else&#123;</span><br><span class="line">                    System.out.println(&quot;文件目录&quot;+detPath.toString()+&quot;删除失败！&quot;);</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public void moveToLocal(Path source,Path det) throws IOException &#123;</span><br><span class="line">        fileSystem.moveToLocalFile(source,det);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    &#x2F;&#x2F;仅用于本地文件，而不能用于hdfs</span><br><span class="line">    public byte[] getContentByte(Path filePath) throws IOException &#123;</span><br><span class="line">        File file&#x3D;new File(filePath.toString());</span><br><span class="line">        InputStream in&#x3D;new FileInputStream(filePath.toString());</span><br><span class="line">        Long fileLen&#x3D;file.length();</span><br><span class="line"></span><br><span class="line">        byte[] fileContent&#x3D;new byte[fileLen.intValue()];</span><br><span class="line">        in.read(fileContent);</span><br><span class="line"></span><br><span class="line">        in.close();</span><br><span class="line">        return fileContent;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    &#x2F;&#x2F;调试</span><br><span class="line">    public void createSomeData(Path detPath) throws IOException &#123;</span><br><span class="line">        FSDataOutputStream out&#x3D;fileSystem.append(detPath);</span><br><span class="line">        System.out.println(&quot;请输入一些内容：&quot;);</span><br><span class="line">        String tmp&#x3D;scanner.nextLine();</span><br><span class="line"></span><br><span class="line">        out.write(tmp.getBytes());</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public void createHdfsFile(Path detPath) throws IOException &#123;</span><br><span class="line">        fileSystem.create(detPath,true);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public void appendFile_front_end(Path detPath,Path appendContent) throws IOException, URISyntaxException &#123;</span><br><span class="line">        fileSystem&#x3D;FileSystem.get(URI.create(&quot;hdfs:&#x2F;&#x2F;localhost:9000&#x2F;&quot;),conf);</span><br><span class="line">        if(!fileSystem.exists(detPath))</span><br><span class="line">        &#123;</span><br><span class="line">            System.out.println(&quot;文件&quot;+detPath.toString()+&quot;不存在&quot;);</span><br><span class="line">            return;</span><br><span class="line">        &#125;</span><br><span class="line">        System.out.println(&quot;文件&quot;+detPath.toString()+&quot;存在&quot;);</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">        System.out.println(&quot;请选择将该内容追加至文件末尾还是开头？(F|B)&quot;);</span><br><span class="line">        boolean front&#x3D;scanner.next().equals(&quot;F&quot;)?true:false;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">        if(front)</span><br><span class="line">        &#123;</span><br><span class="line">            System.out.println(&quot;Front&quot;);</span><br><span class="line">            &#x2F;&#x2F;front</span><br><span class="line">            String tempPath&#x3D;new String(&quot;&#x2F;home&#x2F;hadoop&#x2F;HadoopTest&#x2F;tmppp.txt&quot;);</span><br><span class="line">            moveToLocal(detPath,new Path(tempPath));</span><br><span class="line"></span><br><span class="line">            fileSystem.create(detPath,true);</span><br><span class="line"></span><br><span class="line">            fileSystem.close();</span><br><span class="line"></span><br><span class="line">            fileSystem&#x3D;FileSystem.get(URI.create(&quot;hdfs:&#x2F;&#x2F;localhost:9000&#x2F;&quot;),conf);</span><br><span class="line"></span><br><span class="line">            FSDataOutputStream out&#x3D;fileSystem.append(detPath);</span><br><span class="line">            InputStream in1&#x3D;new FileInputStream(appendContent.toString());</span><br><span class="line">            InputStream in2&#x3D;new FileInputStream(tempPath.toString());</span><br><span class="line"></span><br><span class="line">            try &#123;</span><br><span class="line">                IOUtils.copyBytes(in1, out, conf, false);</span><br><span class="line">                IOUtils.copyBytes(in2, out, conf, false);</span><br><span class="line">            &#125; finally &#123;</span><br><span class="line">                IOUtils.closeStreams(in1,in2,out);</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            System.out.println(&quot;已添加在文件&quot;+detPath.toString()+&quot;开头！&quot;);</span><br><span class="line">        &#125;else&#123;</span><br><span class="line">            &#x2F;&#x2F;back</span><br><span class="line"></span><br><span class="line">            System.out.println(&quot;Back&quot;);</span><br><span class="line">            File file&#x3D;new File(appendContent.toString());</span><br><span class="line">            InputStream inputStream&#x3D;new FileInputStream(appendContent.toString());</span><br><span class="line"></span><br><span class="line">            fileSystem.setReplication(detPath,(short)1);</span><br><span class="line">            fileSystem.close();</span><br><span class="line"></span><br><span class="line">            fileSystem&#x3D;FileSystem.get(URI.create(&quot;hdfs:&#x2F;&#x2F;localhost:9000&#x2F;&quot;),conf);</span><br><span class="line">            FSDataOutputStream fsDataOutputStream&#x3D;fileSystem.append(detPath);</span><br><span class="line">            try &#123;</span><br><span class="line">                IOUtils.copyBytes(inputStream, fsDataOutputStream, conf, false);</span><br><span class="line">            &#125; finally &#123;</span><br><span class="line">                IOUtils.closeStreams(inputStream, fsDataOutputStream);</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            System.out.println(&quot;已添加在文件&quot;+detPath.toString()+&quot;结尾！&quot;);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public void delete(Path path,boolean recursive) throws IOException &#123;</span><br><span class="line">        if(fileSystem.exists(path))</span><br><span class="line">        &#123;</span><br><span class="line">            if(fileSystem.delete(path,recursive))</span><br><span class="line">            &#123;</span><br><span class="line">                System.out.println(path.toString()+&quot;删除成功！&quot;);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;else&#123;</span><br><span class="line">            System.out.println(&quot;文件&quot;+path.toString()+&quot;不存在&quot;);</span><br><span class="line">            return;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public void mv(Path src,Path dst) throws IOException &#123;</span><br><span class="line">        String filePath&#x3D;dst.toString().substring(0,dst.toString().lastIndexOf(File.separator));</span><br><span class="line">        if(!fileSystem.exists(new Path(filePath))) &#123;</span><br><span class="line">            System.out.println(&quot;创建移动文件夹！&quot;);</span><br><span class="line">            fileSystem.mkdirs(new Path(filePath));</span><br><span class="line">        &#125;</span><br><span class="line">        if(fileSystem.rename(src,dst))</span><br><span class="line">        &#123;</span><br><span class="line">            System.out.println(&quot;已从&quot;+src.toString()+&quot;移动到&quot;+dst.toString()+&quot;!&quot;);</span><br><span class="line">        &#125;else&#123;</span><br><span class="line">            System.out.println(&quot;移动失败！&quot;);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+    </div>
+
+    
+    
+    
+
+ 
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/HDFS-Hadoop/" rel="tag"><i class="fa fa-tags" aria-hidden="true"></i>
+ HDFS Hadoop</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2019/10/28/JAVA/maven-pom-xml-%E6%A8%A1%E6%9D%BF/" rel="prev" title="maven-pom-xml-模板">
+      <i class="fa fa-chevron-left"></i> maven-pom-xml-模板
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2019/11/04/C++/%E9%9D%99%E6%80%81%E6%95%B0%E6%8D%AE%E6%88%90%E5%91%98%E4%B8%80%E7%9B%B4%E6%8F%90%E7%A4%BAundefined-reference/" rel="next" title="静态数据成员一直提示undefined-reference">
+      静态数据成员一直提示undefined-reference <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-前期准备（使用IDEA）"><span class="nav-number">1.</span> <span class="nav-text">1 前期准备（使用IDEA）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-任务列表"><span class="nav-number">2.</span> <span class="nav-text">2 任务列表</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-代码部分及相应解释"><span class="nav-number">3.</span> <span class="nav-text">3 代码部分及相应解释</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Mona"
+      src="/images/A.png">
+  <p class="site-author-name" itemprop="name">Mona</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">95</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">32</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">61</span>
+        <span class="site-state-item-name">标签</span>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/moneyna" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;moneyna" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+	 
+   <a href="/">
+      <img class="site-author-image" itemprop="image"
+        src="/images/A.png"
+        alt="Mona" />
+   </a>
+
+  
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Mona</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v4.2.0
+  </div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">主题 – <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> v7.7.2
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+</body>
+</html>

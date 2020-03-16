@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/A.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-minimal.min.css">
+  <script src="/lib/pace/pace.min.js"></script>
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"yoursite.com","root":"/","scheme":"Pisces","version":"7.7.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="乱七八糟的前端感悟">
+<meta property="og:type" content="article">
+<meta property="og:title" content="前端第四次作业感悟">
+<meta property="og:url" content="http://yoursite.com/2019/09/21/javascript/%E5%89%8D%E7%AB%AF%E7%AC%AC%E5%9B%9B%E6%AC%A1%E4%BD%9C%E4%B8%9A%E6%84%9F%E6%82%9F/index.html">
+<meta property="og:site_name" content="Moneyna 的杂货铺">
+<meta property="og:description" content="乱七八糟的前端感悟">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://yoursite.com/images/pasted-40.png">
+<meta property="article:published_time" content="2019-09-21T04:08:23.000Z">
+<meta property="article:modified_time" content="2020-03-16T13:12:54.380Z">
+<meta property="article:author" content="Mona">
+<meta property="article:tag" content="html css Javascript">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://yoursite.com/images/pasted-40.png">
+
+<link rel="canonical" href="http://yoursite.com/2019/09/21/javascript/%E5%89%8D%E7%AB%AF%E7%AC%AC%E5%9B%9B%E6%AC%A1%E4%BD%9C%E4%B8%9A%E6%84%9F%E6%82%9F/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true
+  };
+</script>
+
+  <title>前端第四次作业感悟 | Moneyna 的杂货铺</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Moneyna 的杂货铺</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">人生得意需尽欢</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+  </ul>
+
+</nav>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/09/21/javascript/%E5%89%8D%E7%AB%AF%E7%AC%AC%E5%9B%9B%E6%AC%A1%E4%BD%9C%E4%B8%9A%E6%84%9F%E6%82%9F/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/A.png">
+      <meta itemprop="name" content="Mona">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Moneyna 的杂货铺">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          前端第四次作业感悟
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2019-09-21 12:08:23" itemprop="dateCreated datePublished" datetime="2019-09-21T12:08:23+08:00">2019-09-21</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/javascript/" itemprop="url" rel="index"><span itemprop="name">javascript</span></a>
+                </span>
+            </span>
+
+          
+            <div class="post-description">乱七八糟的前端感悟</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h4 id="html-css-面貌"><a href="#html-css-面貌" class="headerlink" title="html+css 面貌"></a>html+css 面貌</h4><p><img src="/images/pasted-40.png" alt=""></p>
+<p>js部分代码<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br></pre></td><td class="code"><pre><span class="line">function validateForm() &#123;</span><br><span class="line">    &#x2F;&#x2F;检验是否有必填项空白</span><br><span class="line">    var x &#x3D; document.querySelectorAll(&quot;[class&#x3D;&#39;required&#39;]&quot;);</span><br><span class="line"></span><br><span class="line">    var correct &#x3D; true;</span><br><span class="line">    if (x.length !&#x3D; 0) &#123;</span><br><span class="line">        for (var i &#x3D; 0; i &lt; x.length; i++)</span><br><span class="line">            if (x[i].value &#x3D;&#x3D; null || x[i].value &#x3D;&#x3D; &quot;&quot;) &#123;</span><br><span class="line">                correct &#x3D; false;</span><br><span class="line">                break;</span><br><span class="line">            &#125;</span><br><span class="line">    &#125; else correct &#x3D; false;</span><br><span class="line"></span><br><span class="line">    if (!correct) &#123;</span><br><span class="line">        alert(&quot;带*为必填项&quot;);</span><br><span class="line">        console.log(&quot;有未填写项目&quot;);</span><br><span class="line">        return false;</span><br><span class="line">    &#125; else &#123;</span><br><span class="line">        console.log(&quot;必填项目完整&quot;);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    &#x2F;&#x2F;验证两次密码是否一致</span><br><span class="line">    var pwdT &#x3D; document.querySelectorAll(&quot;[id&#x3D;&#39;pwd&#39;]&quot;);</span><br><span class="line">    var pwd &#x3D; pwdT[0].value;</span><br><span class="line">    var pwd2 &#x3D; pwdT[1].value;</span><br><span class="line"></span><br><span class="line">    console.log(pwd);</span><br><span class="line">    console.log(pwd2);</span><br><span class="line"></span><br><span class="line">    if (pwd !&#x3D; pwd2) &#123;</span><br><span class="line">        alert(&quot;密码不一致！&quot;);</span><br><span class="line">        console.log(&quot;密码不一致&quot;);</span><br><span class="line">        return false;</span><br><span class="line">    &#125; else &#123;</span><br><span class="line">        console.log(&quot;密码一致&quot;);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    &#x2F;&#x2F;如果邮箱不为空，检验是否有效</span><br><span class="line">    var email &#x3D; document.getElementsByName(&quot;email&quot;)[0].value;</span><br><span class="line">    console.log(email);</span><br><span class="line">    var filter &#x3D; &#x2F;^([A-Za-z0-9_\-\.\u4e00-\u9fa5])+\@([A-Za-z0-9_\-\.])+\.([A-Za-z]&#123;2,8&#125;)$&#x2F;;</span><br><span class="line"></span><br><span class="line">    if (email &#x3D;&#x3D; null || email &#x3D;&#x3D; &quot;&quot;) &#123;</span><br><span class="line">        console.log(&quot;未填写邮箱&quot;);</span><br><span class="line"></span><br><span class="line">    &#125; else &#123;</span><br><span class="line">        console.log(email);</span><br><span class="line">        if (!filter.test(email)) &#123;</span><br><span class="line">            alert(&quot;非有效邮箱&quot;);</span><br><span class="line">            return false;</span><br><span class="line">        &#125; else &#123;</span><br><span class="line">            console.log(&quot;有效邮箱&quot;);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    &#x2F;&#x2F;身份证长度检验</span><br><span class="line">    var idn &#x3D; document.getElementsByName(&quot;idNumber&quot;)[0].value;</span><br><span class="line"></span><br><span class="line">    if (idn &#x3D;&#x3D; null || idn &#x3D;&#x3D; &quot;&quot;) &#123;</span><br><span class="line">        console.log(&quot;未填写身份证&quot;);</span><br><span class="line">    &#125; else &#123;</span><br><span class="line">        if (idn.length !&#x3D; 18) &#123;</span><br><span class="line">            alert(&quot;身份证长度少于18位&quot;);</span><br><span class="line">            console.log(&quot;身份证长度少于18位&quot;);</span><br><span class="line">        &#125; else &#123;</span><br><span class="line">            console.log(&quot;身份证长度检验通过&quot;);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    &#x2F;&#x2F;手机号码检验</span><br><span class="line">    var phonen &#x3D; document.getElementsByName(&quot;phoneNumber&quot;)[0].value;</span><br><span class="line"></span><br><span class="line">    if (phonen &#x3D;&#x3D; null || phonen &#x3D;&#x3D; &quot;&quot;) &#123;</span><br><span class="line">        console.log(&quot;未填写手机号码&quot;);</span><br><span class="line">    &#125; else &#123;</span><br><span class="line">        if (phonen.length !&#x3D; 11) &#123;</span><br><span class="line">            alert(&quot;手机号码长度少于11位&quot;);</span><br><span class="line">            console.log(&quot;手机号码长度少于11位&quot;);</span><br><span class="line">        &#125; else &#123;</span><br><span class="line">            console.log(&quot;手机号长度检验通过&quot;);</span><br><span class="line">            var filter &#x3D; &#x2F;^1(3|4|5|6|7|8|9)\d&#123;9&#125;$&#x2F;;</span><br><span class="line">            if (!filter.test(phonen)) &#123;</span><br><span class="line">                alert(&quot;非有效手机号码&quot;);</span><br><span class="line">                console.log(&quot;非有效手机号码&quot;);</span><br><span class="line">            &#125; else &#123;</span><br><span class="line">                console.log(&quot;手机号有效检验通过&quot;);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    return true;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h4 id="小TIPs"><a href="#小TIPs" class="headerlink" title="小TIPs"></a>小TIPs</h4><ul>
+<li><p>html中头部信息书写</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">&lt;head&gt;</span><br><span class="line">    &lt;title&gt;中国网邮箱注册&lt;&#x2F;title&gt;</span><br><span class="line">    &lt;meta charset&#x3D;&quot;UTF-8&quot;&gt;</span><br><span class="line">    &lt;link href&#x3D;&quot;1c.css&quot; rel&#x3D;&quot;stylesheet&quot;&gt;</span><br><span class="line">    &lt;script type&#x3D;&quot;text&#x2F;javascript&quot; src&#x3D;&quot;1.js&quot;&gt;&lt;&#x2F;script&gt;</span><br><span class="line">&lt;&#x2F;head&gt;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>通过html的事件调用js函数<br>e.g</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;form name&#x3D;&quot;register&quot; onsubmit&#x3D;&quot;return validateForm()&quot;&gt;</span><br></pre></td></tr></table></figure>
+<p>其他事件还有onclick 等、书写方式的不同还会有其他效果</p>
+</li>
+<li><p>js获取input文本框内容的几个方法</p>
+<ol>
+<li>法一：<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">var x &#x3D; document.querySelectorAll(&quot;[class&#x3D;&#39;required&#39;]&quot;);</span><br><span class="line">var x &#x3D;  document.querySelectorAll(&quot;[id&#x3D;&#39;required&#39;]&quot;);</span><br><span class="line">var xx &#x3D; x[0].value;</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<p>返回值类型是一个list，包含所有class=”required”||id=”required”的object本身，使用[0]去选择对象</p>
+<ol>
+<li>法二：<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">var email &#x3D; document.getElementsByName(&quot;email&quot;);</span><br><span class="line">var xx &#x3D; x[0].value;</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<p>返回值类型是一个list，包含所有name=”email”的对象本身，使用[0]去选择对象</p>
+<ol>
+<li>法三：<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">var email &#x3D; document.getElementsById(&quot;email&quot;);</span><br><span class="line">var xx &#x3D; x[0].value;</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<p>返回值类型是一个object，故而若使用该方法，应保证只有唯一一个元素使用该用于查询的id，否则无法定位到指定元素。<br>若存在多个同名id的元素，又必须对他们进行操作，使用上述方法1即可</p>
+</li>
+<li><p>console输出语句为 console.log(“Saving people,hunting things,family business.”)<br>谈窗输出模式语句为 alert(“Dean!Come back!”);</p>
+<p>浏览器打开开发者模式，ctrl+shift+c<br>console查看输出（编译器不会报的错误，在console可以查看出些许端倪，否则就抓瞎吧ORZ）</p>
+</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+ 
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/html-css-Javascript/" rel="tag"><i class="fa fa-tags" aria-hidden="true"></i>
+ html css Javascript</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2019/09/11/Python-&&-ML/%E7%88%AC%E8%99%AB-%E4%BD%BF%E7%94%A8BeautifulSoup/" rel="prev" title="爬虫-使用BeautifulSoup">
+      <i class="fa fa-chevron-left"></i> 爬虫-使用BeautifulSoup
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2019/09/21/HTML/html%E7%AE%80%E5%86%99Emmet/" rel="next" title="html简写Emmet">
+      html简写Emmet <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#html-css-面貌"><span class="nav-number">1.</span> <span class="nav-text">html+css 面貌</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#小TIPs"><span class="nav-number">2.</span> <span class="nav-text">小TIPs</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Mona"
+      src="/images/A.png">
+  <p class="site-author-name" itemprop="name">Mona</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">95</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">32</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">61</span>
+        <span class="site-state-item-name">标签</span>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/moneyna" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;moneyna" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+	 
+   <a href="/">
+      <img class="site-author-image" itemprop="image"
+        src="/images/A.png"
+        alt="Mona" />
+   </a>
+
+  
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Mona</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v4.2.0
+  </div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">主题 – <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> v7.7.2
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+</body>
+</html>

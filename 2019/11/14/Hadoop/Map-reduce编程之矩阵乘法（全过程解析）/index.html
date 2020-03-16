@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/A.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-minimal.min.css">
+  <script src="/lib/pace/pace.min.js"></script>
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"yoursite.com","root":"/","scheme":"Pisces","version":"7.7.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="1 使用环境及代码简介环境：  fedora 30IDEA Ultimate EditionHadoop 3.1.2  代码简介：  实现矩阵乘法（来源于厦门大学林子雨老师的《深入理解大数据》第八章矩阵乘法）">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Map-reduce编程之矩阵乘法（全过程解析）">
+<meta property="og:url" content="http://yoursite.com/2019/11/14/Hadoop/Map-reduce%E7%BC%96%E7%A8%8B%E4%B9%8B%E7%9F%A9%E9%98%B5%E4%B9%98%E6%B3%95%EF%BC%88%E5%85%A8%E8%BF%87%E7%A8%8B%E8%A7%A3%E6%9E%90%EF%BC%89/index.html">
+<meta property="og:site_name" content="Moneyna 的杂货铺">
+<meta property="og:description" content="1 使用环境及代码简介环境：  fedora 30IDEA Ultimate EditionHadoop 3.1.2  代码简介：  实现矩阵乘法（来源于厦门大学林子雨老师的《深入理解大数据》第八章矩阵乘法）">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://upload-images.jianshu.io/upload_images/16858152-80d94316a3d7a61d.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="http://yoursite.com/images/pasted-45.png">
+<meta property="og:image" content="http://yoursite.com/images/pasted-46.png">
+<meta property="og:image" content="http://yoursite.com/images/pasted-47.png">
+<meta property="og:image" content="http://yoursite.com/images/pasted-48.png">
+<meta property="og:image" content="http://yoursite.com/images/pasted-49.png">
+<meta property="article:published_time" content="2019-11-14T02:52:32.000Z">
+<meta property="article:modified_time" content="2020-03-16T13:46:23.932Z">
+<meta property="article:author" content="Mona">
+<meta property="article:tag" content="hadoop Map-reduce">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://upload-images.jianshu.io/upload_images/16858152-80d94316a3d7a61d.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+
+<link rel="canonical" href="http://yoursite.com/2019/11/14/Hadoop/Map-reduce%E7%BC%96%E7%A8%8B%E4%B9%8B%E7%9F%A9%E9%98%B5%E4%B9%98%E6%B3%95%EF%BC%88%E5%85%A8%E8%BF%87%E7%A8%8B%E8%A7%A3%E6%9E%90%EF%BC%89/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true
+  };
+</script>
+
+  <title>Map-reduce编程之矩阵乘法（全过程解析） | Moneyna 的杂货铺</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Moneyna 的杂货铺</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">人生得意需尽欢</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+  </ul>
+
+</nav>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/11/14/Hadoop/Map-reduce%E7%BC%96%E7%A8%8B%E4%B9%8B%E7%9F%A9%E9%98%B5%E4%B9%98%E6%B3%95%EF%BC%88%E5%85%A8%E8%BF%87%E7%A8%8B%E8%A7%A3%E6%9E%90%EF%BC%89/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/A.png">
+      <meta itemprop="name" content="Mona">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Moneyna 的杂货铺">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Map-reduce编程之矩阵乘法（全过程解析）
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2019-11-14 10:52:32" itemprop="dateCreated datePublished" datetime="2019-11-14T10:52:32+08:00">2019-11-14</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Hadoop/" itemprop="url" rel="index"><span itemprop="name">Hadoop</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h3 id="1-使用环境及代码简介"><a href="#1-使用环境及代码简介" class="headerlink" title="1 使用环境及代码简介"></a>1 使用环境及代码简介</h3><p>环境：</p>
+<blockquote>
+<p>fedora 30<br>IDEA Ultimate Edition<br>Hadoop 3.1.2</p>
+</blockquote>
+<p>代码简介：</p>
+<blockquote>
+<p>实现矩阵乘法（来源于厦门大学林子雨老师的《深入理解大数据》第八章矩阵乘法）</p>
+</blockquote>
+<a id="more"></a>
+<h3 id="2-Java代码-maven项目"><a href="#2-Java代码-maven项目" class="headerlink" title="2 Java代码(maven项目)"></a>2 Java代码(maven项目)</h3><ul>
+<li>pom.xml<br><em>注意</em>：<ul>
+<li>代码： <artifactId>matrixMultiply</artifactId> 决定jar包的名字</li>
+<li>代码：(下详)定义了主函数入口【对于有多个主函数的项目，不要定义这一项】</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">      &lt;build&gt;</span><br><span class="line">     &lt;plugin&gt;</span><br><span class="line">              &lt;mainClass&gt; MatrixMultiply&lt;&#x2F;mainClass&gt;</span><br><span class="line">      &lt;&#x2F;plugin&gt;</span><br><span class="line">&lt;&#x2F;build&gt;</span><br></pre></td></tr></table></figure>
+<p>p.s 定义了主函数入口的jar包运行命令形如</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;hadoop安装路径&gt;&#x2F;bin&#x2F;hadoop jar &lt;jar包名&gt; &lt;多个以空格隔开的参数&gt;</span><br></pre></td></tr></table></figure>
+<p>而没有定义主函数的jar包的运行：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;hadoop安装路径&gt;&#x2F;bin&#x2F;hadoop jar &lt;jar包名&gt; &lt;主函数入口&gt; &lt;多个以空格隔开的参数&gt;</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br></pre></td><td class="code"><pre><span class="line">&lt;?xml version&#x3D;&quot;1.0&quot; encoding&#x3D;&quot;UTF-8&quot;?&gt;</span><br><span class="line">&lt;project xmlns&#x3D;&quot;http:&#x2F;&#x2F;maven.apache.org&#x2F;POM&#x2F;4.0.0&quot;</span><br><span class="line">         xmlns:xsi&#x3D;&quot;http:&#x2F;&#x2F;www.w3.org&#x2F;2001&#x2F;XMLSchema-instance&quot;</span><br><span class="line">         xsi:schemaLocation&#x3D;&quot;http:&#x2F;&#x2F;maven.apache.org&#x2F;POM&#x2F;4.0.0 http:&#x2F;&#x2F;maven.apache.org&#x2F;xsd&#x2F;maven-4.0.0.xsd&quot;&gt;</span><br><span class="line">    &lt;modelVersion&gt;4.0.0&lt;&#x2F;modelVersion&gt;</span><br><span class="line"></span><br><span class="line">    &lt;groupId&gt;own.study.mana.matrixMultiply&lt;&#x2F;groupId&gt;</span><br><span class="line">    &lt;artifactId&gt;matrixMultiply&lt;&#x2F;artifactId&gt;</span><br><span class="line">    &lt;version&gt;1.0-SNAPSHOT&lt;&#x2F;version&gt;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    &lt;build&gt;</span><br><span class="line">        &lt;plugins&gt;</span><br><span class="line">            &lt;plugin&gt;</span><br><span class="line">                &lt;groupId&gt;org.apache.maven.plugins&lt;&#x2F;groupId&gt;</span><br><span class="line">                &lt;artifactId&gt;maven-compiler-plugin&lt;&#x2F;artifactId&gt;</span><br><span class="line">                &lt;configuration&gt;</span><br><span class="line">                    &lt;source&gt;1.8&lt;&#x2F;source&gt;</span><br><span class="line">                    &lt;target&gt;1.8&lt;&#x2F;target&gt;</span><br><span class="line">                &lt;&#x2F;configuration&gt;</span><br><span class="line">            &lt;&#x2F;plugin&gt;</span><br><span class="line">            &lt;plugin&gt;</span><br><span class="line">                &lt;groupId&gt;org.apache.maven.plugins&lt;&#x2F;groupId&gt;</span><br><span class="line">                &lt;artifactId&gt;maven-jar-plugin&lt;&#x2F;artifactId&gt;</span><br><span class="line">                &lt;configuration&gt;</span><br><span class="line">                    &lt;archive&gt;</span><br><span class="line">                        &lt;manifest&gt;</span><br><span class="line">                            &lt;addClasspath&gt;true&lt;&#x2F;addClasspath&gt;</span><br><span class="line">                            &lt;useUniqueVersions&gt;false&lt;&#x2F;useUniqueVersions&gt;</span><br><span class="line">                            &lt;classpathPrefix&gt;lib&#x2F;&lt;&#x2F;classpathPrefix&gt;</span><br><span class="line">                            &lt;mainClass&gt; MatrixMultiply&lt;&#x2F;mainClass&gt;</span><br><span class="line">                        &lt;&#x2F;manifest&gt;</span><br><span class="line">                    &lt;&#x2F;archive&gt;</span><br><span class="line">                &lt;&#x2F;configuration&gt;</span><br><span class="line">            &lt;&#x2F;plugin&gt;</span><br><span class="line">        &lt;&#x2F;plugins&gt;</span><br><span class="line">    &lt;&#x2F;build&gt;</span><br><span class="line"></span><br><span class="line">    &lt;dependencies&gt;</span><br><span class="line">        &lt;dependency&gt;</span><br><span class="line">            &lt;groupId&gt;org.apache.hadoop&lt;&#x2F;groupId&gt;</span><br><span class="line">            &lt;artifactId&gt;hadoop-common&lt;&#x2F;artifactId&gt;</span><br><span class="line">            &lt;version&gt;3.1.2&lt;&#x2F;version&gt;</span><br><span class="line">            &lt;!--&lt;scope&gt;provided&lt;&#x2F;scope&gt;--&gt;</span><br><span class="line">        &lt;&#x2F;dependency&gt;</span><br><span class="line"></span><br><span class="line">        &lt;dependency&gt;</span><br><span class="line">            &lt;groupId&gt;org.apache.hadoop&lt;&#x2F;groupId&gt;</span><br><span class="line">            &lt;artifactId&gt;hadoop-hdfs&lt;&#x2F;artifactId&gt;</span><br><span class="line">            &lt;version&gt;3.1.2&lt;&#x2F;version&gt;</span><br><span class="line">        &lt;&#x2F;dependency&gt;</span><br><span class="line"></span><br><span class="line">        &lt;dependency&gt;</span><br><span class="line">            &lt;groupId&gt;org.apache.hadoop&lt;&#x2F;groupId&gt;</span><br><span class="line">            &lt;artifactId&gt;hadoop-hdfs-client&lt;&#x2F;artifactId&gt;</span><br><span class="line">            &lt;version&gt;3.1.2&lt;&#x2F;version&gt;</span><br><span class="line">        &lt;&#x2F;dependency&gt;</span><br><span class="line"></span><br><span class="line">        &lt;!-- https:&#x2F;&#x2F;mvnrepository.com&#x2F;artifact&#x2F;org.apache.hadoop&#x2F;hadoop-mapreduce --&gt;</span><br><span class="line">        &lt;dependency&gt;</span><br><span class="line">            &lt;groupId&gt;org.apache.hadoop&lt;&#x2F;groupId&gt;</span><br><span class="line">            &lt;artifactId&gt;hadoop-mapreduce&lt;&#x2F;artifactId&gt;</span><br><span class="line">            &lt;version&gt;3.1.3&lt;&#x2F;version&gt;</span><br><span class="line">            &lt;type&gt;pom&lt;&#x2F;type&gt;</span><br><span class="line">        &lt;&#x2F;dependency&gt;</span><br><span class="line"></span><br><span class="line">        &lt;!-- https:&#x2F;&#x2F;mvnrepository.com&#x2F;artifact&#x2F;org.apache.hadoop&#x2F;hadoop-mapreduce-client-core --&gt;</span><br><span class="line">        &lt;dependency&gt;</span><br><span class="line">            &lt;groupId&gt;org.apache.hadoop&lt;&#x2F;groupId&gt;</span><br><span class="line">            &lt;artifactId&gt;hadoop-mapreduce-client-core&lt;&#x2F;artifactId&gt;</span><br><span class="line">            &lt;version&gt;3.1.2&lt;&#x2F;version&gt;</span><br><span class="line">        &lt;&#x2F;dependency&gt;</span><br><span class="line"></span><br><span class="line">        &lt;!-- https:&#x2F;&#x2F;mvnrepository.com&#x2F;artifact&#x2F;org.apache.hadoop&#x2F;hadoop-mapreduce-client-shuffle --&gt;</span><br><span class="line">        &lt;dependency&gt;</span><br><span class="line">            &lt;groupId&gt;org.apache.hadoop&lt;&#x2F;groupId&gt;</span><br><span class="line">            &lt;artifactId&gt;hadoop-mapreduce-client-shuffle&lt;&#x2F;artifactId&gt;</span><br><span class="line">            &lt;version&gt;3.1.2&lt;&#x2F;version&gt;</span><br><span class="line">        &lt;&#x2F;dependency&gt;</span><br><span class="line"></span><br><span class="line">        &lt;!-- https:&#x2F;&#x2F;mvnrepository.com&#x2F;artifact&#x2F;org.apache.hadoop&#x2F;hadoop-mapreduce-client-jobclient --&gt;</span><br><span class="line">        &lt;dependency&gt;</span><br><span class="line">            &lt;groupId&gt;org.apache.hadoop&lt;&#x2F;groupId&gt;</span><br><span class="line">            &lt;artifactId&gt;hadoop-mapreduce-client-jobclient&lt;&#x2F;artifactId&gt;</span><br><span class="line">            &lt;version&gt;3.1.2&lt;&#x2F;version&gt;</span><br><span class="line">            &lt;scope&gt;provided&lt;&#x2F;scope&gt;</span><br><span class="line">        &lt;&#x2F;dependency&gt;</span><br><span class="line"></span><br><span class="line">        &lt;!-- https:&#x2F;&#x2F;mvnrepository.com&#x2F;artifact&#x2F;org.apache.hadoop&#x2F;hadoop-mapreduce-client-common --&gt;</span><br><span class="line">        &lt;dependency&gt;</span><br><span class="line">            &lt;groupId&gt;org.apache.hadoop&lt;&#x2F;groupId&gt;</span><br><span class="line">            &lt;artifactId&gt;hadoop-mapreduce-client-common&lt;&#x2F;artifactId&gt;</span><br><span class="line">            &lt;version&gt;3.1.2&lt;&#x2F;version&gt;</span><br><span class="line">        &lt;&#x2F;dependency&gt;</span><br><span class="line"></span><br><span class="line">        &lt;!-- https:&#x2F;&#x2F;mvnrepository.com&#x2F;artifact&#x2F;org.apache.hadoop&#x2F;hadoop-yarn-common --&gt;</span><br><span class="line">        &lt;dependency&gt;</span><br><span class="line">            &lt;groupId&gt;org.apache.hadoop&lt;&#x2F;groupId&gt;</span><br><span class="line">            &lt;artifactId&gt;hadoop-yarn-common&lt;&#x2F;artifactId&gt;</span><br><span class="line">            &lt;version&gt;3.1.2&lt;&#x2F;version&gt;</span><br><span class="line">        &lt;&#x2F;dependency&gt;</span><br><span class="line"></span><br><span class="line">    &lt;&#x2F;dependencies&gt;</span><br><span class="line"></span><br><span class="line">&lt;&#x2F;project&gt;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>java代码</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br></pre></td><td class="code"><pre><span class="line">import org.apache.hadoop.conf.Configuration;</span><br><span class="line">import org.apache.hadoop.fs.Path;</span><br><span class="line">import org.apache.hadoop.io.Text;</span><br><span class="line">import org.apache.hadoop.mapreduce.Job;</span><br><span class="line">import org.apache.hadoop.mapreduce.Mapper;</span><br><span class="line">import org.apache.hadoop.mapreduce.Reducer;</span><br><span class="line">import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;</span><br><span class="line">import org.apache.hadoop.mapreduce.lib.input.FileSplit;</span><br><span class="line">import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;</span><br><span class="line">import java.io.IOException;</span><br><span class="line"></span><br><span class="line">public class MatrixMultiply &#123;</span><br><span class="line">    public static int rowM &#x3D; 0;</span><br><span class="line">    public static int columnM&#x3D;0;</span><br><span class="line">    public static int columnN&#x3D;0;</span><br><span class="line"></span><br><span class="line">    public static class MatrixMapper extends Mapper&lt;Object, Text,Text,Text&gt;</span><br><span class="line">    &#123;</span><br><span class="line">        private Text map_key &#x3D; new Text();</span><br><span class="line">        private Text map_value &#x3D; new Text();</span><br><span class="line"></span><br><span class="line">        public void setup(Context context) throws IOException</span><br><span class="line">        &#123;</span><br><span class="line">            Configuration conf&#x3D;context.getConfiguration();</span><br><span class="line">            columnN&#x3D;Integer.parseInt(conf.get(&quot;columnN&quot;));</span><br><span class="line">            rowM&#x3D;Integer.parseInt(conf.get(&quot;rowM&quot;));</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        public void map(Object key,Text value,Context context) throws IOException ,InterruptedException</span><br><span class="line">        &#123;</span><br><span class="line">            FileSplit fileSplit&#x3D;(FileSplit)context.getInputSplit();</span><br><span class="line">            String fileName&#x3D;fileSplit.getPath().getName();</span><br><span class="line"></span><br><span class="line">            if(fileName.contains(&quot;M&quot;))</span><br><span class="line">            &#123;</span><br><span class="line">                String[] tuple&#x3D;value.toString().split(&quot;,&quot;);</span><br><span class="line">                int i&#x3D;Integer.parseInt(tuple[0]);</span><br><span class="line">                String[] tuples&#x3D;tuple[1].split(&quot;\t&quot;);</span><br><span class="line">                int j&#x3D;Integer.parseInt(tuples[0]);</span><br><span class="line">                int Mij&#x3D;Integer.parseInt(tuples[1]);</span><br><span class="line"></span><br><span class="line">                for(int k&#x3D;1;k&lt;columnN+1;k++)</span><br><span class="line">                &#123;</span><br><span class="line">                    map_key.set(i+&quot;,&quot;+k);</span><br><span class="line">                    map_value.set(&quot;M&quot;+&quot;,&quot;+j+&quot;,&quot;+Mij);</span><br><span class="line">                    context.write(map_key,map_value);</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;else if(fileName.contains(&quot;N&quot;))</span><br><span class="line">            &#123;</span><br><span class="line">                String[] tuple&#x3D;value.toString().split(&quot;,&quot;);</span><br><span class="line">                int j&#x3D;Integer.parseInt(tuple[0]);</span><br><span class="line">                String[] tuples&#x3D;tuple[1].split(&quot;\t&quot;);</span><br><span class="line">                int k&#x3D;Integer.parseInt(tuples[0]);</span><br><span class="line">                int Njk&#x3D;Integer.parseInt(tuples[1]);</span><br><span class="line"></span><br><span class="line">                for(int i&#x3D;1;i&lt;rowM+1;i++)</span><br><span class="line">                &#123;</span><br><span class="line">                    map_key.set(i+&quot;,&quot;+k);</span><br><span class="line">                    map_value.set(&quot;N&quot;+&quot;,&quot;+j+&quot;,&quot;+Njk);</span><br><span class="line">                    context.write(map_key,map_value);</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public static class MatrixReducer extends Reducer&lt;Text,Text,Text,Text&gt;</span><br><span class="line">    &#123;</span><br><span class="line">        private int sum&#x3D;0;</span><br><span class="line"></span><br><span class="line">        public void setup(Context context) throws IOException</span><br><span class="line">        &#123;</span><br><span class="line">            Configuration conf &#x3D; context.getConfiguration();</span><br><span class="line">            columnM&#x3D;Integer.parseInt(conf.get(&quot;columnM&quot;));</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        public void reduce(Text key,Iterable&lt;Text&gt; values,Context context) throws IOException,InterruptedException</span><br><span class="line">        &#123;</span><br><span class="line">            int[] M&#x3D;new int[columnM+1];</span><br><span class="line">            int[] N&#x3D;new int[columnM+1];</span><br><span class="line"></span><br><span class="line">            for(Text val:values)</span><br><span class="line">            &#123;</span><br><span class="line">                String[] tuple&#x3D;val.toString().split(&quot;,&quot;);</span><br><span class="line">                if(tuple[0].equals(&quot;M&quot;))</span><br><span class="line">                &#123;</span><br><span class="line">                    M[Integer.parseInt(tuple[1])]&#x3D;Integer.parseInt(tuple[2]);</span><br><span class="line">                &#125;else&#123;</span><br><span class="line">                    N[Integer.parseInt(tuple[1])]&#x3D;Integer.parseInt(tuple[2]);</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            for(int j&#x3D;1;j&lt;columnM+1;j++)</span><br><span class="line">            &#123;</span><br><span class="line">                sum+&#x3D;M[j]*N[j];</span><br><span class="line">            &#125;</span><br><span class="line">            context.write(key,new Text(Integer.toString(sum)));</span><br><span class="line">            sum&#x3D;0;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public static void main(String[] args) throws Exception</span><br><span class="line">    &#123;</span><br><span class="line">        if(args.length!&#x3D;3)</span><br><span class="line">        &#123;</span><br><span class="line">            System.err.println(&quot;Usage:MatrixMultiply &lt;inputPathM&gt; &lt;inputPathN&gt; &lt;outputPaht&gt;&quot;);</span><br><span class="line">            System.exit(2);</span><br><span class="line">        &#125;else&#123;</span><br><span class="line">            String[] infoTupleM&#x3D;args[0].split(&quot;_&quot;);</span><br><span class="line">            rowM&#x3D;Integer.parseInt(infoTupleM[1]);</span><br><span class="line">            columnM&#x3D;Integer.parseInt(infoTupleM[2]);</span><br><span class="line">            String[] infoTupleN&#x3D;args[1].split(&quot;_&quot;);</span><br><span class="line">            columnN&#x3D;Integer.parseInt(infoTupleN[2]);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        Configuration conf&#x3D;new Configuration();</span><br><span class="line">        conf.setInt(&quot;rowM&quot;,rowM);</span><br><span class="line">        conf.setInt(&quot;columnM&quot;,columnM);</span><br><span class="line">        conf.setInt(&quot;columnN&quot;,columnN);</span><br><span class="line"></span><br><span class="line">        Job job&#x3D;Job.getInstance(conf,&quot;MatrixMultiply&quot;);</span><br><span class="line">        job.setJarByClass(MatrixMultiply.class);</span><br><span class="line">        job.setMapperClass(MatrixMapper.class);</span><br><span class="line">        job.setReducerClass(MatrixReducer.class);</span><br><span class="line">        job.setOutputKeyClass(Text.class);</span><br><span class="line">        job.setOutputValueClass(Text.class);</span><br><span class="line"></span><br><span class="line">        FileInputFormat.setInputPaths(job,new Path(args[0]),new Path(args[1]));</span><br><span class="line">        FileOutputFormat.setOutputPath(job, new Path(args[2]));</span><br><span class="line">        System.exit(job.waitForCompletion(true)?0:1);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>小数据量下的矩阵生成shell脚本</li>
+</ul>
+<p># createMatrix.sh 需要三个int参数，分别为M的行、列、N的列</p>
+<p># e.g ./createMatrix.sh 3 4 5</p>
+<p># 编辑完成后记得chmod +x &lt;脚本名&gt;<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line">#! &#x2F;bin&#x2F;bash</span><br><span class="line">if [ $# -ne 3 ]</span><br><span class="line">then </span><br><span class="line">	echo &quot;there must be 3 arguments to generate the two matries file!&quot;</span><br><span class="line">	exit</span><br><span class="line">fi</span><br><span class="line"></span><br><span class="line">cat &#x2F;dev&#x2F;null &gt; M_$1_$2</span><br><span class="line">cat &#x2F;dev&#x2F;null &gt; N_$2_$3</span><br><span class="line"></span><br><span class="line">for i in &#96;seq 1 $1&#96;</span><br><span class="line">do</span><br><span class="line">	for j in &#96;seq 1 $2&#96;</span><br><span class="line">	do</span><br><span class="line">		s&#x3D;$((RANDOM%100))</span><br><span class="line">		echo -e &quot;$i,$j\t$s&quot; &gt;&gt; M_$1_$2</span><br><span class="line">	done</span><br><span class="line">done</span><br><span class="line">echo &quot;we have built the matrix file M&quot;</span><br><span class="line"></span><br><span class="line">for i in &#96;seq 1 $2&#96;</span><br><span class="line">do</span><br><span class="line">	for j in &#96;seq 1 $3&#96;</span><br><span class="line">	do </span><br><span class="line">		s&#x3D;$((RANDOM%100))</span><br><span class="line">		echo -e &quot;$i,$j\t$s&quot; &gt;&gt; N_$2_$3</span><br><span class="line">	done</span><br><span class="line">done</span><br><span class="line">echo &quot;we have built the matrix file N&quot;</span><br></pre></td></tr></table></figure></p>
+<h3 id="3-IDEA中将maven项目打成jar包"><a href="#3-IDEA中将maven项目打成jar包" class="headerlink" title="3 IDEA中将maven项目打成jar包"></a>3 IDEA中将maven项目打成jar包</h3><ul>
+<li>若不清楚 2 部分提到的主函数入口，请<blockquote>
+<p>File&gt;Project Structure&gt;Artifacts</p>
+<p>点击+号</p>
+<p>JAR&gt;From modules with dependencies</p>
+<p>选择自己的主类</p>
+<p>点击apply</p>
+</blockquote>
+</li>
+</ul>
+<p>即会在代码文件夹中生成META-INF文件夹，其中的MANIFEST.MF记录了主类</p>
+<ul>
+<li>给maven项目打包，在maven选项卡中<blockquote>
+<p>maven&gt;Lifecycle&gt;pakage</p>
+</blockquote>
+</li>
+</ul>
+<p>如下图所示，双击pakage即可</p>
+<p><img src="https://upload-images.jianshu.io/upload_images/16858152-80d94316a3d7a61d.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="IDEA的maven选项卡"></p>
+<p>生成的jar包在project&gt;target下<br>根据代码，jar包运行需要三个参数，分别是，存放矩阵M的文件，存放矩阵N的文件及输入文件</p>
+<h3 id="4-jar包的运行（单击或伪分布式，集成方式稍有不同）"><a href="#4-jar包的运行（单击或伪分布式，集成方式稍有不同）" class="headerlink" title="4 jar包的运行（单击或伪分布式，集成方式稍有不同）"></a>4 jar包的运行（单击或伪分布式，集成方式稍有不同）</h3><ul>
+<li>启动hdfs</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">systemctl start sshd</span><br><span class="line">&gt;输入sshd密码</span><br><span class="line">cd &#x2F;usr&#x2F;local&#x2F;hadoop</span><br><span class="line">sbin&#x2F;start-dfs.sh</span><br></pre></td></tr></table></figure>
+<ul>
+<li>运行部分 2 中提到的shell脚本，得到输入</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">.&#x2F;cteateMatrix.sh 3 4 5</span><br></pre></td></tr></table></figure>
+<p>结果如下：</p>
+<p><img src="/images/pasted-45.png" alt="createMatrix.sh运行结果"></p>
+<ul>
+<li><p>将输入放入hdfs中</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">cd &#x2F;usr&#x2F;local&#x2F;hadoop</span><br><span class="line">bin&#x2F;hdfs dfs -mkdir &#x2F;Input  #在hdfs创建输入文件夹</span><br><span class="line">bin&#x2F;hdfs dfs -put &lt;本地路径&gt;&#x2F;M_3_4 &#x2F;Input</span><br><span class="line">bin&#x2F;hdfs dfs -put &lt;本地路径&gt;&#x2F;N_4_5 &#x2F;Input</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>运行jar包(注意最后一个参数/Output必须为当前不存在路径，否则报错)</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">bin&#x2F;hadoop jar matrxiMultiply.jar &#x2F;Input&#x2F;M_3_4 &#x2F;Input&#x2F;N_4_5 &#x2F;Output</span><br></pre></td></tr></table></figure>
+<p><em>attention</em>:<br>若在单机|伪分布式模式下运行且不准备开YARN，记得把</p>
+</li>
+</ul>
+<p><img src="/images/pasted-46.png" alt=""></p>
+<p>改成</p>
+<p><img src="/images/pasted-47.png" alt=""></p>
+<p>若要开YARN，就步骤相反</p>
+<h3 id="5-查看结果"><a href="#5-查看结果" class="headerlink" title="5 查看结果"></a>5 查看结果</h3><p>运行的结果位于hdfs中运行jar的指定位置，因为之前我们输入的路径为/Output,故<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">cd &#x2F;usr&#x2F;local&#x2F;hadoop</span><br><span class="line">bin&#x2F;hdfs dfs -l &#x2F;Output</span><br></pre></td></tr></table></figure><br><img src="/images/pasted-48.png" alt=""></p>
+<p>其中part-r-00000，即为最终结果，我们使用<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">bin&#x2F;hdfs dfs -cat &#x2F;Output&#x2F;part-r-00000</span><br></pre></td></tr></table></figure><br>查看<br><img src="/images/pasted-49.png" alt="最终结果"></p>
+<h3 id="6-小结"><a href="#6-小结" class="headerlink" title="6 小结"></a>6 小结</h3><p>要想顺利运行，要注意的点有</p>
+<ul>
+<li>maven导入的必须是对应hadoop版本的jar包，如我的版本是3.1.2，故dependency中大部分的版本号都是3.1.2</li>
+<li>打jar包时记得定义好函数入口，如果没有在包中定义，则一定要记得在运行时要输入函数入口的全部路径，大致如&lt;包名&gt;.&lt;类名&gt;</li>
+<li>jar包的运行是在hdfs上运行，所以namenode、datanode要打开，输入要放进hdfs</li>
+</ul>
+<p>— 希望过不久可以更新分布式的</p>
+
+    </div>
+
+    
+    
+    
+
+ 
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/hadoop-Map-reduce/" rel="tag"><i class="fa fa-tags" aria-hidden="true"></i>
+ hadoop Map-reduce</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2019/11/14/Hadoop/%E5%A6%82%E6%9E%9CJAVA_HOME%E6%94%B9%E5%8F%98/" rel="prev" title="如果JAVA_HOME改变">
+      <i class="fa fa-chevron-left"></i> 如果JAVA_HOME改变
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2019/11/14/Linux-Centos/centos7-%E9%85%8D%E7%BD%AE%E9%AB%98%E7%89%88%E6%9C%ACgcc-%EF%BC%88gcc-9-2-0%EF%BC%89/" rel="next" title="centos7-配置高版本gcc-（gcc-9-2-0）">
+      centos7-配置高版本gcc-（gcc-9-2-0） <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-使用环境及代码简介"><span class="nav-number">1.</span> <span class="nav-text">1 使用环境及代码简介</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-Java代码-maven项目"><span class="nav-number">2.</span> <span class="nav-text">2 Java代码(maven项目)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-IDEA中将maven项目打成jar包"><span class="nav-number">3.</span> <span class="nav-text">3 IDEA中将maven项目打成jar包</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-jar包的运行（单击或伪分布式，集成方式稍有不同）"><span class="nav-number">4.</span> <span class="nav-text">4 jar包的运行（单击或伪分布式，集成方式稍有不同）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-查看结果"><span class="nav-number">5.</span> <span class="nav-text">5 查看结果</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#6-小结"><span class="nav-number">6.</span> <span class="nav-text">6 小结</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Mona"
+      src="/images/A.png">
+  <p class="site-author-name" itemprop="name">Mona</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">95</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">32</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">61</span>
+        <span class="site-state-item-name">标签</span>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/moneyna" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;moneyna" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+	 
+   <a href="/">
+      <img class="site-author-image" itemprop="image"
+        src="/images/A.png"
+        alt="Mona" />
+   </a>
+
+  
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Mona</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v4.2.0
+  </div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">主题 – <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> v7.7.2
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+</body>
+</html>

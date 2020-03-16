@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/A.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-minimal.min.css">
+  <script src="/lib/pace/pace.min.js"></script>
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"yoursite.com","root":"/","scheme":"Pisces","version":"7.7.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="作业记录，同时是导致我搬家的源头。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="《神经网络与深度学习》课程练习3-SVM">
+<meta property="og:url" content="http://yoursite.com/2020/03/15/Python-&&-ML/%E3%80%8A%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C%E4%B8%8E%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E3%80%8B%E8%AF%BE%E7%A8%8B%E7%BB%83%E4%B9%A03-SVM/index.html">
+<meta property="og:site_name" content="Moneyna 的杂货铺">
+<meta property="og:description" content="作业记录，同时是导致我搬家的源头。">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2020-03-15T06:23:20.000Z">
+<meta property="article:modified_time" content="2020-03-16T15:36:05.356Z">
+<meta property="article:author" content="Mona">
+<meta property="article:tag" content="SVM ML SMO Python numpy">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://yoursite.com/2020/03/15/Python-&&-ML/%E3%80%8A%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C%E4%B8%8E%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E3%80%8B%E8%AF%BE%E7%A8%8B%E7%BB%83%E4%B9%A03-SVM/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true
+  };
+</script>
+
+  <title>《神经网络与深度学习》课程练习3-SVM | Moneyna 的杂货铺</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Moneyna 的杂货铺</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">人生得意需尽欢</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+  </ul>
+
+</nav>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/03/15/Python-&&-ML/%E3%80%8A%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C%E4%B8%8E%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E3%80%8B%E8%AF%BE%E7%A8%8B%E7%BB%83%E4%B9%A03-SVM/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/A.png">
+      <meta itemprop="name" content="Mona">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Moneyna 的杂货铺">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          《神经网络与深度学习》课程练习3-SVM
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-03-15 14:23:20" itemprop="dateCreated datePublished" datetime="2020-03-15T14:23:20+08:00">2020-03-15</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Python-ML/" itemprop="url" rel="index"><span itemprop="name">Python-&&-ML</span></a>
+                </span>
+            </span>
+
+          
+            <div class="post-description">作业记录，同时是导致我搬家的源头。</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p><a href="https://github.com/nndl/exercise/tree/master/chap3_SVM" target="_blank" rel="noopener">练习描述网址</a></p>
+<h3 id="1-基于SMO算法高斯核SVM"><a href="#1-基于SMO算法高斯核SVM" class="headerlink" title="1 基于SMO算法高斯核SVM"></a>1 基于SMO算法高斯核SVM</h3><p>SMO算法参考下述论文中伪代码：<br><a href="luthuli.cs.uiuc.edu/~daf/courses/Optimization/Papers/smoTR.pdf">Sequential Minimal Optimization:A Fast Algorithm for Training Support Vector Machines</a><br>注意论文中描述b的部分，似乎应为b1=-(part1)+b</p>
+<p>同时可以特别关注predic函数的编写，会发现对原有公式的体悟上升</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br><span class="line">175</span><br><span class="line">176</span><br><span class="line">177</span><br><span class="line">178</span><br><span class="line">179</span><br><span class="line">180</span><br><span class="line">181</span><br><span class="line">182</span><br><span class="line">183</span><br><span class="line">184</span><br><span class="line">185</span><br><span class="line">186</span><br><span class="line">187</span><br><span class="line">188</span><br><span class="line">189</span><br><span class="line">190</span><br><span class="line">191</span><br><span class="line">192</span><br><span class="line">193</span><br><span class="line">194</span><br><span class="line">195</span><br><span class="line">196</span><br><span class="line">197</span><br><span class="line">198</span><br><span class="line">199</span><br><span class="line">200</span><br><span class="line">201</span><br><span class="line">202</span><br><span class="line">203</span><br><span class="line">204</span><br><span class="line">205</span><br><span class="line">206</span><br><span class="line">207</span><br><span class="line">208</span><br><span class="line">209</span><br><span class="line">210</span><br><span class="line">211</span><br><span class="line">212</span><br><span class="line">213</span><br><span class="line">214</span><br><span class="line">215</span><br><span class="line">216</span><br><span class="line">217</span><br></pre></td><td class="code"><pre><span class="line"># python: 3.5.2</span><br><span class="line"># encoding: utf-8</span><br><span class="line"></span><br><span class="line">import numpy as np</span><br><span class="line">import matplotlib.pyplot as plt</span><br><span class="line">from scipy.optimize import minimize</span><br><span class="line"></span><br><span class="line">class SVM():</span><br><span class="line">    &quot;&quot;&quot;</span><br><span class="line">    SVM模型。</span><br><span class="line">    &quot;&quot;&quot;</span><br><span class="line"></span><br><span class="line">    def __init__(self, optimize&#x3D;True):</span><br><span class="line">        self.is_fit &#x3D; False</span><br><span class="line">        self.train_x, self.train_y &#x3D; None, None</span><br><span class="line">        self.C &#x3D; 100</span><br><span class="line">        self.b &#x3D; 0</span><br><span class="line">        self.eps &#x3D; 1e-3</span><br><span class="line">        self.alpha &#x3D; None</span><br><span class="line">        self.NN &#x3D; 0  # 非0非C数</span><br><span class="line">        # 高斯核参数</span><br><span class="line">        self.params &#x3D; &#123;&quot;l&quot;: 0.5, &quot;sigma_f&quot;: 0.2&#125;</span><br><span class="line">        self.optimize &#x3D; optimize</span><br><span class="line"></span><br><span class="line">    def train(self, data_train):</span><br><span class="line">        # step1 赋值train_x,train_y</span><br><span class="line">        self.train_x &#x3D; np.asarray(data_train[:, :2])</span><br><span class="line">        self.train_y &#x3D; np.asarray(data_train[:, 2])</span><br><span class="line">        #print(self.train_x)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">        def negative_log_likelihood_loss(params):</span><br><span class="line">            self.params[&quot;l&quot;], self.params[&quot;sigma_f&quot;] &#x3D; params[0], params[1]</span><br><span class="line">            Kyy &#x3D; self.kernel(self.train_x, self.train_x) + 1e-8 * np.eye(len(self.train_x))</span><br><span class="line">            return 0.5 * self.train_y.T.dot(np.linalg.inv(Kyy)).dot(self.train_y) + 0.5 * np.linalg.slogdet(Kyy)[</span><br><span class="line">                1] + 0.5 * len(self.train_x) * np.log(2 * np.pi)</span><br><span class="line"></span><br><span class="line">        if self.optimize:</span><br><span class="line">            res &#x3D; minimize(negative_log_likelihood_loss, [self.params[&quot;l&quot;], self.params[&quot;sigma_f&quot;]],</span><br><span class="line">                           bounds&#x3D;((1e-4, 100), (1e-4, 100)),</span><br><span class="line">                           method&#x3D;&#39;L-BFGS-B&#39;)</span><br><span class="line">            self.params[&quot;l&quot;], self.params[&quot;sigma_f&quot;] &#x3D; res.x[0], res.x[1]</span><br><span class="line">            print(&quot;l&#x3D;&quot;,res.x[0],&quot; sigma_f&#x3D;&quot;,res.x[1])</span><br><span class="line"></span><br><span class="line">            self.routine()</span><br><span class="line"></span><br><span class="line">    def routine(self):</span><br><span class="line">        numChanged &#x3D; 0</span><br><span class="line">        examineAll &#x3D; 1</span><br><span class="line">        self.alpha &#x3D; np.zeros(np.size(self.train_x, 0))</span><br><span class="line">        length&#x3D;range(0, np.size(self.train_x, 0))</span><br><span class="line">        while numChanged &gt; 0 or examineAll:</span><br><span class="line">            numChanged &#x3D; 0</span><br><span class="line">            if examineAll:</span><br><span class="line">                for i in length:</span><br><span class="line">                    numChanged +&#x3D; self.examineExample(i)</span><br><span class="line">            else:</span><br><span class="line">                for i in length:</span><br><span class="line">                    if self.at_bound(self.alpha[i])&#x3D;&#x3D;0:</span><br><span class="line">                        numChanged +&#x3D; self.examineExample(i)</span><br><span class="line">            if examineAll &#x3D;&#x3D; 1:</span><br><span class="line">                examineAll &#x3D; 0</span><br><span class="line">            elif numChanged &#x3D;&#x3D; 0:</span><br><span class="line">                examineAll &#x3D; 1</span><br><span class="line"></span><br><span class="line">    def cal_NN(self,alph,a):</span><br><span class="line">        if self.at_bound(alph):</span><br><span class="line">            if self.at_bound(a) !&#x3D; 1:</span><br><span class="line">                self.NN +&#x3D; 1</span><br><span class="line">        elif self.at_bound(a):</span><br><span class="line">            self.NN -&#x3D; 1</span><br><span class="line"></span><br><span class="line">    def takesStep(self, i1, i2):</span><br><span class="line">        if i1 &#x3D;&#x3D; i2:</span><br><span class="line">            return 0</span><br><span class="line">        # 变量1</span><br><span class="line">        alph1 &#x3D; self.alpha[i1]</span><br><span class="line">        x1 &#x3D; np.array([self.train_x[i1]])</span><br><span class="line">        y1 &#x3D; self.train_y[i1]</span><br><span class="line">        E1 &#x3D; self.predict(self.train_x[i1]) - y1</span><br><span class="line">        # 变量2</span><br><span class="line">        alph2 &#x3D; self.alpha[i2]</span><br><span class="line">        x2 &#x3D; np.array([self.train_x[i2]])</span><br><span class="line">        y2 &#x3D; self.train_y[i2]</span><br><span class="line">        E2 &#x3D; self.predict(self.train_x[i2]) - y2</span><br><span class="line">        s &#x3D; y1 * y2</span><br><span class="line">        L, H &#x3D; None, None</span><br><span class="line">        if s &#x3D;&#x3D; -1:</span><br><span class="line">            L &#x3D; max(0, alph2 - alph1)</span><br><span class="line">            H &#x3D; min(self.C, self.C + alph2 - alph1)</span><br><span class="line">        elif s &#x3D;&#x3D; 1:</span><br><span class="line">            L &#x3D; max(0, alph2 + alph1 - self.C)</span><br><span class="line">            H &#x3D; min(self.C, alph2 + alph1)</span><br><span class="line">        if L &#x3D;&#x3D; H:</span><br><span class="line">            return 0</span><br><span class="line">        eta &#x3D; self.kernel(x1, x1) + self.kernel(x2, x2) - 2 * self.kernel(x1, x2)</span><br><span class="line">        if eta &gt; 0:</span><br><span class="line">            a2 &#x3D; alph2 + y2 * (E1 - E2) &#x2F; eta</span><br><span class="line">            if a2 &lt; L:</span><br><span class="line">                a2 &#x3D; L</span><br><span class="line">            elif a2 &gt; H:</span><br><span class="line">                a2 &#x3D; H</span><br><span class="line">        else: #eta&lt;&#x3D;0</span><br><span class="line">            f1 &#x3D; y1 * (E1 + self.b) - alph1 * self.kernel(x1, x1) - s * alph2 * self.kernel(x1, x2)</span><br><span class="line">            f2 &#x3D; y2 * (E2 + self.b) - s * alph1 * self.kernel(x1, x2) - alph2 * self.kernel(x2, x2)</span><br><span class="line">            L1 &#x3D; alph1 + s * (alph2 - L)</span><br><span class="line">            H1 &#x3D; alph1 + s * (alph2 - H)</span><br><span class="line">            Lobj &#x3D; L1 * f1 + L * f2 + (1 &#x2F; 2) * L1 **2 * self.kernel(x1, x1) + (1 &#x2F; 2) * L **2 * self.kernel(x2,</span><br><span class="line">                                                                                              x2) + s * L * L1 * self.kernel(</span><br><span class="line">    x1, x2)</span><br><span class="line">            Hobj &#x3D; H1 * f1 + H * f2 + (1 &#x2F; 2) * H1 **2 * self.kernel(x1, x1) + (1 &#x2F; 2) * H **2 * self.kernel(x2,</span><br><span class="line">                                                                                              x2) + s * H * H1 * self.kernel(</span><br><span class="line">    x1, x2)</span><br><span class="line">            if Lobj &lt; Hobj - self.eps:</span><br><span class="line">                a2 &#x3D; L</span><br><span class="line">            elif Lobj &gt; Hobj + self.eps:</span><br><span class="line">                a2 &#x3D; H</span><br><span class="line">            else:</span><br><span class="line">                a2 &#x3D; alph2</span><br><span class="line"></span><br><span class="line">        if abs(a2 - alph2) &lt; self.eps*(a2 + alph2 + self.eps):</span><br><span class="line">            return 0</span><br><span class="line">        # a2为新的alph2，计算a1，新的alph1</span><br><span class="line">        a1 &#x3D; alph1 + s * (alph2 - a2)</span><br><span class="line"></span><br><span class="line">        # 更新b</span><br><span class="line">		# b1 &#x3D; E1 + y1 * (a1 - alph1) * self.kernel(x1, x1) + y2 * (a2 - alph2) * self.kernel(x1, x2) + self.b</span><br><span class="line">		# b2 &#x3D; E2 + y1 * (a1 - alph1) * self.kernel(x1, x2) + y2 * (a2 - alph2) * self.kernel(x2, x2) + self.b</span><br><span class="line">        b1&#x3D; -E1 - y1 * (a1 - alph1) * self.kernel(x1, x1) - y2 * (a2 - alph2) * self.kernel(x1, x2) + self.b</span><br><span class="line">        b2&#x3D; -E2 - y1 * (a1 - alph1) * self.kernel(x1, x2) - y2 * (a2 - alph2) * self.kernel(x2, x2) + self.b</span><br><span class="line">        if self.at_bound(a1) !&#x3D; 1:</span><br><span class="line">            self.b&#x3D;b1</span><br><span class="line">        elif self.at_bound(a2) !&#x3D; 1:</span><br><span class="line">            self.b &#x3D; b2</span><br><span class="line">        elif L !&#x3D; H:</span><br><span class="line">            self.b &#x3D; (b1 + b2) &#x2F; 2</span><br><span class="line">        print(&quot;new_b&#x3D;&quot;,self.b)</span><br><span class="line">        # 更新alpha[i1],alpha[i2]</span><br><span class="line">        self.alpha[i1] &#x3D; a1</span><br><span class="line">        self.alpha[i2] &#x3D; a2</span><br><span class="line">        #根据alph1，alph2，a1,a2更新self.NN</span><br><span class="line">        self.cal_NN(alph1,a1)</span><br><span class="line">        self.cal_NN(alph2, a2)</span><br><span class="line">        print(&quot;new a[&quot;,i1,&quot;]&#x3D;&quot;,a1,&quot; new a[&quot;,i2,&quot;]&#x3D;&quot;,a2)</span><br><span class="line">        return 1</span><br><span class="line"></span><br><span class="line">    def at_bound(self, a):</span><br><span class="line">        if a &#x3D;&#x3D; 0 or a &#x3D;&#x3D; self.C:</span><br><span class="line">            return 1</span><br><span class="line">        else:</span><br><span class="line">            return 0</span><br><span class="line"></span><br><span class="line">    def findAnotherI(self, E2, i2):</span><br><span class="line">        i11 &#x3D; i2</span><br><span class="line">        CE1 &#x3D; -self.C</span><br><span class="line">        # find max abs(E2-E1)</span><br><span class="line">        for i1 in range(0, np.size(self.train_x, 0)):</span><br><span class="line">            if i1 &#x3D;&#x3D; i2:</span><br><span class="line">                continue</span><br><span class="line">            y1 &#x3D; self.train_y[i1]</span><br><span class="line">            E1 &#x3D; self.predict(self.train_x[i1]) - y1</span><br><span class="line">            if abs(E2 - E1) &gt; CE1:</span><br><span class="line">                i11 &#x3D; i1</span><br><span class="line">                CE1 &#x3D; abs(E2 - E1)</span><br><span class="line">        print(&quot;max_CE1&#x3D;&quot;,CE1,&quot; i1&#x3D;&quot;,i1,&quot; i2&#x3D;&quot;,i2)</span><br><span class="line">        return i11</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    def examineExample(self, i2):</span><br><span class="line">        y2 &#x3D; self.train_y[i2]</span><br><span class="line">        alph2 &#x3D; self.alpha[i2]</span><br><span class="line">        E2 &#x3D; self.predict(self.train_x[i2]) - y2</span><br><span class="line">        r2 &#x3D; E2 * y2</span><br><span class="line">        # 是否破坏KKT</span><br><span class="line">        #print(r2 &lt; -self.eps,&quot; &quot;,alph2 &lt; self.C,&quot; &quot;,r2 &gt; self.eps,&quot; &quot;,alph2 &gt; 0)</span><br><span class="line">        if (r2 &lt; -self.eps and alph2 &lt; self.C) or (r2 &gt; self.eps and alph2 &gt; 0):</span><br><span class="line">            if self.NN !&#x3D; 0:</span><br><span class="line">                i1 &#x3D; self.findAnotherI(E2, i2)</span><br><span class="line">                if self.takesStep(i1, i2) :</span><br><span class="line">                    return 1</span><br><span class="line">            for i1 in range(0, np.size(self.train_x, 0)):</span><br><span class="line">                if self.at_bound(self.alpha[i1])&#x3D;&#x3D;0:</span><br><span class="line">                        if self.takesStep(i1, i2):</span><br><span class="line">                            return 1</span><br><span class="line">            for i1 in range(0, np.size(self.train_x, 0)):</span><br><span class="line">                    if self.takesStep(i1, i2):</span><br><span class="line">                        return 1</span><br><span class="line">        return 0</span><br><span class="line"></span><br><span class="line">    def predict(self, x,a&#x3D;0):</span><br><span class="line">        &quot;&quot;&quot;</span><br><span class="line">        预测标签。</span><br><span class="line">        &quot;&quot;&quot;</span><br><span class="line">        if x.ndim &#x3D;&#x3D; 1:</span><br><span class="line">            x &#x3D; np.array([x])</span><br><span class="line"></span><br><span class="line">        part1&#x3D;np.expand_dims(np.diagonal(np.array([self.train_y]).T.dot(np.array([self.alpha]))),axis&#x3D;1) #m*1</span><br><span class="line">        #使用核函数</span><br><span class="line">        part2&#x3D;self.kernel(self.train_x,x) #m*n</span><br><span class="line">        if part2.ndim &#x3D;&#x3D; 1:</span><br><span class="line">           part2&#x3D;np.expand_dims(part2,axis&#x3D;0) #m*n</span><br><span class="line">        fx &#x3D; np.sum(part1*part2,0)+self.b  #1*n</span><br><span class="line">        if fx.ndim&#x3D;&#x3D;1:</span><br><span class="line">            fx&#x3D;np.expand_dims(fx,axis&#x3D;0)</span><br><span class="line">        fx&#x3D;fx.T #n*1</span><br><span class="line">        #print(fx.shape)</span><br><span class="line">        if(a&#x3D;&#x3D;1):</span><br><span class="line">            print(fx)</span><br><span class="line">        one&#x3D;(fx &gt;&#x3D; 0)</span><br><span class="line">        two&#x3D;(fx &lt; 0)</span><br><span class="line">        fx[one] &#x3D; 1</span><br><span class="line">        fx[two] &#x3D; -1</span><br><span class="line">        return fx</span><br><span class="line"></span><br><span class="line">    def kernel(self, x1, x2):</span><br><span class="line">        dist_matrix &#x3D; np.sum(x1 **2, 1).reshape(-1, 1) + np.sum(x2 **2, 1) - 2 * np.dot(x1, x2.T)</span><br><span class="line">        return self.params[&quot;sigma_f&quot;] ** 2 * np.exp(-0.5 &#x2F; self.params[&quot;l&quot;] ** 2 * dist_matrix)</span><br></pre></td></tr></table></figure>
+<h3 id="2-使用其他核函数的SVM"><a href="#2-使用其他核函数的SVM" class="headerlink" title="2 使用其他核函数的SVM"></a>2 使用其他核函数的SVM</h3><p>只需要修改上述代码中kernel部分(不要忘记删除上述代码中针对高斯过程的参数优化部分)<br>例如线性核：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">def kernel(self, x1, x2):</span><br><span class="line">    return x1.dot(x2.T)</span><br></pre></td></tr></table></figure></p>
+<h3 id="3-争对高斯过程，有比SMO算法更高效的方式"><a href="#3-争对高斯过程，有比SMO算法更高效的方式" class="headerlink" title="3 争对高斯过程，有比SMO算法更高效的方式"></a>3 争对高斯过程，有比SMO算法更高效的方式</h3><p>见<a href="https://borgwang.github.io/ml/2019/07/28/gaussian-processes.html" target="_blank" rel="noopener">Gaussian Processes</a></p>
+<h3 id="4-使用SVM解决对分类问题"><a href="#4-使用SVM解决对分类问题" class="headerlink" title="4 使用SVM解决对分类问题"></a>4 使用SVM解决对分类问题</h3><p>基于”argmax”方式（对于m个分类，获得m个分类器，对于每一个分类器获得的fx值，选取最大值所在分类为最终分类）<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br></pre></td><td class="code"><pre><span class="line"># python: 3.5.2</span><br><span class="line"># encoding: utf-8</span><br><span class="line"></span><br><span class="line">import numpy as np</span><br><span class="line">import matplotlib.pyplot as plt</span><br><span class="line">from scipy.optimize import minimize</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">class SVM():</span><br><span class="line">    &quot;&quot;&quot;</span><br><span class="line">    SVM模型。</span><br><span class="line">    &quot;&quot;&quot;</span><br><span class="line">    #省略上述SMO相同部分 </span><br><span class="line"></span><br><span class="line">    def predict(self, x,a&#x3D;0):</span><br><span class="line">        &quot;&quot;&quot;</span><br><span class="line">        预测标签。</span><br><span class="line">        &quot;&quot;&quot;</span><br><span class="line">        if x.ndim &#x3D;&#x3D; 1:</span><br><span class="line">            x &#x3D; np.array([x])        part1&#x3D;np.expand_dims(np.diagonal(np.array([self.train_y]).T.dot(np.array([self.alpha]))),axis&#x3D;1)</span><br><span class="line">        #使用核函数</span><br><span class="line">        part2&#x3D;self.kernel(self.train_x,x) #m*n</span><br><span class="line">        if part2.ndim &#x3D;&#x3D; 1:</span><br><span class="line">           part2&#x3D;np.expand_dims(part2,axis&#x3D;0) #m*n</span><br><span class="line">        fx &#x3D; np.sum(part1*part2,0)+self.b  #1*n</span><br><span class="line">        if fx.ndim&#x3D;&#x3D;1:</span><br><span class="line">            fx&#x3D;np.expand_dims(fx,axis&#x3D;0)</span><br><span class="line">        fx&#x3D;fx.T #n*1</span><br><span class="line">        return fx</span><br><span class="line">        #print(fx.shape)</span><br><span class="line"></span><br><span class="line">    def kernel(self, x1, x2):</span><br><span class="line">        dist_matrix &#x3D; np.sum(x1 **2, 1).reshape(-1, 1) + np.sum(x2 **2, 1) - 2 * np.dot(x1, x2.T)</span><br><span class="line">        return self.params[&quot;sigma_f&quot;] ** 2 * np.exp(-0.5 &#x2F; self.params[&quot;l&quot;] ** 2 * dist_matrix)</span><br><span class="line"></span><br><span class="line">def predict_multi(fx_idx,a&#x3D;1):</span><br><span class="line">    t&#x3D;np.zeros(np.size(fx_idx))</span><br><span class="line">    t[fx_idx&#x3D;&#x3D;0]&#x3D;1</span><br><span class="line">    t[fx_idx&#x3D;&#x3D;1]&#x3D;0</span><br><span class="line">    t[fx_idx&#x3D;&#x3D;2]&#x3D;-1</span><br><span class="line">    if a&#x3D;&#x3D;1:</span><br><span class="line">        print(&quot;t.shape&#x3D;&quot;,t.shape)</span><br><span class="line">    return t</span><br><span class="line"></span><br><span class="line">if __name__ &#x3D;&#x3D; &#39;__main__&#39;:</span><br><span class="line">    # 载入数据，实际实用时将x替换为具体名称</span><br><span class="line">    train_file &#x3D; &#39;data&#x2F;train_multi.txt&#39;</span><br><span class="line">    test_file &#x3D; &#39;data&#x2F;test_multi.txt&#39;</span><br><span class="line">    data_train &#x3D; load_data(train_file)  # 数据格式[x1, x2, t]</span><br><span class="line">    data_test &#x3D; load_data(test_file)</span><br><span class="line"></span><br><span class="line">    # 使用训练集训练SVM模型</span><br><span class="line">    #分类器1</span><br><span class="line">    svm1 &#x3D; SVM()  # 初始化模型</span><br><span class="line">    svm1.train(load_data(train_file),1)  # 训练模型</span><br><span class="line">    svm2 &#x3D; SVM()</span><br><span class="line">    svm2.train(load_data(train_file),0)</span><br><span class="line">    svm3 &#x3D; SVM()</span><br><span class="line">    svm3.train(load_data(train_file), -1)</span><br><span class="line"></span><br><span class="line">    # 使用SVM模型预测标签</span><br><span class="line">    x_train &#x3D; data_train[:, :2]  # feature [x1, x2]</span><br><span class="line">    t_train &#x3D; data_train[:, 2]  # 真实标签</span><br><span class="line">    fx1&#x3D;svm1.predict(x_train) #n,1</span><br><span class="line">    fx2&#x3D;svm2.predict(x_train)</span><br><span class="line">    fx3&#x3D;svm3.predict(x_train)</span><br><span class="line"></span><br><span class="line">    fx&#x3D;np.concatenate((fx1,fx2,fx3),axis&#x3D;1)</span><br><span class="line">    #print(&quot;fx.shape&#x3D;&quot;,fx.shape)</span><br><span class="line">    fx_idx&#x3D;np.argmax(fx,axis&#x3D;1) #1*n</span><br><span class="line">    t_train_pred &#x3D; predict_multi(fx_idx,1)  # 预测标签</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    x_test &#x3D; data_test[:, :2]</span><br><span class="line">    t_test &#x3D; data_test[:, 2]</span><br><span class="line">    fx4 &#x3D; svm1.predict(x_test)  # n,1</span><br><span class="line">    fx5 &#x3D; svm2.predict(x_test)</span><br><span class="line">    fx6 &#x3D; svm3.predict(x_test)</span><br><span class="line"></span><br><span class="line">    fx2&#x3D;np.concatenate((fx4,fx5,fx6),axis&#x3D;1)</span><br><span class="line">    #print(&quot;fx.shape&#x3D;&quot;, fx2.shape)</span><br><span class="line">    fx_idx2 &#x3D; np.argmax(fx2, axis&#x3D;1)  # 1*n</span><br><span class="line">    t_test_pred &#x3D; predict_multi(fx_idx2,1)</span><br><span class="line"></span><br><span class="line">    # 评估结果，计算准确率</span><br><span class="line">    acc_train &#x3D; eval_acc(t_train, t_train_pred)</span><br><span class="line">    acc_test &#x3D; eval_acc(t_test, t_test_pred)</span><br><span class="line">    print(&quot;train accuracy: &#123;:.1f&#125;%&quot;.format(acc_train * 100))</span><br><span class="line">    print(&quot;test accuracy: &#123;:.1f&#125;%&quot;.format(acc_test * 100))</span><br></pre></td></tr></table></figure></p>
+<h3 id="5-LDA-线性分类"><a href="#5-LDA-线性分类" class="headerlink" title="5 LDA(线性分类)"></a>5 LDA(线性分类)</h3><p><a href="https://zhuanlan.zhihu.com/p/74580803" target="_blank" rel="noopener">参看该专栏</a></p>
+<h3 id="6-logistic-regresion"><a href="#6-logistic-regresion" class="headerlink" title="6 logistic_regresion"></a>6 logistic_regresion</h3><p>根据对数几率回归使用梯度下降法（这个实现效果很差）<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><span class="line">class Logistic:</span><br><span class="line">    def __init__(self):</span><br><span class="line">        self.train_x,self.train_y&#x3D;None,None</span><br><span class="line">        self._w&#x3D;None</span><br><span class="line">        self.n&#x3D;0.000005</span><br><span class="line">        self._error&#x3D;-1e5;</span><br><span class="line"></span><br><span class="line">    def sigmoid(self,z):</span><br><span class="line">        return 1.0&#x2F;(1+np.exp(-z))</span><br><span class="line"></span><br><span class="line">    def train(self,dataTrain):</span><br><span class="line">        len&#x3D;np.size(dataTrain,0)</span><br><span class="line">        self.train_x&#x3D;np.insert(dataTrain[: , :2],np.size(dataTrain,1)-1,values&#x3D;np.ones(len),axis&#x3D;1)</span><br><span class="line">        self.train_y&#x3D;dataTrain[:,2]</span><br><span class="line">        self.train_y[self.train_y&#x3D;&#x3D;-1]&#x3D;0</span><br><span class="line">        self.train_y &#x3D; np.expand_dims(self.train_y,axis&#x3D;1 )</span><br><span class="line">        self._w&#x3D;np.array([np.zeros(np.size(dataTrain,1))])</span><br><span class="line"></span><br><span class="line">        #梯度下降</span><br><span class="line">        i&#x3D;0</span><br><span class="line">        cnt&#x3D;0</span><br><span class="line">        while cnt&lt;&#x3D;100:</span><br><span class="line">            c&#x3D;self.sigmoid(np.dot(self.train_x,self._w.T)) #200*1</span><br><span class="line">            b&#x3D;self.train_y-c #200*1</span><br><span class="line">            change&#x3D;np.dot(self.train_x.T,b).T #3*200</span><br><span class="line">            self._w&#x3D;self._w-change*self.n</span><br><span class="line">            cnt+&#x3D;1</span><br><span class="line"></span><br><span class="line">    def predict(self,x,a&#x3D;0):</span><br><span class="line">        print(&quot;final w&#x3D;&quot;,self._w)</span><br><span class="line"></span><br><span class="line">        if x.ndim&#x3D;&#x3D;1:</span><br><span class="line">            x&#x3D;np.expand_dims(x,axis&#x3D;0)</span><br><span class="line">        x &#x3D; np.insert(x, np.size(x, 1) - 1, values&#x3D;np.ones(np.size(x,0)), axis&#x3D;1)</span><br><span class="line">        fx&#x3D;self.sigmoid(self._w.dot(x.T))</span><br><span class="line">        one&#x3D;fx&gt;0.5</span><br><span class="line">        two&#x3D;fx&lt;&#x3D;0.5</span><br><span class="line">        fx[one]&#x3D;1</span><br><span class="line">        fx[two]&#x3D;0</span><br><span class="line">        if a&#x3D;&#x3D;1:</span><br><span class="line">            print(fx)</span><br><span class="line">        return fx</span><br></pre></td></tr></table></figure></p>
+
+    </div>
+
+    
+    
+    
+
+ 
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/SVM-ML-SMO-Python-numpy/" rel="tag"><i class="fa fa-tags" aria-hidden="true"></i>
+ SVM ML SMO Python numpy</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2020/02/20/Python-&&-ML/pycharm/" rel="prev" title="pycharm">
+      <i class="fa fa-chevron-left"></i> pycharm
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2020/03/16/Hexo/%E4%BB%8E%E7%AE%80%E4%B9%A6%E6%90%AC%E5%AE%B6%E5%88%B0Hexo%E4%B8%AA%E4%BA%BA%E7%AB%99/" rel="next" title="从简书搬家到Hexo个人站">
+      从简书搬家到Hexo个人站 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-基于SMO算法高斯核SVM"><span class="nav-number">1.</span> <span class="nav-text">1 基于SMO算法高斯核SVM</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-使用其他核函数的SVM"><span class="nav-number">2.</span> <span class="nav-text">2 使用其他核函数的SVM</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-争对高斯过程，有比SMO算法更高效的方式"><span class="nav-number">3.</span> <span class="nav-text">3 争对高斯过程，有比SMO算法更高效的方式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-使用SVM解决对分类问题"><span class="nav-number">4.</span> <span class="nav-text">4 使用SVM解决对分类问题</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-LDA-线性分类"><span class="nav-number">5.</span> <span class="nav-text">5 LDA(线性分类)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#6-logistic-regresion"><span class="nav-number">6.</span> <span class="nav-text">6 logistic_regresion</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Mona"
+      src="/images/A.png">
+  <p class="site-author-name" itemprop="name">Mona</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">95</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">32</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">61</span>
+        <span class="site-state-item-name">标签</span>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/moneyna" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;moneyna" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+	 
+   <a href="/">
+      <img class="site-author-image" itemprop="image"
+        src="/images/A.png"
+        alt="Mona" />
+   </a>
+
+  
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Mona</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v4.2.0
+  </div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">主题 – <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> v7.7.2
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+</body>
+</html>
