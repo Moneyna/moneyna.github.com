@@ -151,6 +151,539 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/09/21/javascript/%E5%89%8D%E7%AB%AF%E7%AC%AC%E5%9B%9B%E6%AC%A1%E4%BD%9C%E4%B8%9A%E6%84%9F%E6%82%9F/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/A.png">
+      <meta itemprop="name" content="Mona">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Moneyna 的杂货铺">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          
+            <a href="/2019/09/21/javascript/%E5%89%8D%E7%AB%AF%E7%AC%AC%E5%9B%9B%E6%AC%A1%E4%BD%9C%E4%B8%9A%E6%84%9F%E6%82%9F/" class="post-title-link" itemprop="url">前端第四次作业感悟</a>
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2019-09-21 12:08:23" itemprop="dateCreated datePublished" datetime="2019-09-21T12:08:23+08:00">2019-09-21</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/javascript/" itemprop="url" rel="index"><span itemprop="name">javascript</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>乱七八糟的前端感悟</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2019/09/21/javascript/%E5%89%8D%E7%AB%AF%E7%AC%AC%E5%9B%9B%E6%AC%A1%E4%BD%9C%E4%B8%9A%E6%84%9F%E6%82%9F/">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+
+ 
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+        
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/09/11/Python-&&-ML/%E7%88%AC%E8%99%AB-%E4%BD%BF%E7%94%A8BeautifulSoup/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/A.png">
+      <meta itemprop="name" content="Mona">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Moneyna 的杂货铺">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          
+            <a href="/2019/09/11/Python-&&-ML/%E7%88%AC%E8%99%AB-%E4%BD%BF%E7%94%A8BeautifulSoup/" class="post-title-link" itemprop="url">爬虫-使用BeautifulSoup</a>
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2019-09-11 09:04:28" itemprop="dateCreated datePublished" datetime="2019-09-11T09:04:28+08:00">2019-09-11</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Python-ML/" itemprop="url" rel="index"><span itemprop="name">Python-&&-ML</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>测试代码<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">import requests</span><br><span class="line">from bs4 import BeautifulSoup</span><br><span class="line"></span><br><span class="line">def Get_the_page_by_beautifulsoup():</span><br><span class="line">	page &#x3D; requests.get(&quot;https:&#x2F;&#x2F;simplifydatascience.wordpress.com&#x2F;about&#x2F;&quot;)</span><br><span class="line">	soup &#x3D; BeautifulSoup(page.content,&#39;html.parser&#39;)</span><br><span class="line"></span><br><span class="line">	for i in range(0,6):</span><br><span class="line">		print (soup.find_all(&#39;p&#39;)[i].get_text() )</span><br><span class="line"></span><br><span class="line">if __name__ &#x3D;&#x3D; &quot;__main__&quot; :</span><br><span class="line">	Get_the_page_by_beautifulsoup()</span><br></pre></td></tr></table></figure></p>
+<p>代码解读：<br>      先爬下所有文字，再用html的p标签定位文字部分，再输出</p>
+
+      
+    </div>
+
+    
+    
+    
+
+ 
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+        
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/09/11/Linux-Fedora/terminal[%E7%BB%88%E7%AB%AF]---vi-%E5%85%89%E6%A0%87%E6%98%BE%E7%A4%BA%E4%B8%8E%E9%9A%90%E8%97%8F/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/A.png">
+      <meta itemprop="name" content="Mona">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Moneyna 的杂货铺">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          
+            <a href="/2019/09/11/Linux-Fedora/terminal%5B%E7%BB%88%E7%AB%AF%5D---vi-%E5%85%89%E6%A0%87%E6%98%BE%E7%A4%BA%E4%B8%8E%E9%9A%90%E8%97%8F/" class="post-title-link" itemprop="url">terminal[终端]---vi-光标显示与隐藏</a>
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2019-09-11 08:53:32" itemprop="dateCreated datePublished" datetime="2019-09-11T08:53:32+08:00">2019-09-11</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Linux-Fedora/" itemprop="url" rel="index"><span itemprop="name">Linux-Fedora</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h3 id="显示"><a href="#显示" class="headerlink" title="显示"></a>显示</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">echo -e &quot;\033[?25h&quot;</span><br></pre></td></tr></table></figure>
+<h3 id="隐藏"><a href="#隐藏" class="headerlink" title="隐藏"></a>隐藏</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">echo -e &quot;\033[?25l&quot;</span><br></pre></td></tr></table></figure>
+
+      
+    </div>
+
+    
+    
+    
+
+ 
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+        
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/09/11/Python-&&-ML/polyglot-%E4%B8%8B%E8%BD%BD%E4%B8%8E%E5%AE%89%E8%A3%85/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/A.png">
+      <meta itemprop="name" content="Mona">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Moneyna 的杂货铺">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          
+            <a href="/2019/09/11/Python-&&-ML/polyglot-%E4%B8%8B%E8%BD%BD%E4%B8%8E%E5%AE%89%E8%A3%85/" class="post-title-link" itemprop="url">polyglot-下载与安装</a>
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2019-09-11 08:39:34" itemprop="dateCreated datePublished" datetime="2019-09-11T08:39:34+08:00">2019-09-11</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Python-ML/" itemprop="url" rel="index"><span itemprop="name">Python-&&-ML</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h3 id="1-指导页"><a href="#1-指导页" class="headerlink" title="1 指导页"></a>1 指导页</h3><p><a href="https://polyglot.readthedocs.io/en/latest/Installation.html" target="_blank" rel="noopener">官方安装链接</a></p>
+<h3 id="2-fedora-版本安装命令"><a href="#2-fedora-版本安装命令" class="headerlink" title="2 fedora 版本安装命令"></a>2 fedora 版本安装命令</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pip install polyglot</span><br></pre></td></tr></table></figure>
+<p><em>python2</em>依赖安装<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">dnf install python2-devel</span><br><span class="line">dnf install python2-numpy</span><br></pre></td></tr></table></figure></p>
+<p><em>python3</em>依赖安装<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">dnf install python3-devel</span><br><span class="line">dnf install python3-numpy</span><br></pre></td></tr></table></figure></p>
+<p>若提醒<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">    from icu import Locale</span><br><span class="line">ModuleNotFoundError: No module named &#39;icu&#39;</span><br></pre></td></tr></table></figure></p>
+<p>则使用<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pip install pyicu</span><br></pre></td></tr></table></figure></p>
+<p>之后遇到缺什么，按照提示下载即可</p>
+
+      
+    </div>
+
+    
+    
+    
+
+ 
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+        
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/08/10/ACM/ACM%E7%BC%96%E7%A8%8B%E4%B8%AD%E5%BA%94%E8%AF%A5%E6%B3%A8%E6%84%8F%E5%88%B0%E7%9A%84%E5%9C%B0%E6%96%B9/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/A.png">
+      <meta itemprop="name" content="Mona">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Moneyna 的杂货铺">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          
+            <a href="/2019/08/10/ACM/ACM%E7%BC%96%E7%A8%8B%E4%B8%AD%E5%BA%94%E8%AF%A5%E6%B3%A8%E6%84%8F%E5%88%B0%E7%9A%84%E5%9C%B0%E6%96%B9/" class="post-title-link" itemprop="url">ACM编程中应该注意的地方</a>
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2019-08-10 17:20:42" itemprop="dateCreated datePublished" datetime="2019-08-10T17:20:42+08:00">2019-08-10</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/ACM/" itemprop="url" rel="index"><span itemprop="name">ACM</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>自用</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2019/08/10/ACM/ACM%E7%BC%96%E7%A8%8B%E4%B8%AD%E5%BA%94%E8%AF%A5%E6%B3%A8%E6%84%8F%E5%88%B0%E7%9A%84%E5%9C%B0%E6%96%B9/">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+
+ 
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+        
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/08/08/Hadoop/%E6%9F%A5%E7%9C%8Byum%E7%9A%84%E5%AE%89%E8%A3%85%E8%B7%AF%E5%BE%84/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/A.png">
+      <meta itemprop="name" content="Mona">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Moneyna 的杂货铺">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          
+            <a href="/2019/08/08/Hadoop/%E6%9F%A5%E7%9C%8Byum%E7%9A%84%E5%AE%89%E8%A3%85%E8%B7%AF%E5%BE%84/" class="post-title-link" itemprop="url">查看yum的安装路径</a>
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2019-08-08 19:37:05" itemprop="dateCreated datePublished" datetime="2019-08-08T19:37:05+08:00">2019-08-08</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Hadoop/" itemprop="url" rel="index"><span itemprop="name">Hadoop</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h3 id="查看yum的安装路径"><a href="#查看yum的安装路径" class="headerlink" title="查看yum的安装路径"></a>查看yum的安装路径</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">rpm -ql | grep [文件名]</span><br></pre></td></tr></table></figure>
+<p>例如：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">rpm -ql java-1.8.0-openjdk-1:1.8.0.222.b10-0.fc30.x86_64</span><br></pre></td></tr></table></figure>
+
+      
+    </div>
+
+    
+    
+    
+
+ 
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+        
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/07/16/USACO/USACO-2-2-Party-Lamps/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/A.png">
+      <meta itemprop="name" content="Mona">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Moneyna 的杂货铺">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          
+            <a href="/2019/07/16/USACO/USACO-2-2-Party-Lamps/" class="post-title-link" itemprop="url">USACO-2-2-Party-Lamps</a>
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2019-07-16 12:43:40" itemprop="dateCreated datePublished" datetime="2019-07-16T12:43:40+08:00">2019-07-16</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/USACO/" itemprop="url" rel="index"><span itemprop="name">USACO</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>一道经典题，可根据题意找规律</p>
+<h6 id="一共有四种按钮："><a href="#一共有四种按钮：" class="headerlink" title="一共有四种按钮："></a>一共有四种按钮：</h6><p>1 改变所有灯的状态<br>2 改变奇数号灯的状态<br>3 改变偶数号灯的状态<br>4 改变3k+1(k&gt;=0) 号灯的状态</p>
+<h6 id="其中存在以下几个规律："><a href="#其中存在以下几个规律：" class="headerlink" title="其中存在以下几个规律："></a>其中存在以下几个规律：</h6><p>1）任意两个按钮按两次等于没按。<br>2） 可以用6个灯模拟所有灯的状态，即以6为循环节。因为2-3号按钮的循环节为2，4号按钮的循环节为3，它们的最小公倍数为6。<br>3）对于1-3号按钮，任意两个各按一次等于按一次剩下的那个按钮<br>即按一次1+按一次2=按一次3<br>即按一次2+按一次3=按一次1<br>即按一次1+按一次3=按一次2<br>4） 只有8种状态，按二进制从小到大排序如下</p>
+<ul>
+<li>1：00 00 00 <strong>按1号按钮</strong></li>
+<li>2：00 11 10 <strong>按3、4号按钮</strong></li>
+<li>3：01 01 01 <strong>按2号按钮</strong></li>
+<li>4：01 10 11 <strong>按4号按钮</strong></li>
+<li>5：10 01 00 <strong>按1、4号按钮</strong></li>
+<li>6：10 10 10 <strong>按3号按钮</strong></li>
+<li>7：11 00 01 <strong>按2、4号按钮</strong></li>
+<li>8：11 11 11 <strong>不按</strong></li>
+</ul>
+<p>5）可根据C的不同分为4中情况</p>
+<ul>
+<li>C=0，考虑状态8</li>
+<li>C=1，考虑状态1 3 4 6</li>
+<li>C=2，不考虑4</li>
+<li>C&gt;2, 都考虑</li>
+</ul>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2019/07/16/USACO/USACO-2-2-Party-Lamps/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+
+ 
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+        
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/07/15/USACO/USACO-2-2-Runaround-Numbers/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -376,524 +909,11 @@
   
   
 
-        
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/07/10/C++/code--blocks-%E8%AE%BE%E7%BD%AEc++11%E6%A0%87%E5%87%86/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/A.png">
-      <meta itemprop="name" content="Mona">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Moneyna 的杂货铺">
-    </span>
-      <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">
-          
-            <a href="/2019/07/10/C++/code--blocks-%E8%AE%BE%E7%BD%AEc++11%E6%A0%87%E5%87%86/" class="post-title-link" itemprop="url">code--blocks-设置c++11标准</a>
-        </h1>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2019-07-10 16:35:32" itemprop="dateCreated datePublished" datetime="2019-07-10T16:35:32+08:00">2019-07-10</time>
-            </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/C/" itemprop="url" rel="index"><span itemprop="name">C++</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p>1.setting-&gt;complier<br>2.selected complier-&gt;GNU GCC Complier<br>3.complier settings-&gt;compiler flags<br>4.勾选 “Have g++ follow the c++11 ISO c++ language standard”</p>
-
-      
-    </div>
-
-    
-    
-    
-
- 
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-        
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/07/02/Mariadb(mysql)/%E4%BD%BF%E7%94%A8sql%E8%84%9A%E6%9C%AC/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/A.png">
-      <meta itemprop="name" content="Mona">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Moneyna 的杂货铺">
-    </span>
-      <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">
-          
-            <a href="/2019/07/02/Mariadb(mysql)/%E4%BD%BF%E7%94%A8sql%E8%84%9A%E6%9C%AC/" class="post-title-link" itemprop="url">使用sql脚本</a>
-        </h1>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2019-07-02 23:47:42" itemprop="dateCreated datePublished" datetime="2019-07-02T23:47:42+08:00">2019-07-02</time>
-            </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Mariadb-mysql/" itemprop="url" rel="index"><span itemprop="name">Mariadb(mysql)</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">source [绝对路径]</span><br></pre></td></tr></table></figure>
-<p>P.S.若出现Error2，则意味着路径错误</p>
-
-      
-    </div>
-
-    
-    
-    
-
- 
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-        
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/07/02/Linux-Fedora/%E9%9D%9E%E6%AD%A3%E5%B8%B8%E5%85%B3%E6%9C%BA%E5%AF%BC%E8%87%B4%E5%9B%BE%E5%BD%A2%E7%95%8C%E9%9D%A2%E4%B8%8D%E8%83%BD%E5%90%AF%E5%8A%A8/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/A.png">
-      <meta itemprop="name" content="Mona">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Moneyna 的杂货铺">
-    </span>
-      <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">
-          
-            <a href="/2019/07/02/Linux-Fedora/%E9%9D%9E%E6%AD%A3%E5%B8%B8%E5%85%B3%E6%9C%BA%E5%AF%BC%E8%87%B4%E5%9B%BE%E5%BD%A2%E7%95%8C%E9%9D%A2%E4%B8%8D%E8%83%BD%E5%90%AF%E5%8A%A8/" class="post-title-link" itemprop="url">非正常关机导致图形界面不能启动</a>
-        </h1>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2019-07-02 23:38:34" itemprop="dateCreated datePublished" datetime="2019-07-02T23:38:34+08:00">2019-07-02</time>
-            </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Linux-Fedora/" itemprop="url" rel="index"><span itemprop="name">Linux-Fedora</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p>使用的桌面是gnome，其他的也可以类比。报错信息大致是进入字符界面登录后，输入startx希望启动图形界面。然而出现类似“waiting to shutdown X server (II) ”之类的提示。</p>
-<h3 id="step-1"><a href="#step-1" class="headerlink" title="step 1"></a>step 1</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo server gdm stop</span><br></pre></td></tr></table></figure>
-<p>如果提示该服务未被加载，或者不存在，则</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo dnf install gdm</span><br></pre></td></tr></table></figure>
-<p>下载完成后，再做第一步</p>
-<h3 id="step-2-重启，进入图形界面"><a href="#step-2-重启，进入图形界面" class="headerlink" title="step 2 重启，进入图形界面"></a>step 2 重启，进入图形界面</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">reboot</span><br></pre></td></tr></table></figure>
-
-      
-    </div>
-
-    
-    
-    
-
- 
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-        
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/07/02/Mariadb(mysql)/%E5%BF%98%E8%AE%B0mariadb%E5%AF%86%E7%A0%81/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/A.png">
-      <meta itemprop="name" content="Mona">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Moneyna 的杂货铺">
-    </span>
-      <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">
-          
-            <a href="/2019/07/02/Mariadb(mysql)/%E5%BF%98%E8%AE%B0mariadb%E5%AF%86%E7%A0%81/" class="post-title-link" itemprop="url">忘记mariadb密码</a>
-        </h1>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2019-07-02 10:23:34" itemprop="dateCreated datePublished" datetime="2019-07-02T10:23:34+08:00">2019-07-02</time>
-            </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Mariadb-mysql/" itemprop="url" rel="index"><span itemprop="name">Mariadb(mysql)</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p>前提：linux系统<br>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2019/07/02/Mariadb(mysql)/%E5%BF%98%E8%AE%B0mariadb%E5%AF%86%E7%A0%81/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-
- 
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-        
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/06/12/C++/CLion%E4%B8%8EC++/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/A.png">
-      <meta itemprop="name" content="Mona">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Moneyna 的杂货铺">
-    </span>
-      <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">
-          
-            <a href="/2019/06/12/C++/CLion%E4%B8%8EC++/" class="post-title-link" itemprop="url">CLion与C++</a>
-        </h1>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2019-06-12 22:32:24" itemprop="dateCreated datePublished" datetime="2019-06-12T22:32:24+08:00">2019-06-12</time>
-            </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/C/" itemprop="url" rel="index"><span itemprop="name">C++</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <blockquote>
-<p>本来是为了用CLion才申请的Jetbrains的学生账号，结果最后习惯了IDEA……整个大一都没使用成功过。虽然也没尝试过几次就是了ORZ。之后也是一直在用code::blocks</p>
-</blockquote>
-<p><strong>今！天！终！于！成！功！了！</strong><br><img src="/images/pasted-73.png" alt="正确示范"></p>
-<p>语句如上，再让cmake完成自检，基本上就是ok嗒</p>
-
-      
-    </div>
-
-    
-    
-    
-
- 
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-        
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/06/11/Office%E6%93%8D%E4%BD%9C/Word-%E7%94%9F%E6%88%90%E7%9B%AE%E5%BD%95/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/A.png">
-      <meta itemprop="name" content="Mona">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Moneyna 的杂货铺">
-    </span>
-      <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">
-          
-            <a href="/2019/06/11/Office%E6%93%8D%E4%BD%9C/Word-%E7%94%9F%E6%88%90%E7%9B%AE%E5%BD%95/" class="post-title-link" itemprop="url">Word-生成目录</a>
-        </h1>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2019-06-11 10:19:30" itemprop="dateCreated datePublished" datetime="2019-06-11T10:19:30+08:00">2019-06-11</time>
-            </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Office%E6%93%8D%E4%BD%9C/" itemprop="url" rel="index"><span itemprop="name">Office操作</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p>第一次知道了下图所示部分是用来生成目录的！<br>            一直以来都很烦的小箭头原来是这个用途……果然word还是学得太浅了。</p>
-<p><img src="/images/pasted-32.png" alt="原来是这个用途！"></p>
-<p>生成目录的方法，就是先给自己的文字段分配格式（选中，点击上图中分类），然后——</p>
-<p><img src="/images/pasted-33.png" alt=""></p>
-<p>就ok哒(づ￣ 3￣)づ</p>
-
-      
-    </div>
-
-    
-    
-    
-
- 
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-        
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/06/09/JAVA%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/%E4%BD%BF%E7%94%A8Socket%E5%AE%8C%E6%88%90%E6%96%87%E4%BB%B6%E4%BC%A0%E8%BE%93%EF%BC%88%E5%8C%85%E6%8B%AC%E5%9B%BE%E7%89%87%E6%A0%BC%E5%BC%8F%EF%BC%89/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/A.png">
-      <meta itemprop="name" content="Mona">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Moneyna 的杂货铺">
-    </span>
-      <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">
-          
-            <a href="/2019/06/09/JAVA%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/%E4%BD%BF%E7%94%A8Socket%E5%AE%8C%E6%88%90%E6%96%87%E4%BB%B6%E4%BC%A0%E8%BE%93%EF%BC%88%E5%8C%85%E6%8B%AC%E5%9B%BE%E7%89%87%E6%A0%BC%E5%BC%8F%EF%BC%89/" class="post-title-link" itemprop="url">使用Socket完成文件传输（包括图片格式）</a>
-        </h1>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2019-06-09 14:44:22" itemprop="dateCreated datePublished" datetime="2019-06-09T14:44:22+08:00">2019-06-09</time>
-            </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/JAVA%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/" itemprop="url" rel="index"><span itemprop="name">JAVA网络编程</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <blockquote>
-<p>参考:<a href="http://m.blog.chinaunix.net/uid-25885064-id-3362396.html" target="_blank" rel="noopener">真得有效的一个参考网站</a></p>
-</blockquote>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2019/06/09/JAVA%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/%E4%BD%BF%E7%94%A8Socket%E5%AE%8C%E6%88%90%E6%96%87%E4%BB%B6%E4%BC%A0%E8%BE%93%EF%BC%88%E5%8C%85%E6%8B%AC%E5%9B%BE%E7%89%87%E6%A0%BC%E5%BC%8F%EF%BC%89/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-
- 
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
   </div>
 
   
   <nav class="pagination">
-    <a class="extend prev" rel="prev" href="/page/7/"><i class="fa fa-angle-left" aria-label="上一页"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/7/">7</a><span class="page-number current">8</span><a class="page-number" href="/page/9/">9</a><a class="page-number" href="/page/10/">10</a><a class="extend next" rel="next" href="/page/9/"><i class="fa fa-angle-right" aria-label="下一页"></i></a>
+    <a class="extend prev" rel="prev" href="/page/7/"><i class="fa fa-angle-left" aria-label="上一页"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/7/">7</a><span class="page-number current">8</span><a class="page-number" href="/page/9/">9</a><span class="space">&hellip;</span><a class="page-number" href="/page/11/">11</a><a class="extend next" rel="next" href="/page/9/"><i class="fa fa-angle-right" aria-label="下一页"></i></a>
   </nav>
 
 
@@ -961,18 +981,18 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">96</span>
+          <span class="site-state-item-count">103</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
             <a href="/categories/">
           
-        <span class="site-state-item-count">33</span>
+        <span class="site-state-item-count">35</span>
         <span class="site-state-item-name">分类</span></a>
       </div>
       <div class="site-state-item site-state-tags">
-        <span class="site-state-item-count">62</span>
+        <span class="site-state-item-count">66</span>
         <span class="site-state-item-name">标签</span>
       </div>
   </nav>
