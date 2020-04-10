@@ -1,0 +1,572 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/A.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-minimal.min.css">
+  <script src="/lib/pace/pace.min.js"></script>
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"yoursite.com","root":"/","scheme":"Pisces","version":"7.7.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="(Source code for an ACL2017 paper on Chinese word segmentation )[https:&#x2F;&#x2F;github.com&#x2F;jcyk&#x2F;greedyCWS] 学习Python难的不是基础语法，而是如何使用Python各式各样的生态。在这份源码中，使用了深度学习框架Dynet。 接下来会按照代码顺序，一点点更新我的理解。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="学习greedyCWS源码">
+<meta property="og:url" content="http://yoursite.com/2020/04/06/NLP/%E5%AD%A6%E4%B9%A0greedyCWS%E6%BA%90%E7%A0%81/index.html">
+<meta property="og:site_name" content="Moneyna 的杂货铺">
+<meta property="og:description" content="(Source code for an ACL2017 paper on Chinese word segmentation )[https:&#x2F;&#x2F;github.com&#x2F;jcyk&#x2F;greedyCWS] 学习Python难的不是基础语法，而是如何使用Python各式各样的生态。在这份源码中，使用了深度学习框架Dynet。 接下来会按照代码顺序，一点点更新我的理解。">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2020-04-06T04:10:23.000Z">
+<meta property="article:modified_time" content="2020-04-10T04:20:35.871Z">
+<meta property="article:author" content="Mona">
+<meta property="article:tag" content="NLP LSTM dynet">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://yoursite.com/2020/04/06/NLP/%E5%AD%A6%E4%B9%A0greedyCWS%E6%BA%90%E7%A0%81/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true
+  };
+</script>
+
+  <title>学习greedyCWS源码 | Moneyna 的杂货铺</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Moneyna 的杂货铺</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">人生得意需尽欢</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+  </ul>
+
+</nav>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/04/06/NLP/%E5%AD%A6%E4%B9%A0greedyCWS%E6%BA%90%E7%A0%81/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/A.png">
+      <meta itemprop="name" content="Mona">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Moneyna 的杂货铺">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          学习greedyCWS源码
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-04-06 12:10:23" itemprop="dateCreated datePublished" datetime="2020-04-06T12:10:23+08:00">2020-04-06</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/NLP/" itemprop="url" rel="index"><span itemprop="name">NLP</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>(Source code for an ACL2017 paper on Chinese word segmentation )[<a href="https://github.com/jcyk/greedyCWS" target="_blank" rel="noopener">https://github.com/jcyk/greedyCWS</a>]</p>
+<p>学习Python难的不是基础语法，而是如何使用Python各式各样的生态。<br>在这份源码中，使用了深度学习框架Dynet。</p>
+<p>接下来会按照代码顺序，一点点更新我的理解。<br><a id="more"></a></p>
+<h3 id="一、train-py"><a href="#一、train-py" class="headerlink" title="一、train.py"></a>一、train.py</h3><p>是主函数，主要调用了model中写的dy_train_madel类。其中传入了许多超参的值，但值得注意的，是train_file,dev_file两个参数，分别代表了训练数据与测试数据。</p>
+<p>对于数据，PKU及MSA为免费数据。</p>
+<h3 id="二、model-py"><a href="#二、model-py" class="headerlink" title="二、model.py"></a>二、model.py</h3><ul>
+<li><p>Line 13<br>  namedtuple</p>
+</li>
+<li><p>Line 185 initCemb</p>
+</li>
+</ul>
+<p>引用自tools.py中的同名类</p>
+<ul>
+<li>CWS类</li>
+</ul>
+<p>传入的参数汇总</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">cws &#x3D; CWS(Cemb,character_idx_map,options)</span><br><span class="line"></span><br><span class="line"> max_epochs &#x3D; 30,</span><br><span class="line"> batch_size &#x3D; 256,</span><br><span class="line"> char_dims &#x3D; 50,</span><br><span class="line"> word_dims &#x3D; 100,</span><br><span class="line"> nhiddens &#x3D; 50,</span><br><span class="line"> dropout_rate &#x3D; 0.2,</span><br><span class="line"> margin_loss_discount &#x3D; 0.2,</span><br><span class="line"> max_word_len &#x3D; 4,</span><br><span class="line"> load_params &#x3D; None,</span><br><span class="line"> max_sent_len &#x3D; 60,</span><br><span class="line"> shuffle_data &#x3D; True,</span><br><span class="line"> train_file &#x3D; &#39;..&#x2F;data&#x2F;train&#39;,</span><br><span class="line"> dev_file &#x3D; &#39;..&#x2F;data&#x2F;dev&#39;,</span><br><span class="line"> lr &#x3D; 0.5,</span><br><span class="line"> edecay &#x3D; 0.1,</span><br><span class="line"> momentum &#x3D; 0.5,</span><br><span class="line"> pre_trained &#x3D; &#39;..&#x2F;w2v&#x2F;char_vecs_100&#39;,</span><br><span class="line"> word_proportion &#x3D; 0.5</span><br></pre></td></tr></table></figure>
+<ul>
+<li><p>Line 18 </p>
+<p>  Momentum： 冲量优化法<br>  SGD： 随机梯度下降法（只用一个变量）<br>  (API地址)[<a href="https://dynet.readthedocs.io/en/latest/optimizers.html" target="_blank" rel="noopener">https://dynet.readthedocs.io/en/latest/optimizers.html</a>]</p>
+<p>  MomentumSGDTrainer(ParameterCollection &amp;m, real learning_rate = 0.01, real mom = 0.9)</p>
+<p>   Parameters</p>
+<pre><code>    m: ParameterCollection to be trained
+     learning_rate: Initial learning rate
+     mom: Momentum
+</code></pre></li>
+<li><p>Line 19<br>  调用方法initParams,其中定义了各种参数</p>
+</li>
+<li><p>Line 194<br>  调用tools.py中的prepareData(character_idx_map,train_file)方法</p>
+</li>
+<li><p>Line 196-202</p>
+<p>  只留下句子长度在2～max_sent_len中的句子（），同时，也要修改对应下标的存储变量</p>
+</li>
+<li><p>Line 205<br>  Counter是一个dict的实现类，是一个计数数组</p>
+</li>
+<li><p>Line 206<br>  zip(char_seq,truth)，将其中元素组合成元组tuple（），再组成list[]</p>
+</li>
+<li><p>Line 208<br>   word_counter.update(tuple(chars[idx-label:idx]) for idx,label in enumerate(labels,1))</p>
+<p>  label对应的是truth列表中的元素，其类似[0,0,3,0,0,0,4]这种形式，所以当label是0的时候，因为0：0，故其实会跳过。而对于非0元素，则会正确得到词</p>
+<p>  Counter.update() 增加Counter的值</p>
+<p>  注意此时，下标从1开始，而非从0</p>
+</li>
+<li><p>Line 209<br>  word_counter.most_common()[:known_word_count]，取出最常见的词向量</p>
+</li>
+<li><p>Line 214—-&gt;Line 31-33<br>  cws.use_word_embed(known_words)<br>  用于将其值加入CWS对象中的变量值</p>
+</li>
+<li><p>Line 223<br>  range(n)<br>  创造list(0:n)</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">range(6)</span><br><span class="line">&#x2F;&#x2F;[0,1,2,3,4,5]</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>Line 225<br>  np.random.shuffle(idx_list)<br>  打乱idx_list中的元素</p>
+</li>
+<li><p>Line 228—-&gt;Line 153-158—&gt;Line 88-140—&gt;Line 71-86<br>  (Line 228)<br>  loss = cws.backward(char_seq[idx],truth[idx])</p>
+<p>  （Line 153）<br>  loss = self.greedy_search(char_seq,truth,self.options[‘margin_loss_discount’])</p>
+<p>  注意这里输入的是单独的一个字符序列。但根据prepareData（）可知，这里输入的实际上是每个字相对于Cemd存储的下标，不存在字对应下标为0</p>
+<p>  (Line 106)<br>  word = self.word_repr(char_seq[(idx-wlen):idx], cembs[(idx-wlen):idx])<br>  (idx-wlen)与idx表示了一个区间，表明可能的划分。<br>  char_seq[(idx-wlen):idx]表示原有序列（虽然仅仅是Cemb中对应下标），而后者是随机放弃部分细信息得来的Cemb</p>
+<p>  (Line 75-79)<br>  注意对于不同长度（l），有与之对应的不同参数。</p>
+<p>  （Line 82）<br>  对应原论文的公式<3></p>
+<p>  (Line 83)<br>  对应原论文公式<2></p>
+<p>  (Line 84-86)<br>  对应原论文公式<1><br>  若词属于已知词汇（存储的为数不多的高频率词汇），就将字嵌入(character Embeding)的组合表征与词嵌入(Word Embeding)取平均，否则直接使用字嵌入的组合表征。</p>
+<p>  （Line 112）<br>  计算这些字组成的词的评分，用于判断这些字的组合是否为一个有效的词。<br>  注意这里的参数self.param_exprs[‘U’],是一个需要训练的参数。训练它的方法就是论文中使用的max-margin methods。</p>
+<p>  (Line 115)<br>  golden =  sent.golden and truth[idx-1]==wlen<br>  判断划分是否正确，后一个条件符合之前的处理</p>
+<p>  (Line 117)<br>  对应原论文公式<5></p>
+<p>  (Line 123-131)<br>  因为会对一个字符序列进行多次划分，只有当当前的评分好于存储的结果（打垒法）或是根本就是最优结果（对于论文中提出的Training Criteria），才会更新当前存储结果。<br>  —&gt;特别注意Line 126，对应原论文公式<4></p>
+<p>  (Line 135、138、155、157)<br>  注意无论是135还是138，返回的都是一个方法句柄，所以才会有157的自训练</p>
+</li>
+</ul>
+<ul>
+<li><p>Line 59-69<br>  为每个实例更新计算图（即重新初始化参数）</p>
+</li>
+<li><p>Line 91<br>  dy.scalarInput()初始化一个标量表达式</p>
+</li>
+<li><p>Line 106 —&gt;Line 71-86<br>  word = self.word_repr(char_seq[idx-wlen:idx], cembs[idx-wlen:idx])</p>
+</li>
+</ul>
+<h3 id="三、tools-py"><a href="#三、tools-py" class="headerlink" title="三、tools.py"></a>三、tools.py</h3><ul>
+<li><p>Line 11:<br>  defaultdict是一种会自动填充缺值的dict</p>
+</li>
+<li><p>Line 12-16</p>
+</li>
+</ul>
+<p>单纯从代码上来看，是按行读入后，将utf-8转为unicode符号，再将其按空格分割为句子，便利句子中的词，再遍历词中的字，并统计个数。</p>
+<p>猜测所谓句子(sent)仅仅只这一行(line)中，所有用空格隔开的词所组组成的数组，之后之所以能遍历其中的字，是unicode变量为定长，实际上是字节读取的功劳。</p>
+<p>实际效果：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">(&#39;line&#x3D;&#39;, u&#39;\u4e1c\u975e  \u5927  \u8349\u539f  \u4e0a  \u7684  \u9a70\u60f3  (  \u9644  \u56fe\u7247  0  \u5f20  )\r\n&#39;)</span><br><span class="line">(&#39;word in sent&#x3D;&#39;, u&#39;\u4e1c\u975e&#39;)</span><br><span class="line">(&#39;char in word&#39;, u&#39;\u4e1c&#39;)</span><br><span class="line">(&#39;char in word&#39;, u&#39;\u975e&#39;)</span><br><span class="line">(&#39;word in sent&#x3D;&#39;, u&#39;\u5927&#39;)</span><br><span class="line">(&#39;char in word&#39;, u&#39;\u5927&#39;)</span><br><span class="line">(&#39;word in sent&#x3D;&#39;, u&#39;\u8349\u539f&#39;)</span><br><span class="line">(&#39;char in word&#39;, u&#39;\u8349&#39;)</span><br><span class="line">(&#39;char in word&#39;, u&#39;\u539f&#39;)</span><br><span class="line">(&#39;word in sent&#x3D;&#39;, u&#39;\u4e0a&#39;)</span><br><span class="line">(&#39;char in word&#39;, u&#39;\u4e0a&#39;)</span><br><span class="line">(&#39;word in sent&#x3D;&#39;, u&#39;\u7684&#39;)</span><br><span class="line">(&#39;char in word&#39;, u&#39;\u7684&#39;)</span><br><span class="line">(&#39;word in sent&#x3D;&#39;, u&#39;\u9a70\u60f3&#39;)</span><br><span class="line">(&#39;char in word&#39;, u&#39;\u9a70&#39;)</span><br><span class="line">(&#39;char in word&#39;, u&#39;\u60f3&#39;)</span><br><span class="line"> ...</span><br></pre></td></tr></table></figure>
+<ul>
+<li><p>Line 20 </p>
+<p>  注意变量thr，应该是threshold（阈值）。默认赋值为5，只有出现次数多余thr的字，会计算character vector</p>
+</li>
+<li><p>Line 22</p>
+<p>  对于character vector,使用numpy.random.uniform(low,hign,size)求取。表示在[low,high)均匀分布的区间内随机取size数目的样本。</p>
+</li>
+<li><p>Line 24</p>
+<ul>
+<li><p>gensim： (第三方python工具包，用于从原始的非结构化的文本中，无监督地学习到文本隐层的主题向量表达)[<a href="https://zhuanlan.zhihu.com/p/37175253" target="_blank" rel="noopener">https://zhuanlan.zhihu.com/p/37175253</a>]</p>
+</li>
+<li><p>gensim.model.Word2Vec.load 表示加载一份model文件，即pre_trained是直接加载的模型……那实际是什么呢？<br>(API地址)[<a href="https://radimrehurek.com/gensim/models/word2vec.html#gensim.models.word2vec.Word2Vec" target="_blank" rel="noopener">https://radimrehurek.com/gensim/models/word2vec.html#gensim.models.word2vec.Word2Vec</a>]</p>
+</li>
+</ul>
+</li>
+<li><p>Line 25-27</p>
+<p>  猜测pre_trained.vocab即引用Word2VecVocab类型，其是一个dict类型，key是字本身，value不知<br>  从pre_trained中取出字向量对应的值，放入character_vecs[character]中</p>
+</li>
+<li><p>Line 29-34</p>
+<p>  根据character_vec设置Cemb(难道是Character embeding?)，character_idx_map[character]</p>
+</li>
+<li><p>疑惑</p>
+<p>  所以pre_trained究竟是什么……？可以从2016年代码中找到信息吗？</p>
+</li>
+</ul>
+<p>制作pre_trained的代码如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"># -*- coding: UTF-8 -*-</span><br><span class="line">import gensim</span><br><span class="line">import re</span><br><span class="line">import numpy as np</span><br><span class="line">from collections import defaultdict</span><br><span class="line"></span><br><span class="line">def strQ2B(ustring):</span><br><span class="line">    &quot;&quot;&quot;全角转半角&quot;&quot;&quot;</span><br><span class="line">    rstring &#x3D; &quot;&quot;</span><br><span class="line">    for uchar in ustring:</span><br><span class="line">        inside_code&#x3D;ord(uchar)</span><br><span class="line">        if inside_code &#x3D;&#x3D; 12288:                              #全角空格直接转换</span><br><span class="line">            inside_code &#x3D; 32</span><br><span class="line">        elif (inside_code &gt;&#x3D; 65281 and inside_code &lt;&#x3D; 65374): #全角字符（除空格）根据关系转化</span><br><span class="line">            inside_code -&#x3D; 65248</span><br><span class="line">        </span><br><span class="line">        rstring +&#x3D; unichr(inside_code)</span><br><span class="line">    return rstring</span><br><span class="line"></span><br><span class="line">class MySentences(object):</span><br><span class="line">    def __init__(self,filename):</span><br><span class="line">        self.filename &#x3D; filename</span><br><span class="line">    def __iter__(self):</span><br><span class="line">        for line in open(self.filename):</span><br><span class="line">            yield [x.encode(&#39;utf8&#39;) for x in list(line.decode(&#39;utf8&#39;).strip())]</span><br><span class="line"></span><br><span class="line">f&#x3D; open(&#39;corpora&#39;)</span><br><span class="line">fo&#x3D; open(&#39;wiki&#39;,&#39;wb&#39;) &#x2F;&#x2F;wb表示以二进制写模式打开</span><br><span class="line">for line in f.readlines():</span><br><span class="line">    sent &#x3D; strQ2B(unicode(line.decode(&#39;utf8&#39;)).strip())</span><br><span class="line">    if len(sent)&gt;0:</span><br><span class="line">        fo.write(sent.encode(&#39;utf8&#39;)+&#39;\n&#39;)</span><br><span class="line">f.close()</span><br><span class="line">fo.close()</span><br><span class="line"></span><br><span class="line">sents &#x3D; MySentences(&#39;wiki&#39;)</span><br><span class="line">sizes &#x3D; [50,60,70,80,90,100]</span><br><span class="line">for s in sizes:</span><br><span class="line">    model &#x3D; gensim.models.Word2Vec(sents,size&#x3D;s,window&#x3D;8,workers&#x3D;4,max_vocab_size&#x3D;10000,iter&#x3D;5)</span><br><span class="line">    model.save(&#39;c_vecs_%s&#39;%(s,))</span><br></pre></td></tr></table></figure></p>
+<ul>
+<li>Line 51</li>
+</ul>
+<p>enumerate() 函数用于将一个可遍历的数据对象(如列表、元组或字符串)组合为一个索引序列，同时列出数据和数据下标，一般用在 for 循环当中。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F;语法：enumerate(sequence, [start&#x3D;0]) </span><br><span class="line">&#x2F;&#x2F;默认下标从0开始，但可以自己选择一个</span><br><span class="line">&#x2F;&#x2F;示例：</span><br><span class="line">seq &#x3D; [&#39;one&#39;, &#39;two&#39;, &#39;three&#39;]</span><br><span class="line">for i, element in enumerate(seq):</span><br><span class="line">     print i, element</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F;输出： </span><br><span class="line">&#x2F;&#x2F;0 one</span><br><span class="line">&#x2F;&#x2F;1 two</span><br><span class="line">&#x2F;&#x2F;2 three</span><br></pre></td></tr></table></figure>
+<ul>
+<li>Line 52</li>
+</ul>
+<p>len(re.sub(‘\W’,’’,word,flags=re.U))用于统计word中不符合正则表达式的数目（此处表示统计是0-9a-zA-Z中文的unicode字符的数量）</p>
+<p>部分结果显示：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br></pre></td><td class="code"><pre><span class="line">(&#39;before: [&#39;, 0, &#39;]&#39;, &#39; word&#x3D;&#39;, u&#39;\u8fc8\u5411&#39;)</span><br><span class="line">(&#39;len(re.sub(\xe2\x80\x98\\W\xe2\x80\x99))&#x3D;&#39;, 2)</span><br><span class="line">(&#39;len(re.sub(\xe2\x80\x98\\w\xe2\x80\x99))&#x3D;&#39;, 0)</span><br><span class="line">(&#39;after: [&#39;, 0, &#39;]&#39;, &#39; word&#x3D;&#39;, u&#39;\u8fc8\u5411&#39;)</span><br><span class="line">(&#39;before: [&#39;, 1, &#39;]&#39;, &#39; word&#x3D;&#39;, u&#39;\u5145\u6ee1&#39;)</span><br><span class="line">(&#39;len(re.sub(\xe2\x80\x98\\W\xe2\x80\x99))&#x3D;&#39;, 2)</span><br><span class="line">(&#39;len(re.sub(\xe2\x80\x98\\w\xe2\x80\x99))&#x3D;&#39;, 0)</span><br><span class="line">(&#39;after: [&#39;, 1, &#39;]&#39;, &#39; word&#x3D;&#39;, u&#39;\u5145\u6ee1&#39;)</span><br><span class="line">(&#39;before: [&#39;, 2, &#39;]&#39;, &#39; word&#x3D;&#39;, u&#39;\u5e0c\u671b&#39;)</span><br><span class="line">(&#39;len(re.sub(\xe2\x80\x98\\W\xe2\x80\x99))&#x3D;&#39;, 2)</span><br><span class="line">(&#39;len(re.sub(\xe2\x80\x98\\w\xe2\x80\x99))&#x3D;&#39;, 0)</span><br><span class="line">(&#39;after: [&#39;, 2, &#39;]&#39;, &#39; word&#x3D;&#39;, u&#39;\u5e0c\u671b&#39;)</span><br><span class="line">(&#39;before: [&#39;, 3, &#39;]&#39;, &#39; word&#x3D;&#39;, u&#39;\u7684&#39;)</span><br><span class="line">(&#39;len(re.sub(\xe2\x80\x98\\W\xe2\x80\x99))&#x3D;&#39;, 1)</span><br><span class="line">(&#39;len(re.sub(\xe2\x80\x98\\w\xe2\x80\x99))&#x3D;&#39;, 0)</span><br><span class="line">(&#39;after: [&#39;, 3, &#39;]&#39;, &#39; word&#x3D;&#39;, u&#39;\u7684&#39;)</span><br><span class="line">(&#39;before: [&#39;, 4, &#39;]&#39;, &#39; word&#x3D;&#39;, u&#39;\u65b0&#39;)</span><br><span class="line">(&#39;len(re.sub(\xe2\x80\x98\\W\xe2\x80\x99))&#x3D;&#39;, 1)</span><br><span class="line">(&#39;len(re.sub(\xe2\x80\x98\\w\xe2\x80\x99))&#x3D;&#39;, 0)</span><br><span class="line">(&#39;after: [&#39;, 4, &#39;]&#39;, &#39; word&#x3D;&#39;, u&#39;\u65b0&#39;)</span><br><span class="line">(&#39;before: [&#39;, 5, &#39;]&#39;, &#39; word&#x3D;&#39;, u&#39;\u4e16\u7eaa&#39;)</span><br><span class="line">(&#39;len(re.sub(\xe2\x80\x98\\W\xe2\x80\x99))&#x3D;&#39;, 2)</span><br><span class="line">(&#39;len(re.sub(\xe2\x80\x98\\w\xe2\x80\x99))&#x3D;&#39;, 0)</span><br><span class="line">(&#39;after: [&#39;, 5, &#39;]&#39;, &#39; word&#x3D;&#39;, u&#39;\u4e16\u7eaa&#39;)</span><br><span class="line">(&#39;before: [&#39;, 6, &#39;]&#39;, &#39; word&#x3D;&#39;, u&#39;\u2014\u2014&#39;)</span><br><span class="line">(&#39;len(re.sub(\xe2\x80\x98\\W\xe2\x80\x99))&#x3D;&#39;, 0)</span><br><span class="line">(&#39;len(re.sub(\xe2\x80\x98\\w\xe2\x80\x99))&#x3D;&#39;, 2)</span><br><span class="line">(&#39;after: [&#39;, 6, &#39;]&#39;, &#39; word&#x3D;&#39;, u&#39;\u2014\u2014&#39;)</span><br><span class="line">(&#39;before: [&#39;, 7, &#39;]&#39;, &#39; word&#x3D;&#39;, u&#39;L&#39;)</span><br><span class="line">(&#39;len(re.sub(\xe2\x80\x98\\W\xe2\x80\x99))&#x3D;&#39;, 1)</span><br><span class="line">(&#39;len(re.sub(\xe2\x80\x98\\w\xe2\x80\x99))&#x3D;&#39;, 0)</span><br><span class="line">(&#39;after: [&#39;, 7, &#39;]&#39;, &#39; word&#x3D;&#39;, u&#39;L&#39;)</span><br><span class="line">(&#39;before: [&#39;, 8, &#39;]&#39;, &#39; word&#x3D;&#39;, u&#39;\u65b0\u5e74&#39;)</span><br><span class="line">(&#39;len(re.sub(\xe2\x80\x98\\W\xe2\x80\x99))&#x3D;&#39;, 2)</span><br><span class="line">(&#39;len(re.sub(\xe2\x80\x98\\w\xe2\x80\x99))&#x3D;&#39;, 0)</span><br><span class="line">(&#39;after: [&#39;, 8, &#39;]&#39;, &#39; word&#x3D;&#39;, u&#39;\u65b0\u5e74&#39;)</span><br><span class="line">(&#39;before: [&#39;, 9, &#39;]&#39;, &#39; word&#x3D;&#39;, u&#39;\u8bb2\u8bdd&#39;)</span><br><span class="line">(&#39;len(re.sub(\xe2\x80\x98\\W\xe2\x80\x99))&#x3D;&#39;, 2)</span><br><span class="line">(&#39;len(re.sub(\xe2\x80\x98\\w\xe2\x80\x99))&#x3D;&#39;, 0)</span><br><span class="line">(&#39;after: [&#39;, 9, &#39;]&#39;, &#39; word&#x3D;&#39;, u&#39;\u8bb2\u8bdd&#39;)</span><br><span class="line">(&#39;before: [&#39;, 10, &#39;]&#39;, &#39; word&#x3D;&#39;, u&#39;(&#39;)</span><br><span class="line">(&#39;len(re.sub(\xe2\x80\x98\\W\xe2\x80\x99))&#x3D;&#39;, 0)</span><br><span class="line">(&#39;len(re.sub(\xe2\x80\x98\\w\xe2\x80\x99))&#x3D;&#39;, 1)</span><br><span class="line">(&#39;after: [&#39;, 10, &#39;]&#39;, &#39; word&#x3D;&#39;, u&#39;(&#39;)</span><br><span class="line">(&#39;before: [&#39;, 11, &#39;]&#39;, &#39; word&#x3D;&#39;, u&#39;\u9644&#39;)</span><br><span class="line">(&#39;len(re.sub(\xe2\x80\x98\\W\xe2\x80\x99))&#x3D;&#39;, 1)</span><br><span class="line">(&#39;len(re.sub(\xe2\x80\x98\\w\xe2\x80\x99))&#x3D;&#39;, 0)</span><br><span class="line">(&#39;after: [&#39;, 11, &#39;]&#39;, &#39; word&#x3D;&#39;, u&#39;\u9644&#39;)</span><br><span class="line">(&#39;before: [&#39;, 12, &#39;]&#39;, &#39; word&#x3D;&#39;, u&#39;\u56fe\u7247&#39;)</span><br><span class="line">(&#39;len(re.sub(\xe2\x80\x98\\W\xe2\x80\x99))&#x3D;&#39;, 2)</span><br><span class="line">(&#39;len(re.sub(\xe2\x80\x98\\w\xe2\x80\x99))&#x3D;&#39;, 0)</span><br><span class="line">(&#39;after: [&#39;, 12, &#39;]&#39;, &#39; word&#x3D;&#39;, u&#39;\u56fe\u7247&#39;)</span><br><span class="line">(&#39;before: [&#39;, 13, &#39;]&#39;, &#39; word&#x3D;&#39;, u&#39;0&#39;)</span><br><span class="line">(&#39;len(re.sub(\xe2\x80\x98\\W\xe2\x80\x99))&#x3D;&#39;, 1)</span><br><span class="line">(&#39;len(re.sub(\xe2\x80\x98\\w\xe2\x80\x99))&#x3D;&#39;, 0)</span><br><span class="line">(&#39;after: [&#39;, 13, &#39;]&#39;, &#39; word&#x3D;&#39;, u&#39;0&#39;)</span><br><span class="line">(&#39;before: [&#39;, 14, &#39;]&#39;, &#39; word&#x3D;&#39;, u&#39;\u5f20&#39;)</span><br><span class="line">(&#39;len(re.sub(\xe2\x80\x98\\W\xe2\x80\x99))&#x3D;&#39;, 1)</span><br><span class="line">(&#39;len(re.sub(\xe2\x80\x98\\w\xe2\x80\x99))&#x3D;&#39;, 0)</span><br><span class="line">(&#39;after: [&#39;, 14, &#39;]&#39;, &#39; word&#x3D;&#39;, u&#39;\u5f20&#39;)</span><br><span class="line">(&#39;before: [&#39;, 15, &#39;]&#39;, &#39; word&#x3D;&#39;, u&#39;)&#39;)</span><br><span class="line">(&#39;len(re.sub(\xe2\x80\x98\\W\xe2\x80\x99))&#x3D;&#39;, 0)</span><br><span class="line">(&#39;len(re.sub(\xe2\x80\x98\\w\xe2\x80\x99))&#x3D;&#39;, 1)</span><br><span class="line">(&#39;after: [&#39;, 15, &#39;]&#39;, &#39; word&#x3D;&#39;, u&#39;)&#39;)</span><br></pre></td></tr></table></figure></p>
+<p>re，正则表达式</p>
+<p>re.sub(pattern,repl,string,count=0,flag=0)</p>
+<p>1)pattern正则表达式的字符串 , \W 匹配所有不是a-zA-Z0-9_的字符</p>
+<p>2)repl被替换的内容,此处是’’</p>
+<p>3)string正则表达式匹配的内容，此处为变量word</p>
+<p>4)count:由于正则表达式匹配的结果是多个，使用count来限定替换的个数从左向右，默认值是0，表示每个匹配项都匹配</p>
+<p>5)flags是匹配模式，re.U表示unicode编码</p>
+<ul>
+<li>Line 53-55</li>
+</ul>
+<p>seqs中添加list组成的word词组</p>
+<ul>
+<li>Line 60</li>
+</ul>
+<p>[[ character_idx_map[character] if character in character_idx_map else 0 for character in seq] for seq in seqs ]</p>
+<p>如果这个字存储在character_vector中，就存储其在Cemb中的下标，否则为0.</p>
+<p>每一个词组，做一个list。</p>
+<p>要注意的是，因为字向量中包含了10000个字？，似乎基本没有不存在于其中的字</p>
+<p>但要注意的是，这个操作完全将字符信息转换成了下标，是不是会缺失了信息呢？比如被标记为0，表示不存在的部分。</p>
+<ul>
+<li>Line 64-65</li>
+</ul>
+<p>wlens表示每一个seq中，对应的词的长度。而idxss则表示对应的每一个字，属于哪一个词。</p>
+<p>例如<br>wlens=[1,3,4]<br>则对应的idxss=[1,0,0,3,0,0,0,4]<br>0表示会与后第一个不为0的数字所在位置组成一个词</p>
+<hr>
+<p>另附经过部分修改及注释后的代码</p>
+<ul>
+<li>model.py<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br><span class="line">175</span><br><span class="line">176</span><br><span class="line">177</span><br><span class="line">178</span><br><span class="line">179</span><br><span class="line">180</span><br><span class="line">181</span><br><span class="line">182</span><br><span class="line">183</span><br><span class="line">184</span><br><span class="line">185</span><br><span class="line">186</span><br><span class="line">187</span><br><span class="line">188</span><br><span class="line">189</span><br><span class="line">190</span><br><span class="line">191</span><br><span class="line">192</span><br><span class="line">193</span><br><span class="line">194</span><br><span class="line">195</span><br><span class="line">196</span><br><span class="line">197</span><br><span class="line">198</span><br><span class="line">199</span><br><span class="line">200</span><br><span class="line">201</span><br><span class="line">202</span><br><span class="line">203</span><br><span class="line">204</span><br><span class="line">205</span><br><span class="line">206</span><br><span class="line">207</span><br><span class="line">208</span><br><span class="line">209</span><br><span class="line">210</span><br><span class="line">211</span><br><span class="line">212</span><br><span class="line">213</span><br><span class="line">214</span><br><span class="line">215</span><br><span class="line">216</span><br><span class="line">217</span><br><span class="line">218</span><br><span class="line">219</span><br><span class="line">220</span><br><span class="line">221</span><br><span class="line">222</span><br><span class="line">223</span><br><span class="line">224</span><br><span class="line">225</span><br><span class="line">226</span><br><span class="line">227</span><br><span class="line">228</span><br><span class="line">229</span><br><span class="line">230</span><br><span class="line">231</span><br><span class="line">232</span><br><span class="line">233</span><br><span class="line">234</span><br><span class="line">235</span><br><span class="line">236</span><br><span class="line">237</span><br><span class="line">238</span><br><span class="line">239</span><br><span class="line">240</span><br><span class="line">241</span><br><span class="line">242</span><br><span class="line">243</span><br><span class="line">244</span><br><span class="line">245</span><br><span class="line">246</span><br><span class="line">247</span><br><span class="line">248</span><br><span class="line">249</span><br><span class="line">250</span><br><span class="line">251</span><br><span class="line">252</span><br><span class="line">253</span><br><span class="line">254</span><br><span class="line">255</span><br><span class="line">256</span><br><span class="line">257</span><br><span class="line">258</span><br><span class="line">259</span><br><span class="line">260</span><br><span class="line">261</span><br><span class="line">262</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"># -*- coding: UTF-8 -*-</span><br><span class="line">import random,time,os</span><br><span class="line">from collections import Counter, namedtuple</span><br><span class="line"></span><br><span class="line">import numpy as np</span><br><span class="line">import dynet as dy</span><br><span class="line"></span><br><span class="line">from tools import initCemb, prepareData</span><br><span class="line">from test import test</span><br><span class="line"></span><br><span class="line">np.random.seed(970)</span><br><span class="line"></span><br><span class="line">Sentence &#x3D; namedtuple(&#39;Sentence&#39;,[&#39;score&#39;,&#39;score_expr&#39;,&#39;LSTMState&#39;,&#39;y&#39;,&#39;prevState&#39;,&#39;wlen&#39;,&#39;golden&#39;])</span><br><span class="line"></span><br><span class="line">class CWS (object):</span><br><span class="line">    def __init__(self,Cemb,character_idx_map,options):</span><br><span class="line">        model &#x3D; dy.Model()</span><br><span class="line">        self.trainer &#x3D; dy.MomentumSGDTrainer(model,options[&#39;lr&#39;],options[&#39;momentum&#39;])</span><br><span class="line">        self.params &#x3D; self.initParams(model,Cemb,options)</span><br><span class="line">        self.options &#x3D; options</span><br><span class="line">        self.model &#x3D; model</span><br><span class="line">        self.character_idx_map &#x3D; character_idx_map</span><br><span class="line">        self.known_words &#x3D; None</span><br><span class="line">    </span><br><span class="line">    def load(self,filename):</span><br><span class="line">        self.model.populate(filename)</span><br><span class="line"></span><br><span class="line">    def save(self,filename):</span><br><span class="line">        self.model.save(filename)</span><br><span class="line"></span><br><span class="line">    def use_word_embed(self,known_words):</span><br><span class="line">        self.known_words &#x3D; known_words</span><br><span class="line">        self.params[&#39;word_embed&#39;] &#x3D; self.model.add_lookup_parameters((len(known_words),self.options[&#39;word_dims&#39;]))</span><br><span class="line"></span><br><span class="line">    #初始化模型参数</span><br><span class="line">    def initParams(self,model,Cemb,options):</span><br><span class="line">        params &#x3D; dict()</span><br><span class="line">        params[&#39;embed&#39;] &#x3D; model.add_lookup_parameters(Cemb.shape)</span><br><span class="line">        for row_num,vec in enumerate(Cemb):</span><br><span class="line">            params[&#39;embed&#39;].init_row(row_num, vec)</span><br><span class="line">        params[&#39;lstm&#39;] &#x3D; dy.LSTMBuilder(1,options[&#39;word_dims&#39;],options[&#39;nhiddens&#39;],model)</span><br><span class="line">        </span><br><span class="line">        params[&#39;reset_gate_W&#39;] &#x3D; []</span><br><span class="line">        params[&#39;reset_gate_b&#39;] &#x3D; []</span><br><span class="line">        params[&#39;com_W&#39;] &#x3D; []</span><br><span class="line">        params[&#39;com_b&#39;] &#x3D; []</span><br><span class="line"></span><br><span class="line">        params[&#39;word_score_U&#39;] &#x3D; model.add_parameters(options[&#39;word_dims&#39;])</span><br><span class="line">        params[&#39;predict_W&#39;] &#x3D; model.add_parameters((options[&#39;word_dims&#39;],options[&#39;nhiddens&#39;]))</span><br><span class="line">        params[&#39;predict_b&#39;] &#x3D; model.add_parameters(options[&#39;word_dims&#39;])</span><br><span class="line">        for wlen in xrange(1,options[&#39;max_word_len&#39;]+1):</span><br><span class="line">            params[&#39;reset_gate_W&#39;].append(model.add_parameters((wlen*options[&#39;char_dims&#39;],wlen*options[&#39;char_dims&#39;])))</span><br><span class="line">            params[&#39;reset_gate_b&#39;].append(model.add_parameters(wlen*options[&#39;char_dims&#39;]))</span><br><span class="line">            params[&#39;com_W&#39;].append(model.add_parameters((options[&#39;word_dims&#39;],wlen*options[&#39;char_dims&#39;])))</span><br><span class="line">            params[&#39;com_b&#39;].append(model.add_parameters(options[&#39;word_dims&#39;]))</span><br><span class="line">        params[&#39;&lt;BoS&gt;&#39;] &#x3D; model.add_parameters(options[&#39;word_dims&#39;])</span><br><span class="line">        return params</span><br><span class="line"></span><br><span class="line">    #更新计算图</span><br><span class="line">    def renew_cg(self):</span><br><span class="line">        dy.renew_cg()</span><br><span class="line"></span><br><span class="line">        param_exprs &#x3D; dict()</span><br><span class="line">        param_exprs[&#39;U&#39;] &#x3D; self.params[&#39;word_score_U&#39;]</span><br><span class="line">        param_exprs[&#39;pW&#39;] &#x3D; self.params[&#39;predict_W&#39;]</span><br><span class="line">        param_exprs[&#39;pb&#39;] &#x3D; self.params[&#39;predict_b&#39;]</span><br><span class="line">        param_exprs[&#39;&lt;bos&gt;&#39;] &#x3D; self.params[&#39;&lt;BoS&gt;&#39;]</span><br><span class="line"></span><br><span class="line">        self.param_exprs &#x3D; param_exprs</span><br><span class="line"></span><br><span class="line">    #根据组合词嵌入及已知字嵌入求词表征</span><br><span class="line">    def word_repr(self, char_seq, cembs):</span><br><span class="line"></span><br><span class="line">        wlen &#x3D; len(char_seq)</span><br><span class="line">        # 注意对于不同长度的词，有不同的参数。</span><br><span class="line">        if &#39;rgW%d&#39;%wlen not in self.param_exprs:</span><br><span class="line">            self.param_exprs[&#39;rgW%d&#39;%wlen] &#x3D; self.params[&#39;reset_gate_W&#39;][wlen-1]</span><br><span class="line">            self.param_exprs[&#39;rgb%d&#39;%wlen] &#x3D; self.params[&#39;reset_gate_b&#39;][wlen-1]</span><br><span class="line">            self.param_exprs[&#39;cW%d&#39;%wlen] &#x3D; self.params[&#39;com_W&#39;][wlen-1]</span><br><span class="line">            self.param_exprs[&#39;cb%d&#39;%wlen] &#x3D; self.params[&#39;com_b&#39;][wlen-1]</span><br><span class="line"></span><br><span class="line">        chars &#x3D; dy.concatenate(cembs)</span><br><span class="line">        #求门控参数</span><br><span class="line">        reset_gate &#x3D; dy.logistic(self.param_exprs[&#39;rgW%d&#39;%wlen] * chars + self.param_exprs[&#39;rgb%d&#39;%wlen])</span><br><span class="line">        #求组合字嵌入</span><br><span class="line">        word &#x3D; dy.tanh(self.param_exprs[&#39;cW%d&#39;%wlen] * dy.cmult(reset_gate,chars) + self.param_exprs[&#39;cb%d&#39;%wlen])</span><br><span class="line">        #若该词存在于已知词列表中，则将组合字嵌入与词嵌入的平均值作为词表征，否则直接使用组合字嵌入作为词表征</span><br><span class="line">        if self.known_words is not None and tuple(char_seq) in self.known_words:</span><br><span class="line">            return (word + dy.lookup(self.params[&#39;word_embed&#39;],self.known_words[tuple(char_seq)]))&#x2F;2.</span><br><span class="line">        return word</span><br><span class="line"></span><br><span class="line">    #Beam大小为1的BeamSearch，使用max-magin方法训练求参数u</span><br><span class="line">    def greedy_search(self, char_seq, truth &#x3D; None, mu &#x3D;0.):</span><br><span class="line">        init_state &#x3D; self.params[&#39;lstm&#39;].initial_state().add_input(self.param_exprs[&#39;&lt;bos&gt;&#39;])</span><br><span class="line">        init_y &#x3D; dy.tanh(self.param_exprs[&#39;pW&#39;] * init_state.output() + self.param_exprs[&#39;pb&#39;])</span><br><span class="line">        init_score &#x3D; dy.scalarInput(0.)</span><br><span class="line">        init_sentence &#x3D; Sentence(score&#x3D;init_score.scalar_value(),score_expr&#x3D;init_score,LSTMState &#x3D;init_state, y&#x3D; init_y , prevState &#x3D; None, wlen&#x3D;None, golden&#x3D;True)</span><br><span class="line">        </span><br><span class="line">        if truth is not None:</span><br><span class="line">            cembs &#x3D; [ dy.dropout(dy.lookup(self.params[&#39;embed&#39;],char),self.options[&#39;dropout_rate&#39;]) for char in char_seq ]</span><br><span class="line">        else:</span><br><span class="line">            cembs &#x3D; [dy.lookup(self.params[&#39;embed&#39;],char) for char in char_seq ]</span><br><span class="line"></span><br><span class="line">        start_agenda &#x3D; init_sentence</span><br><span class="line">        agenda &#x3D; [start_agenda]</span><br><span class="line"></span><br><span class="line">        #遍历字符序列</span><br><span class="line">        for idx, _ in enumerate(char_seq,1):</span><br><span class="line">            now &#x3D; None</span><br><span class="line">            #求字符序列的候选分词方案</span><br><span class="line">            for wlen in xrange(1,min(idx,self.options[&#39;max_word_len&#39;])+1):</span><br><span class="line">                word &#x3D; self.word_repr(char_seq[(idx-wlen):idx], cembs[(idx-wlen):idx])</span><br><span class="line">                sent &#x3D; agenda[(idx-wlen)]</span><br><span class="line"></span><br><span class="line">                if truth is not None:</span><br><span class="line">                    word &#x3D; dy.dropout(word,self.options[&#39;dropout_rate&#39;])</span><br><span class="line"></span><br><span class="line">                #该积分表示字组成的词是否为有意义的词的评分</span><br><span class="line">                word_score &#x3D; dy.dot_product(word,self.param_exprs[&#39;U&#39;])</span><br><span class="line"></span><br><span class="line">                #计算总评分与margin的和</span><br><span class="line">                if truth is not None:</span><br><span class="line">                    golden &#x3D;  sent.golden and truth[idx-1]&#x3D;&#x3D;wlen #用于表示当前分词，是否为正确划分。若是，为true，否则为false</span><br><span class="line">                    margin &#x3D; dy.scalarInput(mu*wlen if truth[idx-1]!&#x3D;wlen else 0.)</span><br><span class="line">                    score &#x3D; margin + sent.score_expr + dy.dot_product(sent.y, word) + word_score</span><br><span class="line">                else:</span><br><span class="line">                    golden &#x3D; False</span><br><span class="line">                    score &#x3D; sent.score_expr + dy.dot_product(sent.y, word) + word_score</span><br><span class="line"></span><br><span class="line">                #当为某字符序列的第一次划分，或当前分词结果的评分高于历史最优解，则更新最优解</span><br><span class="line">                good &#x3D; (now is None or now.score &lt; score.scalar_value())</span><br><span class="line">                if golden or good:</span><br><span class="line">                    new_state &#x3D; sent.LSTMState.add_input(word)</span><br><span class="line">                    new_y &#x3D; dy.tanh(self.param_exprs[&#39;pW&#39;] * new_state.output() + self.param_exprs[&#39;pb&#39;])</span><br><span class="line">                    new_sent &#x3D; Sentence(score&#x3D;score.scalar_value(),score_expr&#x3D;score,LSTMState&#x3D;new_state,y&#x3D;new_y, prevState&#x3D;sent, wlen&#x3D;wlen, golden&#x3D;golden)</span><br><span class="line">                    if good:</span><br><span class="line">                        now &#x3D; new_sent</span><br><span class="line">                    if golden:</span><br><span class="line">                        golden_sent &#x3D; new_sent</span><br><span class="line"></span><br><span class="line">            agenda.append(now)</span><br><span class="line">            #针对训练情况下，返回的是U参数的训练</span><br><span class="line">            if truth is not None and truth[idx-1]&gt;0 and (not now.golden):</span><br><span class="line">                return (now.score_expr - golden_sent.score_expr)</span><br><span class="line"></span><br><span class="line">        if truth is not None:</span><br><span class="line">            return (now.score_expr - golden_sent.score_expr)</span><br><span class="line">        #针对测试情况下，返回的是分词结果</span><br><span class="line">        return agenda</span><br><span class="line"></span><br><span class="line">    def forward(self, char_seq):</span><br><span class="line">        self.renew_cg()</span><br><span class="line">        agenda &#x3D; self.greedy_search(char_seq)</span><br><span class="line">        now &#x3D; agenda[-1]</span><br><span class="line">        ans &#x3D; []</span><br><span class="line">        while now.prevState is not None:</span><br><span class="line">            ans.append(now.wlen)</span><br><span class="line">            now &#x3D; now.prevState</span><br><span class="line">        return reversed(ans)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    def backward(self, char_seq, truth):</span><br><span class="line">        self.renew_cg()</span><br><span class="line">        loss &#x3D; self.greedy_search(char_seq,truth,self.options[&#39;margin_loss_discount&#39;])</span><br><span class="line">        res &#x3D; loss.scalar_value()</span><br><span class="line">        #求使得正确分词情况下总评分最高的参数U的值</span><br><span class="line">        loss.backward()</span><br><span class="line">        return res</span><br><span class="line"></span><br><span class="line">def dy_train_model(</span><br><span class="line">    max_epochs &#x3D; 30,</span><br><span class="line">    batch_size &#x3D; 256,</span><br><span class="line">    char_dims &#x3D; 50,</span><br><span class="line">    word_dims &#x3D; 100,</span><br><span class="line">    nhiddens &#x3D; 50,</span><br><span class="line">    dropout_rate &#x3D; 0.2,</span><br><span class="line">    margin_loss_discount &#x3D; 0.2,</span><br><span class="line">    max_word_len &#x3D; 4,</span><br><span class="line">    load_params &#x3D; None,</span><br><span class="line">    max_sent_len &#x3D; 60,</span><br><span class="line">    shuffle_data &#x3D; True,</span><br><span class="line">    train_file &#x3D; &#39;..&#x2F;data&#x2F;train&#39;,</span><br><span class="line">    dev_file &#x3D; &#39;..&#x2F;data&#x2F;dev&#39;,</span><br><span class="line">    lr &#x3D; 0.5,</span><br><span class="line">    edecay &#x3D; 0.1,</span><br><span class="line">    momentum &#x3D; 0.5,</span><br><span class="line">    pre_trained &#x3D; &#39;..&#x2F;w2v&#x2F;char_vecs_100&#39;,</span><br><span class="line">    word_proportion &#x3D; 0.5</span><br><span class="line">):</span><br><span class="line">    options &#x3D; locals().copy()</span><br><span class="line">    print &#39;Model options:&#39;</span><br><span class="line">    for kk,vv in options.iteritems():</span><br><span class="line">        print &#39;\t&#39;,kk,&#39;\t&#39;,vv</span><br><span class="line"></span><br><span class="line">    #求字嵌入(Cemb)，并计算字对应字嵌入存储下标</span><br><span class="line">    Cemb, character_idx_map &#x3D; initCemb(char_dims,train_file,pre_trained)</span><br><span class="line"></span><br><span class="line">    #新建CWS对象</span><br><span class="line">    cws &#x3D; CWS(Cemb,character_idx_map,options)</span><br><span class="line"></span><br><span class="line">    #准备字符序列及每个字符序列对应的最佳分词结果</span><br><span class="line">    char_seq, _ , truth &#x3D; prepareData(character_idx_map,train_file)</span><br><span class="line"></span><br><span class="line">    #对字符序列进行处理，仅预留2～max_sent_len长度的字符序列</span><br><span class="line">    if max_sent_len is not None:</span><br><span class="line">        survived &#x3D; []</span><br><span class="line">        for idx,seq in enumerate(char_seq):</span><br><span class="line">            if len(seq)&lt;&#x3D;max_sent_len and len(seq)&gt;1:</span><br><span class="line">                survived.append(idx)</span><br><span class="line">        char_seq &#x3D;  [ char_seq[idx]  for idx in survived]</span><br><span class="line">        truth &#x3D; [ truth[idx] for idx in survived]</span><br><span class="line"></span><br><span class="line">    #统计训练样本的词频，按照比例word_proportion取其中词频高的词组成已知词列表，并求已知词列表中对应的词嵌入</span><br><span class="line">    if word_proportion &gt; 0:</span><br><span class="line">        word_counter &#x3D; Counter()</span><br><span class="line">        for chars,labels in zip(char_seq,truth):</span><br><span class="line">            word_counter.update(tuple(chars[idx-label:idx]) for idx,label in enumerate(labels,1))</span><br><span class="line">        known_word_count  &#x3D; int(word_proportion*len(word_counter))</span><br><span class="line">        known_words &#x3D;  dict(word_counter.most_common()[:known_word_count])</span><br><span class="line">        idx &#x3D; 0</span><br><span class="line">        for word in known_words:</span><br><span class="line">            known_words[word] &#x3D; idx</span><br><span class="line">            idx+&#x3D;1</span><br><span class="line">        cws.use_word_embed(known_words)</span><br><span class="line"></span><br><span class="line">    #这一部分针对已有训练样本的情况，直接拿训练样本进行测试</span><br><span class="line">    #这一部分代码必须放在cws.use_word_embed(known_words)之后，是因为Dynet中，要想读取存储模型中的参数值，被赋值的模型必须有与存储模型相同的参数添加过程及大小，而该句正是最后一次添加的变量。</span><br><span class="line">    #且因为该变量涉及动态计算得出的大小，就更不好变更位置了</span><br><span class="line">    if load_params is not None:</span><br><span class="line">        cws.load(load_params)</span><br><span class="line">        test(cws, dev_file, &#39;..&#x2F;result&#x2F;test_result&#39;)</span><br><span class="line">        return</span><br><span class="line"></span><br><span class="line">    n &#x3D; len(char_seq)</span><br><span class="line">    print &#39;Total number of training instances:&#39;,n</span><br><span class="line">    </span><br><span class="line">    print &#39;Start training model&#39;</span><br><span class="line">    start_time &#x3D; time.time()</span><br><span class="line">    nsamples &#x3D; 0</span><br><span class="line"></span><br><span class="line">    #共训练且测试max_epochs次模型，得到的结果将存储在result文件夹中，训练得到的模型，将存储在models下，可以直接使用</span><br><span class="line">    for eidx in xrange(max_epochs):</span><br><span class="line">        idx_list &#x3D; range(n)</span><br><span class="line">        if shuffle_data:</span><br><span class="line">            np.random.shuffle(idx_list)</span><br><span class="line"></span><br><span class="line">        for idx in idx_list:</span><br><span class="line">            loss &#x3D; cws.backward(char_seq[idx],truth[idx])</span><br><span class="line">            if np.isnan(loss):</span><br><span class="line">                print &#39;somthing went wrong, loss is nan.&#39;</span><br><span class="line">                return</span><br><span class="line">            nsamples +&#x3D; 1</span><br><span class="line">            if nsamples % batch_size &#x3D;&#x3D; 0:</span><br><span class="line">                cws.trainer.update()</span><br><span class="line"></span><br><span class="line">        end_time &#x3D; time.time()</span><br><span class="line">        print &#39;Trained %s epoch(s) (%d samples) took %.lfs per epoch&#39;%(eidx+1,nsamples,(end_time-start_time)&#x2F;(eidx+1))</span><br><span class="line">        print &#39;Start testing model&#39;</span><br><span class="line">        test(cws,dev_file,&#39;..&#x2F;result&#x2F;test_result%d&#39;%(eidx+1))</span><br><span class="line">        cws.save(&#39;..&#x2F;models&#x2F;epoch%d&#39;%(eidx+1))</span><br><span class="line">        print &#39;Current model saved&#39;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>tools.py<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"># -*- coding: UTF-8 -*-</span><br><span class="line">from collections import defaultdict</span><br><span class="line"></span><br><span class="line">import numpy as np</span><br><span class="line">import random</span><br><span class="line">import gensim</span><br><span class="line">import re</span><br><span class="line"></span><br><span class="line">def initCemb(ndims,train_file,pre_trained,thr &#x3D; 5.):</span><br><span class="line">    f &#x3D; open(train_file)</span><br><span class="line">    train_vocab &#x3D; defaultdict(float)</span><br><span class="line"></span><br><span class="line">    for line in f.readlines():</span><br><span class="line">        # utf8作为一个变长编码格式，会对划分字产生影响，所以在此处先转换为定长的unicode编码，再分割</span><br><span class="line">        sent &#x3D; unicode(line.decode(&#39;utf8&#39;)).split()</span><br><span class="line">        #统计字频</span><br><span class="line">        for word in sent:</span><br><span class="line">            for character in word:</span><br><span class="line">                train_vocab[character] +&#x3D; 1</span><br><span class="line">    f.close()</span><br><span class="line">    character_vecs &#x3D; &#123;&#125;</span><br><span class="line">    #仅求字频超过thr数量的字求字嵌入</span><br><span class="line">    for character in train_vocab:</span><br><span class="line">        if train_vocab[character]&lt; thr:</span><br><span class="line">            continue</span><br><span class="line">        #此处字向量的表示，是为其随机分配(-0.5&#x2F;ndims,0.5&#x2F;ndims)平均分布且维度在ndims的值</span><br><span class="line">        character_vecs[character] &#x3D; np.random.uniform(-0.5&#x2F;ndims,0.5&#x2F;ndims,ndims)</span><br><span class="line">    #同样可以使用已训练好的数据</span><br><span class="line">    if pre_trained is not None:</span><br><span class="line">        pre_trained &#x3D; gensim.models.Word2Vec.load(pre_trained)</span><br><span class="line">        pre_trained_vocab &#x3D; set([ unicode(w.decode(&#39;utf8&#39;)) for w in pre_trained.vocab.keys()])</span><br><span class="line">        for character in pre_trained_vocab:</span><br><span class="line">            character_vecs[character] &#x3D; pre_trained[character.encode(&#39;utf8&#39;)]</span><br><span class="line">    Cemb &#x3D; np.zeros(shape&#x3D;(len(character_vecs)+1,ndims))</span><br><span class="line">    idx &#x3D; 1</span><br><span class="line">    character_idx_map &#x3D; dict()</span><br><span class="line">    for character in character_vecs:</span><br><span class="line">        Cemb[idx] &#x3D; character_vecs[character]</span><br><span class="line">        character_idx_map[character] &#x3D; idx</span><br><span class="line">        idx+&#x3D;1</span><br><span class="line">    return Cemb,character_idx_map</span><br><span class="line"></span><br><span class="line">def SMEB(lens):</span><br><span class="line">    #记录正确的分词结果，存储方式如[0,0,0,4,0,0,3]</span><br><span class="line">    idxs &#x3D; []</span><br><span class="line">    for len in lens:</span><br><span class="line">        for i in xrange(len-1):</span><br><span class="line">            idxs.append(0)</span><br><span class="line">        idxs.append(len)</span><br><span class="line">    return idxs</span><br><span class="line"></span><br><span class="line">def prepareData(character_idx_map,path,test&#x3D;False):</span><br><span class="line">    seqs,wlenss,idxss &#x3D; [],[],[]</span><br><span class="line">    f &#x3D; open(path)</span><br><span class="line">    for line in f.readlines():</span><br><span class="line">        sent &#x3D; unicode(line.decode(&#39;utf8&#39;)).split()</span><br><span class="line">        Left &#x3D; 0</span><br><span class="line">        for idx,word in enumerate(sent):</span><br><span class="line">            #当某个字符序列中存在0-9、A-Z、a-z或字时</span><br><span class="line">            if len(re.sub(&#39;\W&#39;,&#39;&#39;,word,flags&#x3D;re.U))&#x3D;&#x3D;0:</span><br><span class="line">                if idx &gt;Left:</span><br><span class="line">                    seqs.append(list(&#39;&#39;.join(sent[Left:idx])))</span><br><span class="line">                    wlenss.append([len(word) for word in sent[Left:idx]])</span><br><span class="line">                Left &#x3D; idx+1</span><br><span class="line">        if Left!&#x3D;len(sent):</span><br><span class="line">            seqs.append(list(&#39;&#39;.join(sent[Left:])))</span><br><span class="line">            wlenss.append([ len(word) for word in sent[Left:]])</span><br><span class="line">    #将字符序列变成字嵌入Cemb中的下标组成的列表，若某个字的字嵌入（的下标）不存在，则用0替代</span><br><span class="line">    seqs &#x3D; [[ character_idx_map[character] if character in character_idx_map else 0 for character in seq] for seq in seqs]</span><br><span class="line">    f.close()</span><br><span class="line">    if test:</span><br><span class="line">        return seqs</span><br><span class="line">    for wlens in wlenss:</span><br><span class="line">        idxss.append(SMEB(wlens))</span><br><span class="line">    return seqs,wlenss,idxss</span><br></pre></td></tr></table></figure></p>
+
+    </div>
+
+    
+    
+    
+
+ 
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/NLP-LSTM-dynet/" rel="tag"><i class="fa fa-tags" aria-hidden="true"></i>
+ NLP LSTM dynet</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2020/03/31/Git/%E5%8F%91%E5%B8%83%E8%87%AA%E5%B7%B1%E7%9A%84%E6%9B%B4%E6%96%B0%E5%88%B0github%E4%BB%93%E5%BA%93/" rel="prev" title="发布自己的更新到github仓库">
+      <i class="fa fa-chevron-left"></i> 发布自己的更新到github仓库
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#一、train-py"><span class="nav-number">1.</span> <span class="nav-text">一、train.py</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#二、model-py"><span class="nav-number">2.</span> <span class="nav-text">二、model.py</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#三、tools-py"><span class="nav-number">3.</span> <span class="nav-text">三、tools.py</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Mona"
+      src="/images/A.png">
+  <p class="site-author-name" itemprop="name">Mona</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">104</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">36</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">67</span>
+        <span class="site-state-item-name">标签</span>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/moneyna" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;moneyna" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+	 
+   <a href="/">
+      <img class="site-author-image" itemprop="image"
+        src="/images/A.png"
+        alt="Mona" />
+   </a>
+
+  
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Mona</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v4.2.0
+  </div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">主题 – <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> v7.7.2
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+</body>
+</html>
