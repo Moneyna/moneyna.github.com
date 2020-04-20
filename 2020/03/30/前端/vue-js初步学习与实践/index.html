@@ -21,16 +21,17 @@
     var CONFIG = {"hostname":"yoursite.com","root":"/","scheme":"Pisces","version":"7.7.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
-  <meta name="description" content="服务外包比赛，分到了写前端。因为与后端的同学要实现前后段分离，故选了vue.js。">
+  <meta name="description" content="服务外包比赛，分到了写前端。因为与后端的同学要实现前后段分离，故选了vue.js。 直到2020.4.17还是一个组件+纯原创的格式，但因为做的太丑被逼着用模板了。有亿点悲伤。">
 <meta property="og:type" content="article">
 <meta property="og:title" content="vue.js初步学习与实践">
 <meta property="og:url" content="http://yoursite.com/2020/03/30/%E5%89%8D%E7%AB%AF/vue-js%E5%88%9D%E6%AD%A5%E5%AD%A6%E4%B9%A0%E4%B8%8E%E5%AE%9E%E8%B7%B5/index.html">
 <meta property="og:site_name" content="Moneyna 的杂货铺">
-<meta property="og:description" content="服务外包比赛，分到了写前端。因为与后端的同学要实现前后段分离，故选了vue.js。">
+<meta property="og:description" content="服务外包比赛，分到了写前端。因为与后端的同学要实现前后段分离，故选了vue.js。 直到2020.4.17还是一个组件+纯原创的格式，但因为做的太丑被逼着用模板了。有亿点悲伤。">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="http://yoursite.com/images/pasted-111.png">
+<meta property="og:image" content="http://yoursite.com/2020/03/30/%E5%89%8D%E7%AB%AF/vue-js%E5%88%9D%E6%AD%A5%E5%AD%A6%E4%B9%A0%E4%B8%8E%E5%AE%9E%E8%B7%B5/img.url">
 <meta property="article:published_time" content="2020-03-30T13:24:19.000Z">
-<meta property="article:modified_time" content="2020-03-31T08:39:00.813Z">
+<meta property="article:modified_time" content="2020-04-20T08:36:50.524Z">
 <meta property="article:author" content="Mona">
 <meta property="article:tag" content="vue.js 前端">
 <meta name="twitter:card" content="summary">
@@ -205,6 +206,7 @@
 
       
         <p>服务外包比赛，分到了写前端。因为与后端的同学要实现前后段分离，故选了vue.js。</p>
+<p><em>直到2020.4.17还是一个组件+纯原创的格式，但因为做的太丑被逼着用模板了。有亿点悲伤。</em></p>
 <a id="more"></a>
 <h4 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h4><ul>
 <li><p>从学习的角度来说，可以先看两个视频教程，等入门了再去看官方说明。个人感觉官方教程写的很混乱，没有从整体的角度解说vue.js的结构怎么样，怎么用以及有哪些有用的相关插件(vue-router,vue-recource等).</p>
@@ -221,7 +223,7 @@
 <ul>
 <li>使用vue-cli新建项目</li>
 </ul>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">vue crate [项目名]</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">vue create [项目名]</span><br></pre></td></tr></table></figure>
 <ul>
 <li>IDE: 选择vsCode</li>
 </ul>
@@ -273,6 +275,187 @@
 <p>注意其传入的参数date有两个出人意料的点，一是它的月与日是从0开始编号的，其次是它是2019-1-1这样的格式，区别于普遍认为的2019-01-01格式。</p>
 <p>故而为了能比较自身2019-01-01与传入2019-1-1数据，可以做如下相似处理</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">&#x2F;&#x2F;改方法对需要屏蔽的日期返回true，否则返回false</span><br><span class="line">&#x2F;&#x2F;this.diagramDatas为我自身数据</span><br><span class="line"></span><br><span class="line">dateDisabled(ymd,date)&#123;</span><br><span class="line">      var str&#x3D;date.getFullYear()+&quot;-&quot;+(date.getMonth()+1)+&quot;-&quot;+(date.getDate());</span><br><span class="line"> </span><br><span class="line">      var exist&#x3D;&quot;&quot;</span><br><span class="line">      for(var i&#x3D;0;i&lt; this.diagramDatas.length;i++)&#123;</span><br><span class="line">          var date_part&#x3D;this.diagramDatas[i].date.split(&quot;-&quot;)</span><br><span class="line">          var date1&#x3D;parseInt(date_part[0])+&quot;-&quot;+parseInt(date_part[1])+&quot;-&quot;+parseInt(date_part[2])</span><br><span class="line">          if (date1 &#x3D;&#x3D;&#x3D; str)</span><br><span class="line">          &#123;</span><br><span class="line">            exist&#x3D;true</span><br><span class="line">            break;</span><br><span class="line">          &#125;</span><br><span class="line">        </span><br><span class="line">      &#125;</span><br><span class="line">      return !exist;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>设置对于图片的文字悬浮</li>
+</ul>
+<p><a href="https://www.jianshu.com/p/9fe74e34e3d3" target="_blank" rel="noopener">参考网页</a></p>
+<p>同时为了展示效果，需要一行仅展示一张图片，故修改img-group如下<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">.img-group&#123;</span><br><span class="line">  position: relative;</span><br><span class="line">  display:inline-block;</span><br><span class="line">  width:80%;</span><br><span class="line">  &#x2F;&#x2F;TODO:设置图片最大显示尺寸</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<ul>
+<li>制作点击图片一次，全屏放大显示，再点击恢复之前状态</li>
+</ul>
+<p>给图片加点击事件</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">&lt;img :src&#x3D;&quot;img.url&quot; @click&#x3D;&quot;largeVersionImg(img.idx)&quot;&gt;</span><br><span class="line">~~~ </span><br><span class="line"></span><br><span class="line">[参考网页](https:&#x2F;&#x2F;blog.csdn.net&#x2F;M51921&#x2F;article&#x2F;details&#x2F;78827256?depth_1-utm_source&#x3D;distribute.pc_relevant.none-task-blog-BlogCommendFromBaidu-2&amp;utm_source&#x3D;distribute.pc_relevant.none-task-blog-BlogCommendFromBaidu-2)</span><br><span class="line"></span><br><span class="line">因为vue与jquery是两个不同的库，所以需要通过借鉴人家的思路进行修改。</span><br><span class="line">另外还需实现给放大图片添加文字说明的效果。方法参考上一条。</span><br><span class="line"></span><br><span class="line">[屏幕尺寸获取代码参考](https:&#x2F;&#x2F;www.jianshu.com&#x2F;p&#x2F;a1c01fd67ac2)</span><br><span class="line"></span><br><span class="line">效率太低了。这个方法里蕴含了很多jquery独有的接口，不适用于直接往vue里加。还是用插件吧）</span><br><span class="line"></span><br><span class="line">失败代码暂存</span><br></pre></td></tr></table></figure>
+<template>
+  <div class="mainPart">
+    <br>
+    <h3> 违规截图</h3>
+      <div class="imgs">
+         <!--改为图片形式，并加悬浮框  -->
+  <!--<b-card v-for="img in videoDatas[idx].imgs" v-bind:key="img.idx"
+    :title="img.idx.toString()"
+    :img-src="img.url"
+    :img-alt="img.title"
+    img-top
+    style="max-width: 20rem;"
+    class="imgs mb-2"
+  >
+  </b-card>-->
+        <div class="img-group" v-for="img in videoDatas[idx].imgs" v-bind:key="img.idx">
+            <img :ref="'img'+img.idx" :src="img.url" :class="{on:img.idx==chooseImgIdx}"  @click="changeChooseImgIdx(img.idx),clickOnImg(img.idx)">
+            <div class="img-tip" :ref="'imgTip'+img.idx">拍摄时间:<br/>取自视频:</div>
+        </div>
+        <div class="cover" ref="coverDiv"></div>
+      </div>
+  </div>
+</template>
+
+<script>
+export default {
+  name: 'mainPart_imgs',
+  props: {
+    videoDatas:Array,
+    idx:Number
+  },
+  data:function(){
+    return{
+      chooseImgIdx:-1,
+      bigImgVersion:false,  //是否启动
+      protoWidth:0,
+      protoHeight:0
+    }
+  },
+  methods:{
+    changeChooseImgIdx(idx){
+        this.chooseImgIdx=idx
+        this.bigImgVersion=true
+    },
+    clickOnImg:function(imgIdx){
+      //跳转至另一个页面，要在router的index.js备份
+      //开一个新网页？加一个返回建？
+      //做放大全屏效果？
+      if(!this.bigImgVersion){
+          this.bigImg(imgIdx)
+      }else{
+        this.chooseImgIdx=-1
+        this.bigImgVersion=false
+        this.normailing(imgIdx)
+      }
+    },
+    bigImg:function(imgIdx){
+      var imgUrl=this.videoDatas[this.idx].imgs[imgIdx].url
+      //var imgTitle=this.videoDatas[this.idx].imgs[imgIdx].title //图片拍摄时间
+      //var imgSourceVideo=this.videoDatas[this.idx].title //图片来源视频的标题
+
+      let img=new Image()
+      img.src=imgUrl
+
+      var sw=document.body.clientWidth/2||window.screen.availWidth/2
+      var sh=document.body.clientHeight/2||window.screen.availHeight/2
+      var w=img.width
+      var h=img.height
+      var sc=w/h
+      var st=document.body.scrollTop||document.body.scrollTop
+      var t=sh-(900/sc/2)+st
+      var l=sw-(900/2)
+
+      if(this.protoWidth === 0){
+        this.protoWidth=w
+        this.protoHeight=h
+      }
+
+       /* var html1=document.getElementsByTagName('html')
+        //console.log("html1=",html1)
+        html1.style.height=sh*2
+        html1.style.overflow='hidden'*/
+      this.$refs["img"+imgIdx].css({'position': 'absolute', 'width': 0}).animate({'width': 900,'top': t,'left': l},500).addClass('screenimg');
+      //this.$refs["imgTip"+imgIdx].value+=
+      this.$refs["coverDiv"].animate({'top':st},200).fadeIn(300);
+    },
+    normailing:function(imgIdx){
+        //var imgTitle=this.videoDatas[this.idx].imgs[imgIdx].title 
+
+        /*var html1=document.getElementsByTagName('html')
+        //html1.height('100%').css('overflow','')
+        html1.style.height='100%'
+        html1.style.overflow=''*/
+        this.$refs["img"+imgIdx].animate({'width': this.protoWidth}, 300).css({'position': '','top': '','left': ''}).removeClass('screenimg');
+        //this.$refs["imgTip"+imgIdx].value="拍摄时间:"+imgTitle
+        this.$refs["coverDiv"].fadeOut(300).animate({'top':0},200);
+
+    }
+  }
+}
+</script>
+
+<!-- Add "scoped" attribute to limit CSS to this component only -->
+<style scoped lang="scss">
+.mainPart{
+    width:auto;
+}
+
+.imgs{
+    display: block;
+    width:100%;
+    height:100px;
+    margin-left: auto;
+    margin-right: auto;
+    float:center;
+}
+
+.img-group{
+  position: relative;
+  display:inline-block;
+  width:80%;
+  //TODO:设置图片最大显示尺寸
+}
+
+.img-tip{
+  position:absolute;
+  bottom:0;
+  background: #333;
+  color: #ffffff;
+  opacity: 0.6;
+  display: none;
+}
+
+.img-group:hover .img-tip{
+  display:block;
+  width:100%;
+  text-align: center;
+}
+
+html,body,.cover{
+        width: 100%;
+            height: 100%;
+  }
+        .cover{
+            position: absolute;
+            top: 0;
+            z-index:1;
+            background: black;
+            display: none;
+        }
+        .screenimg{
+            border: 8px solid white;
+        }
+
+
+</style>
+
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">--&gt;不推荐使用的插件【最后更新时间是2019.2，很多组建已过期，且其依赖环境太多，对网页性能产生不利影响】</span><br><span class="line">[vue-photo-preview安装与使用说明](https:&#x2F;&#x2F;developer.aliyun.com&#x2F;mirror&#x2F;npm&#x2F;package&#x2F;vue-photo-preview)</span><br><span class="line"></span><br><span class="line">最终选择插件 v-viewer</span><br><span class="line">[v-viewer的Github地址](https:&#x2F;&#x2F;github.com&#x2F;mirari&#x2F;v-viewer)</span><br><span class="line">[一个讲解如何全局设置v-viewer的博客](https:&#x2F;&#x2F;blog.csdn.net&#x2F;s18438610353&#x2F;article&#x2F;details&#x2F;103424313)</span><br><span class="line"></span><br><span class="line">- 给标题加样式</span><br><span class="line">[参考网址](www.igooda.cn&#x2F;jsdt&#x2F;jzjl&#x2F;2013&#x2F;0803&#x2F;337.html)</span><br><span class="line"></span><br><span class="line">- 让video的尺寸更好看</span><br><span class="line">[参考网站](https:&#x2F;&#x2F;blog.csdn.net&#x2F;qq_39292868&#x2F;article&#x2F;details&#x2F;81390388)</span><br></pre></td></tr></table></figure>
+<div id="videoPart">
+     <video controls :src="videoDatas[idx].videoURL" id="video1"></video>
+</div>
+
+<h1 id="videoPart"><a href="#videoPart" class="headerlink" title="videoPart{"></a>videoPart{</h1><p>  width:90%;<br>  height:90%;<br>  margin: auto;<br>}</p>
+<h1 id="video1"><a href="#video1" class="headerlink" title="video1{"></a>video1{</h1><p>  width:100%;<br>  height:100%;<br>  object-fit: fill;<br>  margin-left:auto ;<br>  margin-right: auto;<br>}<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">- 引入ViewUI</span><br><span class="line"></span><br><span class="line">[ViewUI的文档](https:&#x2F;&#x2F;www.iviewui.com&#x2F;docs&#x2F;guide&#x2F;install-en)</span><br><span class="line">因为该库中有比boostrap-vue更好的控件。不得已混用一下。</span><br><span class="line"></span><br><span class="line">引入步骤和其他组建相同。</span><br><span class="line"></span><br><span class="line">- 子组件向父组件传递数据</span><br><span class="line">[参考](https:&#x2F;&#x2F;blog.csdn.net&#x2F;weixin_38888773&#x2F;article&#x2F;details&#x2F;81902789)</span><br><span class="line"></span><br><span class="line">子组件传值给父组件依靠的是事件，事件是在父组件中传递给子组件的自定义形式（所以事件名随意）。而在父组件中事件绑定的方法对应为methods中的方法名，在子组件中，使用的this.$emit(&#39;事件名&#39;,&#123;参数&#125;)语句，之中使用的是父组件自定义事件名。</span><br><span class="line"></span><br><span class="line">- 信息需要在后台处理一段时间，需要建立和后台的长程连接</span><br><span class="line"></span><br><span class="line">使用webSocket</span><br><span class="line"></span><br><span class="line">[阮一峰 WebSocket教程](http:&#x2F;&#x2F;www.ruanyifeng.com&#x2F;blog&#x2F;2017&#x2F;05&#x2F;websocket.html)</span><br><span class="line"></span><br><span class="line">划重点：</span><br><span class="line">协议标识符是**ws**（如果加密，则为wss），服务器网址就是 URL。</span><br></pre></td></tr></table></figure><br>ws://example.com:80/some/path<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">[Vue中使用](https:&#x2F;&#x2F;www.cnblogs.com&#x2F;qisi007&#x2F;p&#x2F;10213886.html)</span><br><span class="line"></span><br><span class="line">- js的Date对象的使用</span><br><span class="line">[Date对象相关操作](https:&#x2F;&#x2F;www.w3school.com.cn&#x2F;jsref&#x2F;jsref_obj_date.asp)</span><br><span class="line"></span><br><span class="line">- 使用viewUI中datepicker面临的问题</span><br><span class="line"></span><br><span class="line">	该组建的options参数对应的是一个Object类型，然而其中的元素disabledDate却是个函数句柄，当面对自定义设置时，难免会需要使用this去指待其他元素和方法。然而在这个位置设置的this并不处于Vue的上下文中，会报&quot;this is undefined&quot;.</span><br><span class="line"></span><br><span class="line">[解决思路](https:&#x2F;&#x2F;blog.csdn.net&#x2F;qq_29483485&#x2F;article&#x2F;details&#x2F;80968009)</span><br><span class="line"></span><br><span class="line">这个思路有缺陷，它在最开始的第一次打开并不会disabled。得先点一次（即变化）。</span><br><span class="line"></span><br><span class="line">在on-open-change方法中调用即可</span><br></pre></td></tr></table></figure></p>
+<p><DatePicker :value="paramValue[0]" format="yyyy-MM-dd" type="daterange"  placeholder="选择统计图起止日期" split-panels :options="DateOptions" confirm :start-date="min" @on-open-change="onChange"></DatePicker><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">另外针对daterange，返回的类型是array，格式为&quot;yyyy-MM-DD&quot;</span><br><span class="line"></span><br><span class="line">- 突发报错：This is probably not a problem with npm. There is likely additional logging output above.</span><br><span class="line"></span><br><span class="line">[大概是个集合网站](https:&#x2F;&#x2F;code-examples.net&#x2F;zh-CN&#x2F;q&#x2F;285950f)</span><br><span class="line"></span><br><span class="line">解决方案就是删除node_modules与package-lock.json</span><br></pre></td></tr></table></figure><br>npm cache clean —force<br>rm -rf node_modules<br>rm -rf package-lock.json<br>npm install<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">重装只后会换端口，从8080到8081，一定要注意看提示</span><br><span class="line">(不过若重新启动终端，接口会回到8080)</span><br><span class="line"></span><br><span class="line">若安装失败中止后再npm install，可能碰到npm ERR! Unexpected end of JSON input while parsing near</span><br><span class="line">[解决方案](https:&#x2F;&#x2F;segmentfault.com&#x2F;a&#x2F;1190000015646531)</span><br><span class="line">单纯的clean cache不行，换源比较有用**X**</span><br><span class="line">换源是错误思路。换源后会存在checkIntegery不一致的问题。</span><br><span class="line"></span><br><span class="line">唯一的方法是扩大监控数量。代码如下；</span><br></pre></td></tr></table></figure><br>echo fs.inotify.max_user_watches=524288 | sudo tee -a /etc/sysctl.conf &amp;&amp; sudo sysctl -p<br>sudo sysctl —system<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">- plotly.js 加滑动条</span><br><span class="line"></span><br><span class="line">[实例网站](https:&#x2F;&#x2F;plotly.com&#x2F;javascript&#x2F;range-slider&#x2F;)</span><br></pre></td></tr></table></figure><br> var layout={<br>            xaxis:{<br>            rangeslider:{}<br>            }}<br>}<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">简易滑动条完成</span><br><span class="line"></span><br><span class="line">- this指待不正确</span><br><span class="line"></span><br><span class="line">当定义一个对象的中的方法时，想调用method中已经写好的方法，难免使用this.XXX，但这时对于定义对象而言此this为自己本身而非父组建</span><br></pre></td></tr></table></figure><br>let _this=this<br>_this.XXX<br>~~~</p>
+<ul>
+<li><p>突然App.vue页面空白<br>  一般App.vue中只有<router-view>&lt;/router-view&gt;。即便没有明面错误，但基本可以确定是渲染过程有错了。<br>  具体是什么错误，浏览器console查看一下，或许有报错。</p>
+<p>  ……这次的错误是export default{name:””}中的name部分忘记加””。==</p>
+</li>
+</ul>
+
     </div>
 
     
@@ -359,7 +542,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#前言"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-准备工作"><span class="nav-number"></span> <span class="nav-text">1  准备工作</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-结合bootstrap-vue"><span class="nav-number"></span> <span class="nav-text">2 结合bootstrap-vue</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-遇到的一些问题"><span class="nav-number"></span> <span class="nav-text">3 遇到的一些问题</span></a></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#前言"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-准备工作"><span class="nav-number"></span> <span class="nav-text">1  准备工作</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-结合bootstrap-vue"><span class="nav-number"></span> <span class="nav-text">2 结合bootstrap-vue</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-遇到的一些问题"><span class="nav-number"></span> <span class="nav-text">3 遇到的一些问题</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#"><span class="nav-number"></span> <span class="nav-text"> 违规截图</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#videoPart"><span class="nav-number"></span> <span class="nav-text">videoPart{</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#video1"><span class="nav-number"></span> <span class="nav-text">video1{</span></a></div>
       </div>
       <!--/noindex-->
 
@@ -375,7 +558,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">104</span>
+          <span class="site-state-item-count">107</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -386,7 +569,7 @@
         <span class="site-state-item-name">分类</span></a>
       </div>
       <div class="site-state-item site-state-tags">
-        <span class="site-state-item-count">67</span>
+        <span class="site-state-item-count">70</span>
         <span class="site-state-item-name">标签</span>
       </div>
   </nav>

@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/A.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-minimal.min.css">
+  <script src="/lib/pace/pace.min.js"></script>
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"yoursite.com","root":"/","scheme":"Pisces","version":"7.7.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="1 前言因为自己纯原创前端被队友嫌弃太丑了……所以学习、借鉴一下模板的内容。 模板下载网站">
+<meta property="og:type" content="article">
+<meta property="og:title" content="前端模板学习">
+<meta property="og:url" content="http://yoursite.com/2020/04/17/%E5%89%8D%E7%AB%AF/%E5%89%8D%E7%AB%AF%E6%A8%A1%E6%9D%BF%E5%AD%A6%E4%B9%A0/index.html">
+<meta property="og:site_name" content="Moneyna 的杂货铺">
+<meta property="og:description" content="1 前言因为自己纯原创前端被队友嫌弃太丑了……所以学习、借鉴一下模板的内容。 模板下载网站">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2020-04-17T12:47:57.000Z">
+<meta property="article:modified_time" content="2020-04-20T10:30:37.518Z">
+<meta property="article:author" content="Mona">
+<meta property="article:tag" content="前端模板 前端">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://yoursite.com/2020/04/17/%E5%89%8D%E7%AB%AF/%E5%89%8D%E7%AB%AF%E6%A8%A1%E6%9D%BF%E5%AD%A6%E4%B9%A0/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true
+  };
+</script>
+
+  <title>前端模板学习 | Moneyna 的杂货铺</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Moneyna 的杂货铺</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">人生得意需尽欢</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+  </ul>
+
+</nav>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/04/17/%E5%89%8D%E7%AB%AF/%E5%89%8D%E7%AB%AF%E6%A8%A1%E6%9D%BF%E5%AD%A6%E4%B9%A0/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/A.png">
+      <meta itemprop="name" content="Mona">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Moneyna 的杂货铺">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          前端模板学习
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-04-17 20:47:57" itemprop="dateCreated datePublished" datetime="2020-04-17T20:47:57+08:00">2020-04-17</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E5%89%8D%E7%AB%AF/" itemprop="url" rel="index"><span itemprop="name">前端</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h3 id="1-前言"><a href="#1-前言" class="headerlink" title="1 前言"></a>1 前言</h3><p>因为自己纯原创前端被队友嫌弃太丑了……所以学习、借鉴一下模板的内容。</p>
+<p><a href="www.cssmoban.com/cssthemes/houtaimoban/">模板下载网站</a></p>
+<a id="more"></a>
+<h3 id="2-学习侧边栏-站点地图"><a href="#2-学习侧边栏-站点地图" class="headerlink" title="2 学习侧边栏+站点地图"></a>2 学习侧边栏+站点地图</h3><p><a href="www.cssmoban.com/cssthemes/9309.shtml">模板1</a></p>
+<p>主页面为index.html</p>
+<ul>
+<li><p>Line 17 字体</p>
+</li>
+<li><p>Line 19-23  第三方库<br>无关解释：<br><a href="www.htmleaf.com/ziliaoku/qianduanjiaocheng/about-css-vendor-prefix.html">Css Vendor prefixes解释——css浏览器前缀</a></p>
+</li>
+<li><p>Line 30-37 引入的css文件</p>
+</li>
+</ul>
+<p>需要注意的是theme.css与default.css</p>
+<ul>
+<li>Line 47-264 <header class="header"></header></li>
+</ul>
+<p><a href="https://developer.mozilla.org/zh-CN/docs/Web/HTML/Element/header" target="_blank" rel="noopener">header标签的介绍</a></p>
+<p>上边白色边框部分。可以看出是从上到下的灰白渐变。可以学习一下</p>
+<pre><code>- Line 47 class=&quot;header&quot;
+**theme.css**
+
+Line 41-47
+设置高度与位置，position:absolute保证位置不变
+
+Line 114
+[@media讲解1](https://www.jianshu.com/p/b8f375b52a61)
+[@media讲解2](https://www.w3cschool.cn/cssref/css3-pr-mediaquery.html)
+
+Line 1405-1456
+设置了当前header的主要格式
+
+Line 1426
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F;默认为从上到下，0%的位置开始是第一种颜色，第二种颜色从45%的位置开始</span><br><span class="line">linear-gradient(#f6f6f6 0%, white 45%);</span><br></pre></td></tr></table></figure>
+
+Line 1411
+z-index 设置图层的深浅，值越大越靠前（靠近用户可视端）
+
+Line 1414
+注意.header .logo是css的后代选择器，中间用空格相隔
+
+Line 52-54
+visable-xs是boostrap提供的一个类，表示在xs（超小模式下，显示）。在bootstrap-vue里提到，可以使用原生boostrap。**需要验证**，如果失败，就只能手动调成bootstrap-vue下的grid（containor）了。设置col。
+toggle-sidebar-left，这个类设置了形状。
+
+- Line 269-721
+[aside的含义](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/aside)
+aside一般用来作为侧边栏使用
+
+- Line 269
+sidebar-left的类
+**theme.css**
+Line 1524-1570 侧边栏的css设计
+</code></pre><p><strong>突然意识到这个模板是jquery写的，跟vue冲突……再好也只能放弃了</strong></p>
+<h3 id="3-重新学习一个vue模板"><a href="#3-重新学习一个vue模板" class="headerlink" title="3 重新学习一个vue模板"></a>3 重新学习一个vue模板</h3><p><a href="https://www.creative-tim.com/product/vue-paper-dashboard#" target="_blank" rel="noopener">VueJs的免费模板</a></p>
+<p>这个模板的整体配色很舒服，Card这个组建可以为大部分功能区分区。<br>缺点是侧边栏没有下拉框，且没有我想加的时间轴。</p>
+<p>下拉框不能使用dropDown组件。在<strong>4</strong>部分的基础学习中可发现，侧边栏的下拉框是使用collpse实现的。而相似的css设计只需要修改一下距离即可。</p>
+<p>比较遗憾的是，因为对vue的熟悉程度有限（还有很少的原因是模板的Vue应该没到3），不能很好的组合原有的组件结构，所以代码结构不是很好。</p>
+<p><em>（真得遗憾没有学会vue-router在统一页面的加载）</em></p>
+<h3 id="4-侧边栏的学习"><a href="#4-侧边栏的学习" class="headerlink" title="4 侧边栏的学习"></a>4 侧边栏的学习</h3><p>-1 <a href="https://bootstrapious.com/p/bootstrap-sidebar" target="_blank" rel="noopener">boostrap+jquery的侧边栏教程</a></p>
+<p>虽然是jquery实现的，但可以学习一些基础知识，比如实现原理。</p>
+<p><a href="www.ruanyifeng.com/blog/2015/07/flex-grammar.html">Css下Flex布局</a></p>
+<h3 id="5-时间轴TimeLine学习"><a href="#5-时间轴TimeLine学习" class="headerlink" title="5 时间轴TimeLine学习"></a>5 时间轴TimeLine学习</h3><p><a href="https://webdesign.tutsplus.com/tutorials/building-a-vertical-timeline-with-css-and-a-touch-of-javascript--cms-26528" target="_blank" rel="noopener">纯css调整的时间轴教程</a><br>从这之中可学习TimeLine的本质</p>
+<p><a href="https://codepen.io/jfg-progi/pen/dazomb" target="_blank" rel="noopener">样式一</a><br>颜色需要调整</p>
+<p>[样式二，一个github插件]（<a href="https://github.com/pablosirera/timeline-vuejs）" target="_blank" rel="noopener">https://github.com/pablosirera/timeline-vuejs）</a><br>如要要使用，得手动将右半部分改成card。因为当前这个插件的编写格式，是将右侧拆分为了标题、内容、时间的</p>
+<p><a href="https://www.youtube.com/watch?v=A-JzD8qiOd8" target="_blank" rel="noopener">样式三，纯代码Youtubu在线编码</a><br><a href="https://edwardize.blogspot.com/2018/10/simple-vertical-timeline-vuejs.html" target="_blank" rel="noopener">与之对应的博客地址</a></p>
+<p>从这个代码中可以看出，时间轴的本质上是：<br>1.修改ul对应的点的样式使其变大即可修改颜色。若为li则天然有编号（但li在动态显示与否问题上，会混乱）<br>2.轴线是左边线</p>
+
+    </div>
+
+    
+    
+    
+
+ 
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E5%89%8D%E7%AB%AF%E6%A8%A1%E6%9D%BF-%E5%89%8D%E7%AB%AF/" rel="tag"><i class="fa fa-tags" aria-hidden="true"></i>
+ 前端模板 前端</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2020/04/16/Python-&&-ML/pip%E7%9B%B8%E5%85%B3%E6%93%8D%E4%BD%9C/" rel="prev" title="pip相关操作">
+      <i class="fa fa-chevron-left"></i> pip相关操作
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-前言"><span class="nav-number">1.</span> <span class="nav-text">1 前言</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-学习侧边栏-站点地图"><span class="nav-number">2.</span> <span class="nav-text">2 学习侧边栏+站点地图</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-重新学习一个vue模板"><span class="nav-number">3.</span> <span class="nav-text">3 重新学习一个vue模板</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-侧边栏的学习"><span class="nav-number">4.</span> <span class="nav-text">4 侧边栏的学习</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-时间轴TimeLine学习"><span class="nav-number">5.</span> <span class="nav-text">5 时间轴TimeLine学习</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Mona"
+      src="/images/A.png">
+  <p class="site-author-name" itemprop="name">Mona</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">107</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">36</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">70</span>
+        <span class="site-state-item-name">标签</span>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/moneyna" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;moneyna" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+	 
+   <a href="/">
+      <img class="site-author-image" itemprop="image"
+        src="/images/A.png"
+        alt="Mona" />
+   </a>
+
+  
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Mona</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v4.2.0
+  </div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">主题 – <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> v7.7.2
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+</body>
+</html>
