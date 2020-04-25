@@ -1,0 +1,850 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/A.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-minimal.min.css">
+  <script src="/lib/pace/pace.min.js"></script>
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"yoursite.com","root":"/","scheme":"Pisces","version":"7.7.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="1 两种构思 使用Python爬虫，则用Django后端+Vue前端  暂时先使用该方案  使用JAVA爬虫，则用Spring Boot后端+Vue前端">
+<meta property="og:type" content="article">
+<meta property="og:title" content="全球疫情动态爬虫系统构建记录">
+<meta property="og:url" content="http://yoursite.com/2020/04/11/Python-&&-ML/%E5%85%A8%E7%90%83%E7%96%AB%E6%83%85%E5%8A%A8%E6%80%81%E7%88%AC%E8%99%AB%E7%B3%BB%E7%BB%9F%E6%9E%84%E5%BB%BA%E8%AE%B0%E5%BD%95/index.html">
+<meta property="og:site_name" content="Moneyna 的杂货铺">
+<meta property="og:description" content="1 两种构思 使用Python爬虫，则用Django后端+Vue前端  暂时先使用该方案  使用JAVA爬虫，则用Spring Boot后端+Vue前端">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2020-04-11T03:16:23.000Z">
+<meta property="article:modified_time" content="2020-04-25T06:38:10.237Z">
+<meta property="article:author" content="Mona">
+<meta property="article:tag" content="Python Django Vue 爬虫 正则">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://yoursite.com/2020/04/11/Python-&&-ML/%E5%85%A8%E7%90%83%E7%96%AB%E6%83%85%E5%8A%A8%E6%80%81%E7%88%AC%E8%99%AB%E7%B3%BB%E7%BB%9F%E6%9E%84%E5%BB%BA%E8%AE%B0%E5%BD%95/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true
+  };
+</script>
+
+  <title>全球疫情动态爬虫系统构建记录 | Moneyna 的杂货铺</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Moneyna 的杂货铺</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">人生得意需尽欢</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+  </ul>
+
+</nav>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/04/11/Python-&&-ML/%E5%85%A8%E7%90%83%E7%96%AB%E6%83%85%E5%8A%A8%E6%80%81%E7%88%AC%E8%99%AB%E7%B3%BB%E7%BB%9F%E6%9E%84%E5%BB%BA%E8%AE%B0%E5%BD%95/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/A.png">
+      <meta itemprop="name" content="Mona">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Moneyna 的杂货铺">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          全球疫情动态爬虫系统构建记录
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-04-11 11:16:23" itemprop="dateCreated datePublished" datetime="2020-04-11T11:16:23+08:00">2020-04-11</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Python/" itemprop="url" rel="index"><span itemprop="name">Python</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h3 id="1-两种构思"><a href="#1-两种构思" class="headerlink" title="1 两种构思"></a>1 两种构思</h3><ul>
+<li>使用Python爬虫，则用Django后端+Vue前端</li>
+</ul>
+<p>暂时先使用该方案</p>
+<ul>
+<li>使用JAVA爬虫，则用Spring Boot后端+Vue前端</li>
+</ul>
+<a id="more"></a>
+<h3 id="2-数据源选取-爬取"><a href="#2-数据源选取-爬取" class="headerlink" title="2 数据源选取+爬取"></a>2 数据源选取+爬取</h3><p><em>使用火狐浏览器</em></p>
+<h5 id="1-腾讯"><a href="#1-腾讯" class="headerlink" title="[1] 腾讯"></a>[1] 腾讯</h5><p><a href="https://news.qq.com/zt2020/page/feiyan.htm#/global" target="_blank" rel="noopener">腾讯实时数据</a></p>
+<p>浏览器开发工具（Web Developer）-&gt;网络(Network)</p>
+<p>刷新网页后，重点关注JSON数据类型。</p>
+<p>点击右侧可看头部（Headers）、参数（Params）、回应（Response）。</p>
+<p>在头部可确认请求接口，在回应可确认返回数据。</p>
+<p>可得，国内数据接口为——<br><a href="https://view.inews.qq.com/g2/getOnsInfo?name=disease_h5" target="_blank" rel="noopener">https://view.inews.qq.com/g2/getOnsInfo?name=disease_h5</a></p>
+<p>国外数据接口为——<br><a href="https://view.inews.qq.com/g2/getOnsInfo?name=disease_foreign" target="_blank" rel="noopener">https://view.inews.qq.com/g2/getOnsInfo?name=disease_foreign</a></p>
+<p>测试是否可用<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line">import json</span><br><span class="line">import requests</span><br><span class="line"></span><br><span class="line">def catch_China_data():</span><br><span class="line">    url&#x3D;&quot;https:&#x2F;&#x2F;view.inews.qq.com&#x2F;g2&#x2F;getOnsInfo?name&#x3D;disease_h5&quot;</span><br><span class="line">    response&#x3D;requests.get(url&#x3D;url).json()</span><br><span class="line">    china_data&#x3D;json.loads(response[&#39;data&#39;])</span><br><span class="line">    return china_data</span><br><span class="line"></span><br><span class="line">def catch_foreign_data():</span><br><span class="line">    url&#x3D;&quot;https:&#x2F;&#x2F;view.inews.qq.com&#x2F;g2&#x2F;getOnsInfo?name&#x3D;disease_foreign&quot;</span><br><span class="line">    response &#x3D; requests.get(url&#x3D;url).json()</span><br><span class="line">    foreign_data &#x3D; json.loads(response[&#39;data&#39;])</span><br><span class="line">    return foreign_data</span><br><span class="line"></span><br><span class="line">#针对不是最新的海外数据，重新获取</span><br><span class="line">def request_newest_info(country):</span><br><span class="line">    url&#x3D;&quot;https:&#x2F;&#x2F;api.inews.qq.com&#x2F;newsqa&#x2F;v1&#x2F;automation&#x2F;foreign&#x2F;daily&#x2F;list?country&#x3D;&quot;+country</span><br><span class="line">    response &#x3D; requests.get(url&#x3D;url).json()</span><br><span class="line">    nest_country_data &#x3D; json.loads(response[&#39;data&#39;])</span><br><span class="line">    return nest_country_data</span><br><span class="line"></span><br><span class="line">def saveAsJsonFile(data,filename):</span><br><span class="line">    with open(&quot;..&#x2F;crawlData&#x2F;&quot;+filename+&quot;.json&quot;,&quot;w&quot;) as file:</span><br><span class="line">        json.dump(data,file,ensure_ascii&#x3D;False)</span><br><span class="line"></span><br><span class="line">if __name__ &#x3D;&#x3D;&#39;__main__&#39; :</span><br><span class="line">    china&#x3D;catch_China_data()</span><br><span class="line">    foreign&#x3D;catch_foreign_data()</span><br><span class="line">    saveAsJsonFile(china,&quot;chinaTencent&quot;)</span><br><span class="line">    saveAsJsonFile(foreign,&quot;foreignTencent&quot;)</span><br></pre></td></tr></table></figure><br>注意这里json.dump方法的使用，加了参数ensure_ascii=False，这是为了保持utf-8格式编码的中文。若不加会变成unicode编码的中文（因为其使用accii码规定的字符—&gt;英文+数字表示）<br>若JSON文件中json数据格式不清晰，可使用浏览器打开，会自动排版</p>
+<p>国内数据格式中有用部分<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">	lastUpdateTime:&quot;&quot;,&#x2F;&#x2F;更新时间</span><br><span class="line">	chinaTotal:&#123;</span><br><span class="line">		confirm:,&#x2F;&#x2F;确诊总数</span><br><span class="line">		...</span><br><span class="line">	&#125;,</span><br><span class="line">	chinaAdd:,</span><br><span class="line">	isShowAdd:,</span><br><span class="line">	showAddSwitch:,</span><br><span class="line">	areaTree:&#123;</span><br><span class="line">		0:&#123;</span><br><span class="line">			name:中国,</span><br><span class="line">			today:&#123;&#125;,</span><br><span class="line">			total:&#123;&#125;,</span><br><span class="line">			children:&#123; &#x2F;&#x2F;各地区数据</span><br><span class="line">				0:&#123;</span><br><span class="line">					name:&quot;&quot;,&#x2F;&#x2F;省、直辖市、特别行政区名</span><br><span class="line">					today:&#123;&#125;,</span><br><span class="line">					total:&#123;&#125;,</span><br><span class="line">					children:&#123;&#125;&#x2F;&#x2F;下属地区，格式同当前				</span><br><span class="line">				&#125;</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>国外数据格式：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">	foreignList:[</span><br><span class="line">		&#123;</span><br><span class="line">			name:&quot;&quot;,&#x2F;&#x2F;国家或地区名</span><br><span class="line">			continent:&quot;&quot;,&#x2F;&#x2F;大州</span><br><span class="line">			date:,&#x2F;&#x2F;更新时间</span><br><span class="line">			isUpdated:,&#x2F;&#x2F;true：为今日信息，false：为date日显示的数据</span><br><span class="line">			...,</span><br><span class="line">			confirm:,&#x2F;&#x2F;累计确诊</span><br><span class="line">			dead:,&#x2F;&#x2F;累计死亡</span><br><span class="line">			heal:,&#x2F;&#x2F;累计治愈</span><br><span class="line">			...</span><br><span class="line">		&#125;,</span><br><span class="line">		&#123;&#125;</span><br><span class="line">		...</span><br><span class="line">	],</span><br><span class="line">	...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>但观察数据可发现，这个接口返回的数据并非全为最新数据。<br>若isUpdate为false,可用下述接口查询，country的参数为上述的name</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">https:&#x2F;&#x2F;api.inews.qq.com&#x2F;newsqa&#x2F;v1&#x2F;automation&#x2F;foreign&#x2F;daily&#x2F;list?country&#x3D;</span><br></pre></td></tr></table></figure>
+<p>则返回的数据格式为<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">	...,</span><br><span class="line">	data:[</span><br><span class="line">		...</span><br><span class="line">		#最后一个值为最新的值</span><br><span class="line">		&#123;</span><br><span class="line">			date:,&#x2F;&#x2F;日期</span><br><span class="line">			confirm:,&#x2F;&#x2F;累计确诊</span><br><span class="line">			heal:,&#x2F;&#x2F;累计治愈</span><br><span class="line">			dead:&#x2F;&#x2F;累计死亡	</span><br><span class="line">		&#125;,</span><br><span class="line">		</span><br><span class="line">	]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h5 id="2-新浪"><a href="#2-新浪" class="headerlink" title="[2] 新浪"></a>[2] 新浪</h5><p><a href="https://news.sina.cn/zt_d/yiqing0121" target="_blank" rel="noopener">新浪实时数据</a></p>
+<p>查找接口的方法同上。</p>
+<p>新浪相比腾讯的数据格式更明确与方便，但缺点是相对没有腾讯那么新。</p>
+<p>接口为<a href="https://gwpre.sina.cn/interface/fymap2020_data.json" target="_blank" rel="noopener">https://gwpre.sina.cn/interface/fymap2020_data.json</a></p>
+<p>测试代码<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">import json</span><br><span class="line">import requests</span><br><span class="line"></span><br><span class="line">def catch_data():</span><br><span class="line">    url&#x3D;&quot;https:&#x2F;&#x2F;gwpre.sina.cn&#x2F;interface&#x2F;fymap2020_data.json&quot;</span><br><span class="line">    response &#x3D; requests.get(url&#x3D;url).json()</span><br><span class="line">    data &#x3D; response[&#39;data&#39;]</span><br><span class="line">    return data</span><br><span class="line"></span><br><span class="line">def saveAsJsonFile(data,filename):</span><br><span class="line">    with open(&quot;..&#x2F;crawlData&#x2F;&quot;+filename+&quot;.json&quot;,&quot;w&quot;) as file:</span><br><span class="line">        json.dump(data,file,ensure_ascii&#x3D;False)</span><br><span class="line"></span><br><span class="line">if __name__ &#x3D;&#x3D;&#39;__main__&#39; :</span><br><span class="line">    Data&#x3D;catch_data()</span><br><span class="line">    saveAsJsonFile(Data,&quot;dataSina&quot;)</span><br></pre></td></tr></table></figure></p>
+<p>观察爬取数据的格式<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">	times:,&#x2F;&#x2F;中文时间戳</span><br><span class="line">	mtime:,&#x2F;&#x2F;YY-MM-DD HH-mm-ss </span><br><span class="line">	...</span><br><span class="line">	list:[&#x2F;&#x2F;国内各省市地区数据</span><br><span class="line">		&#123;</span><br><span class="line">			name:,&#x2F;&#x2F;省、直辖市、特别行政区名</span><br><span class="line">			value:,&#x2F;&#x2F;累计确诊</span><br><span class="line">			cureNum:,&#x2F;&#x2F;累计治愈</span><br><span class="line">			deathNum:&#x2F;&#x2F;累计死亡</span><br><span class="line">		&#125;</span><br><span class="line">	],</span><br><span class="line">	worldlist:[&#x2F;&#x2F;世界数据（含中国）</span><br><span class="line">		&#123;</span><br><span class="line">			name:,&#x2F;&#x2F;名</span><br><span class="line">			value:,&#x2F;&#x2F;累计确诊</span><br><span class="line">			cureNum:,&#x2F;&#x2F;累计治愈</span><br><span class="line">			deathNum:&#x2F;&#x2F;累计死亡</span><br><span class="line">		&#125;</span><br><span class="line">	]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h5 id="3-卫建委"><a href="#3-卫建委" class="headerlink" title="[3] 卫建委"></a>[3] 卫建委</h5><p><a href="2019ncov.chinacdc.cn/2019-nCoV/">卫建委实时数据</a></p>
+<p>国内数据接口（注意json命名是按时间戳的）：<br><a href="http://49.4.25.117/JKZX/yq_20200410.json" target="_blank" rel="noopener">http://49.4.25.117/JKZX/yq_20200410.json</a></p>
+<p>国内数据格式：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">	...,</span><br><span class="line">	features:[</span><br><span class="line">		&#123;</span><br><span class="line">			...,</span><br><span class="line">			properties:&#123;</span><br><span class="line">				name:,&#x2F;&#x2F;省、直辖市、特别行政区</span><br><span class="line">				累计确诊:,</span><br><span class="line">				累计死亡:			</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">	]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>对于全球数据没有提供接口。似乎是因为其本身为一个动态组建的缘故</p>
+<p>使用request爬html源码，得到的也仅仅是骨架，没有数据。<br>爬html源码代码如下<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">import requests</span><br><span class="line">from bs4 import BeautifulSoup</span><br><span class="line"></span><br><span class="line">def getHtmlTest(url):</span><br><span class="line">    #伪装为浏览器</span><br><span class="line">    head&#x3D;&#123;&#39;User-Agent&#39;:&#39;Mozilla&#x2F;5.0 (Windows NT 6.3; Win64; x64) AppleWebKit&#x2F;537.36 (KHTML, like Gecko) Chrome&#x2F;41.0.2272.118 Safari&#x2F;537.36&#39;&#125;</span><br><span class="line">    html&#x3D;requests.get(url,headers&#x3D;head)</span><br><span class="line">    html.encoding&#x3D;&#39;utf-8&#39;</span><br><span class="line"></span><br><span class="line">    return html.text</span><br><span class="line"></span><br><span class="line">def saveAshtmlFile(data,filename):</span><br><span class="line">    with open(&quot;..&#x2F;crawlData&#x2F;&quot;+filename+&quot;.html&quot;,&quot;w&quot;) as file:</span><br><span class="line">        file.write(data)</span><br><span class="line"></span><br><span class="line">if __name__ &#x3D;&#x3D;&#39;__main__&#39; :</span><br><span class="line">    url &#x3D; &quot;http:&#x2F;&#x2F;2019ncov.chinacdc.cn&#x2F;2019-nCoV&#x2F;&quot;</span><br><span class="line">    htmlTest&#x3D;getHtmlTest(url)</span><br><span class="line">    soup&#x3D;BeautifulSoup(htmlTest,&#39;html.parser&#39;)</span><br><span class="line">    print(soup.prettify())</span><br><span class="line">    saveAshtmlFile(soup.prettify(),&quot;dataWeiJianWei&quot;)</span><br></pre></td></tr></table></figure></p>
+<h5 id="4-凤凰"><a href="#4-凤凰" class="headerlink" title="[4] 凤凰"></a>[4] 凤凰</h5><p><a href="https://news.ifeng.com/c/special/7uLj4F83Cqm" target="_blank" rel="noopener">凤凰实时数据</a></p>
+<p>无接口，需爬取整个网络。<br>爬源码代码如[3]，仅修改url.<br>数据同样是直接嵌在爬下的html源码里，但数据格式不如丁香园数据清晰。<br>具体怎么使用略过。</p>
+<h5 id="5-丁香园"><a href="#5-丁香园" class="headerlink" title="[5] 丁香园"></a>[5] 丁香园</h5><p><a href="https://ncov.dxy.cn/ncovh5/view/pneumonia" target="_blank" rel="noopener">丁香园实时数据</a></p>
+<p>接口数据不清晰，不适合使用。<br>爬源码代码如[3]，仅修改url</p>
+<p>爬下的丁香园html源码里全是拿数据的js代码，数据也顺便爬了下来，先分析一下结构，分成几个json再处理。<br>有用的数据有世界数据（含中国），国内各省数据。</p>
+<p>代码如下<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br></pre></td><td class="code"><pre><span class="line">import re</span><br><span class="line">import json</span><br><span class="line">import requests</span><br><span class="line">from bs4 import BeautifulSoup</span><br><span class="line"></span><br><span class="line">def getHtmlTest(url):</span><br><span class="line">    #伪装为浏览器</span><br><span class="line">    head&#x3D;&#123;&#39;User-Agent&#39;:&#39;Mozilla&#x2F;5.0 (Windows NT 6.3; Win64; x64) AppleWebKit&#x2F;537.36 (KHTML, like Gecko) Chrome&#x2F;41.0.2272.118 Safari&#x2F;537.36&#39;&#125;</span><br><span class="line">    html&#x3D;requests.get(url,headers&#x3D;head)</span><br><span class="line">    html.encoding&#x3D;&#39;utf-8&#39;</span><br><span class="line"></span><br><span class="line">    return html.text</span><br><span class="line"></span><br><span class="line">def saveAshtmlFile(data,filename):</span><br><span class="line">    with open(&quot;..&#x2F;crawlData&#x2F;&quot;+filename+&quot;.html&quot;,&quot;w&quot;) as file:</span><br><span class="line">        file.write(data)</span><br><span class="line"></span><br><span class="line">def saveAsJsonFile(data,filename):</span><br><span class="line">    with open(&quot;..&#x2F;crawlData&#x2F;&quot;+filename+&quot;.json&quot;,&quot;w&quot;) as file:</span><br><span class="line">        json.dump(data,file,ensure_ascii&#x3D;False)</span><br><span class="line"></span><br><span class="line">def reHtmlPartToJson(soup,id):</span><br><span class="line">    data &#x3D; str(soup.find(id&#x3D;id).string).replace(&#39; &#39;, &#39;&#39;)</span><br><span class="line">    tmp&#x3D;&quot;try&#123;window.&quot;+id+&quot;&#x3D;&quot;</span><br><span class="line">    findWord&#x3D;&quot;(?&lt;&#x3D;&quot;+tmp+&quot;).+&quot;</span><br><span class="line">    pattern&#x3D;re.compile(findWord)</span><br><span class="line">    m&#x3D;re.search(pattern,data)</span><br><span class="line">    result&#x3D;m.group(0)</span><br><span class="line"></span><br><span class="line">    findWord2&#x3D;r&#39;.+[^\&#125;catch\(e\)\&#123;\&#125;]&#39;</span><br><span class="line">    m2&#x3D;re.search(re.compile(findWord2),result)</span><br><span class="line">    result&#x3D;m2.group(0)</span><br><span class="line">    return result</span><br><span class="line"></span><br><span class="line">if __name__ &#x3D;&#x3D;&#39;__main__&#39; :</span><br><span class="line">    url &#x3D; &quot;https:&#x2F;&#x2F;ncov.dxy.cn&#x2F;ncovh5&#x2F;view&#x2F;pneumonia&quot;</span><br><span class="line">    id_list&#x3D;[&quot;getListByCountryTypeService2true&quot;,&quot;getAreaStat&quot;]</span><br><span class="line">    jsonName_list&#x3D;[&quot;DingXiangYuanGlobal&quot;,&quot;DingXiangYuanChina&quot;]</span><br><span class="line">    # 获得htmlText</span><br><span class="line">    htmlTest&#x3D;getHtmlTest(url)</span><br><span class="line">    # 传入beautifulsoup</span><br><span class="line">    soup&#x3D;BeautifulSoup(htmlTest,&#39;html.parser&#39;)</span><br><span class="line">    # 存储html文件</span><br><span class="line">    saveAshtmlFile(soup.prettify(),&quot;DingXiangYuan&quot;)</span><br><span class="line">    # 将soup定位的数据转换为str，且去除空格</span><br><span class="line">    for i in range(len(id_list)):</span><br><span class="line">        # 使用正则提取正确的数据</span><br><span class="line">        data&#x3D;reHtmlPartToJson(soup,id_list[i])</span><br><span class="line">        # 存储json数据</span><br><span class="line">        saveAsJsonFile(json.loads(data),jsonName_list[i])</span><br></pre></td></tr></table></figure></p>
+<p>注意此处正则的书写：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">#其中(?&lt;&#x3D;...).+，的格式的含义为匹配(?&lt;&#x3D;...)结构之后的元素，...为自定义字符，在这里是try&#123;window.getListByCountryTypeService2true&#x3D;</span><br><span class="line">#.在python正则中表示除换行以外的所有，请区别于\w（表示中文、英文、数字但不包括符号）,+表示会匹配1-N次，基本代表不限字数了</span><br><span class="line">r&#39;(?&lt;&#x3D;try&#123;window.getListByCountryTypeService2true&#x3D;).+&#39;</span><br><span class="line"></span><br><span class="line">#^表示从这里开始匹配，然真正提取的是^之前的元素。在这里是提取&#125;catch(e)&#123;&#125;，注意这里的&#125;()&#123;均需要转义，所以加了\</span><br><span class="line">r&#39;.+[^\&#125;catch\(e\)\&#123;\&#125;]&#39;</span><br></pre></td></tr></table></figure>
+<p>在浏览器打开爬下的json数据，世界数据json格式中我认为有用的部分<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">[</span><br><span class="line">&#123;</span><br><span class="line">	continents:“北美洲”,&#x2F;&#x2F;大州</span><br><span class="line">	provinceName:&quot;美国&quot;,&#x2F;&#x2F;中文下的国家&#x2F;地区名</span><br><span class="line">	confirmedCount:,&#x2F;&#x2F;累计确诊数（包含已死亡及治愈数）</span><br><span class="line">	curedCount:,&#x2F;&#x2F;累计治愈</span><br><span class="line">	deadCount:,&#x2F;&#x2F;累计死亡</span><br><span class="line">	countryShortCode:“USA”,&#x2F;&#x2F;国家地区简称</span><br><span class="line">	statisticsData:“一个网址”&#x2F;&#x2F;一个可用requests请求的接口，会返回过去该地区每天的数据，最下方为最新</span><br><span class="line">&#125;,...</span><br><span class="line">&#123;&#125;</span><br><span class="line">]</span><br><span class="line"></span><br><span class="line">国内数据的json格式中我认为有用的部分</span><br></pre></td></tr></table></figure><br>[<br>{<br>    provinceName:”湖北省”,//省、直辖市、特别行政区<br>    confirmedCount:,//累计确诊数<br>    suspectedCount:,//当前疑似<br>    curedCount:,//累计治愈<br>    deadCount:,//累计死亡<br>    statisticsData:“一个网址”//一个可用requests请求的接口，会返回过去该地区每天的数据，最下方为上一次的最新数据<br>    cities:[ //下属地区<br>    {<br>        cityName:,//下属地区名<br>        confirmedCount:,//累计确诊数<br>        suspectedCount:,//当前疑似<br>        curedCount:,//累计治愈<br>        deadCount:,//累计死亡<br>        …<br>    }<br>    ]<br>    ….<br>}<br>]<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">### 3 数据库构建与数据存储</span><br><span class="line"></span><br><span class="line">直接调用接口获取数据的方式虽然快捷，但没有达到学习爬虫的目的。这里还是选用丁香园作为数据源。一是没有直接的接口，二是数据结构比较清晰，方便爬取与整理。</span><br><span class="line"></span><br><span class="line">现在要做的就是把爬取的数据录入数据库。</span><br><span class="line"></span><br><span class="line">当前系统环境为Fedora 30(redHat系列shell格式)，python 3.7，mariadb</span><br><span class="line"></span><br><span class="line">#### [1]python连接数据库</span><br><span class="line">[python3.7数据库驱动下载](https:&#x2F;&#x2F;pypi.org&#x2F;project&#x2F;mysqlclient&#x2F;)</span><br><span class="line"></span><br><span class="line">使用MySQldb作为数据库驱动。</span><br><span class="line"></span><br><span class="line">*（小声）也看了很多网上的博客讲解怎么给python 3安装MySQldb。结果写的最清楚的还是官方文档*</span><br><span class="line">步骤概括如下：</span><br></pre></td></tr></table></figure></p>
+<h1 id="需要安装的依赖"><a href="#需要安装的依赖" class="headerlink" title="需要安装的依赖"></a>需要安装的依赖</h1><p>sudo yum install python-devel mysql-devel</p>
+<h1 id="MySQldb的安装"><a href="#MySQldb的安装" class="headerlink" title="MySQldb的安装"></a>MySQldb的安装</h1><p>pip install mysqlclient<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">#### [2]如何使用MySQldb</span><br><span class="line">[参照博客](https:&#x2F;&#x2F;www.jianshu.com&#x2F;p&#x2F;76fab6cb06f9)</span><br><span class="line"></span><br><span class="line">#### [3]定义三个表</span><br></pre></td></tr></table></figure><br>sql=[]</p>
+<pre><code># 表1 全球疫情表
+    sql.append(&quot;CREATE TABLE IF NOT EXISTS Global(&quot; \
+         &quot;id INT primary key auto_increment,&quot; \
+         &quot;date DATE NOT NULL,&quot; \
+         &quot;continents VARCHAR(20) NOT NULL,&quot; \
+         &quot;countryName VARCHAR(40) NOT NULL,&quot; \
+         &quot;shortCode VARCHAR(10),&quot; \
+         &quot;confirmed INT NOT NULL,&quot; \
+         &quot;curd INT NOT NULL,&quot; \
+         &quot;dead INT NOT NULL,&quot; \
+         &quot;statisticsData VARCHAR(150))ENGINE=InnoDB DEFAULT CHARSET=utf8&quot;)
+    #表2 省、直辖市、特别行政区表
+    sql.append(&quot;CREATE TABLE IF NOT EXISTS ChinaProvince(&quot; \
+         &quot;id INT primary key auto_increment,&quot; \
+         &quot;date DATE NOT NULL,&quot; \
+         &quot;provinceName VARCHAR(40) NOT NULL,&quot; \
+         &quot;confirmed INT NOT NULL,&quot; \
+         &quot;curd INT NOT NULL,&quot; \
+         &quot;dead INT NOT NULL,&quot; \
+         &quot;suspected INT NOT NULL,&quot;\
+         &quot;statisticsData VARCHAR(150))ENGINE=InnoDB DEFAULT CHARSET=utf8&quot;)
+    #表3 地区表(省下各市)
+    sql.append(&quot;CREATE TABLE IF NOT EXISTS ChinaCity(&quot; \
+         &quot;id INT primary key auto_increment,&quot; \
+         &quot;date DATE NOT NULL,&quot; \
+         &quot;provinceName VARCHAR(40) NOT NULL,&quot; \
+         &quot;cityName VARCHAR(20) NOT NULL,&quot;\
+         &quot;confirmed INT NOT NULL,&quot; \
+         &quot;curd INT NOT NULL,&quot; \
+         &quot;dead INT NOT NULL,&quot; \
+         &quot;suspected INT NOT NULL)ENGINE=InnoDB DEFAULT CHARSET=utf8&quot;)
+</code></pre><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">#### [4]根据三个表定义三个类</span><br><span class="line"></span><br><span class="line">三个类的作用是生成插入数据时需要的list，方便数据的插入。</span><br></pre></td></tr></table></figure>
+<p>class GLOBAL:<br>    def <strong>init</strong> (self,jsonData):<br>        self.date=str(datetime.date.today())<br>        self.continents=jsonData[‘continents’]<br>        self.countryName=jsonData[‘provinceName’]<br>        self.shortcode=jsonData[‘countryShortCode’]<br>        self.confirmed=jsonData[‘confirmedCount’]<br>        self.cured=jsonData[‘curedCount’]<br>        self.dead=jsonData[‘deadCount’]<br>        self.statisticsData=jsonData[‘statisticsData’]</p>
+<pre><code>def toList(self):
+    globalList=[]
+    for name,value in vars(self).items():
+        globalList.append(value)
+        #print(&#39;[\&#39;%s\&#39;]=\&#39;%s\&#39;&#39;%(name,value))
+    return (globalList)
+</code></pre><p>class ChinaProvice:<br>    def <strong>init</strong>(self,jsonData):<br>        self.date = str(datetime.date.today())<br>        self.p_name=jsonData[‘provinceName’]<br>        self.confirmed = jsonData[‘confirmedCount’]<br>        self.suspected = jsonData[‘suspectedCount’]<br>        self.cured = jsonData[‘curedCount’]<br>        self.dead = jsonData[‘deadCount’]<br>        self.statisticsData = jsonData[‘statisticsData’]<br>        self.citiesJson=jsonData[‘cities’]</p>
+<pre><code>def getAllCities(self):
+    cities=[]
+    if(len(self.citiesJson)!=0):
+        for city in self.citiesJson:
+            c=ChinaCity(city,self.p_name)
+            cities.append(c.toList())
+    return cities
+
+def toList(self):
+    pro_list = []
+    for name, value in vars(self).items():
+        if(name!=&#39;citiesJson&#39;):
+            pro_list.append(value)
+        # print(&#39;[\&#39;%s\&#39;]=\&#39;%s\&#39;&#39;%(name,value))
+    #print(pro_list)
+    return pro_list
+</code></pre><p>class ChinaCity:<br>    def <strong>init</strong>(self,jsonData,p_name):<br>        self.date = str(datetime.date.today())<br>        self.p_name=p_name<br>        self.cityName=jsonData[‘cityName’]<br>        self.confirmed = jsonData[‘confirmedCount’]<br>        self.suspected=jsonData[‘suspectedCount’]<br>        self.cured = jsonData[‘curedCount’]<br>        self.dead = jsonData[‘deadCount’]</p>
+<pre><code>def toList(self):
+    cityList=[]
+    for name,value in vars(self).items():
+        cityList.append(value)
+        #print(&#39;[\&#39;%s\&#39;]=\&#39;%s\&#39;&#39;%(name,value))
+    #print( cityList)
+    return cityList
+</code></pre><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">#### [5]自动解析json并将数据插入数据库</span><br><span class="line">逻辑是：</span><br><span class="line">如果当天的数据在数据库中不存在，就直接存入。</span><br><span class="line">如果当天的数据在数据库中已存在，判断当前获取的数据是否已和数据中不一致（为了效率，只比较5个国家），若不一致则先删后存，否则不操作。</span><br></pre></td></tr></table></figure>
+<pre><code>    if self.ifStore():
+        if self.change:
+            self.delateFirst()
+            self.change=False
+        self.storeGlobalJson()
+        self.storeChinaJson()
+    else:
+        print(&quot;数据已存在不重复&quot;)
+</code></pre><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">具体封装的方法如下:</span><br></pre></td></tr></table></figure>
+<pre><code>  def ifStore(self):
+    self.change=False
+    #当前的date在数据库中不存在
+    cnt=self.cursor.execute(&quot;SELECT count(*) FROM Global WHERE date=\&#39;%s\&#39;&quot; % self.today)
+    cnt=self.cursor.fetchone()[0]
+    if(cnt==0):
+        return True
+    else: #当点的date在数据库中存在，但数据不相同（仅比较前5个数据）
+        num=0
+        change=False
+        for country in self.globalJson:
+            if num==5:
+                break
+            self.cursor.execute(&quot;SELECT confirmed,cured,dead FROM Global WHERE date=\&#39;%s\&#39; AND countryName=\&#39;%s\&#39; &quot;%(self.today,country[&#39;provinceName&#39;]))
+            listA=self.cursor.fetone()
+            listB=self.createCountryList(country)
+            if  self.ifEqual(listA,listB)==False :
+                self.change=True
+                return True
+            num+=1
+    return False
+
+
+def createCountryList(self,country):
+    list=[]
+    list.append(country[&#39;confirmedCount&#39;])
+    list.append(country[&#39;curedCount&#39;])
+    list.append(country[&#39;deadCount&#39;])
+
+    return list
+
+def ifEqual(self,lista,listb):
+    for i in range(0,len(lista)):
+        if lista[i]!=listb:
+            return False
+    return True
+
+def storeGlobalJson(self):
+    for county in self.globalJson:
+        c=GLOBAL(county)
+        list=c.toList()
+        self.insertIntoGlobal(list)
+
+def storeChinaJson(self):
+    for province in self.chinaJson:
+        p=ChinaProvice(province)
+        self.insertIntoChinaProvince(p.toList())
+        self.insertIntoChinaCity(p.getAllCities())
+
+def insertIntoGlobal(self,list):
+    sql=&quot;INSERT INTO Global(date,continents,countryName,shortCode,confirmed,cured,dead,statisticsData)  Values(\&#39;%s\&#39;,\&#39;%s\&#39;,\&#39;%s\&#39;,\&#39;%s\&#39;,\&#39;%s\&#39;,\&#39;%s\&#39;,\&#39;%s\&#39;,\&#39;%s\&#39;)&quot;
+    try:
+        self.cursor.execute(sql, list)
+    except:
+        print(&quot;错误发生：list=&quot;,list)
+
+def insertIntoChinaProvince(self,list):
+    sql = &quot;INSERT INTO ChinaProvince(date,provinceName,confirmed,suspected,cured,dead,statisticsData)  Values(\&#39;%s\&#39;,\&#39;%s\&#39;,\&#39;%s\&#39;,\&#39;%s\&#39;,\&#39;%s\&#39;,\&#39;%s\&#39;,\&#39;%s\&#39;)&quot;
+    self.cursor.execute(sql, list)
+
+def insertIntoChinaCity(self,lists):
+    sql = &quot;INSERT INTO ChinaCity(date,provinceName,cityName,confirmed,suspected,cured,dead)  Values(\&#39;%s\&#39;,\&#39;%s\&#39;,\&#39;%s\&#39;,\&#39;%s\&#39;,\&#39;%s\&#39;,\&#39;%s\&#39;,\&#39;%s\&#39;)&quot;
+    self.cursor.executemany(sql, lists)
+
+def deleteFirst(self):
+    for t in self.t_name:
+        sql=&quot;DELETE FROM \&#39;%s\&#39; WHERE date=\&#39;%s\&#39;&quot;%(t,self.today)
+        self.cursor.execute(sql)
+</code></pre><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">#### [7]数据库部分全部代码</span><br><span class="line"></span><br><span class="line">**一定要记得数据库密码要改成自己的**</span><br></pre></td></tr></table></figure>
+<p>import MySQLdb as db<br>import datetime</p>
+<h1 id="传入数据自行生成"><a href="#传入数据自行生成" class="headerlink" title="传入数据自行生成"></a>传入数据自行生成</h1><p>class pythonDb :<br>    def <strong>init</strong>(self,globalJson=[],chinaJson=[]):<br>        self.today=str(datetime.date.today())</p>
+<pre><code>    #存储爬取的json数据
+    self.globalJson=globalJson
+    self.chinaJson=chinaJson
+
+    #填写自己的密码
+    self.conn=db.connect(&#39;localhost&#39;,&#39;root&#39;,&#39;0Qtmmxhhbqdnlst&#39;)
+    self.cursor=self.conn.cursor()
+
+    #创建数据库
+    self.dbName=&quot;DingXiangYuanDB&quot;
+    self.createDB(self.dbName)
+    self.conn.select_db(self.dbName)
+    self.conn.autocommit(True) #设置每次都自动提交
+
+    self.cursor=self.conn.cursor()
+
+    # 设置连接
+    self.conn.set_character_set(&#39;utf8&#39;)
+    self.cursor.execute(&#39;SET NAMES utf8;&#39;)
+    self.cursor.execute(&#39;SET CHARACTER SET utf8&#39;);
+    self.cursor.execute(&#39;SET character_set_connection=utf8;&#39;)
+    #创建数据表
+    self.t_name=[&quot;Global&quot;,&quot;ChinaProvince&quot;,&quot;ChinaCity&quot;]
+    sql=[]
+    # 表1 全球疫情表
+    sql.append(&quot;CREATE TABLE IF NOT EXISTS Global(&quot; \
+         &quot;id INT primary key auto_increment,&quot; \
+         &quot;date DATE NOT NULL,&quot; \
+         &quot;continents VARCHAR(20) NOT NULL,&quot; \
+         &quot;countryName VARCHAR(40) NOT NULL,&quot; \
+         &quot;shortCode VARCHAR(30),&quot; \
+         &quot;confirmed INT NOT NULL,&quot; \
+         &quot;cured INT NOT NULL,&quot; \
+         &quot;dead INT NOT NULL,&quot; \
+         &quot;statisticsData VARCHAR(150))ENGINE=InnoDB DEFAULT CHARSET=utf8&quot;)
+    #表2 省、直辖市、特别行政区表
+    sql.append(&quot;CREATE TABLE IF NOT EXISTS ChinaProvince(&quot; \
+         &quot;id INT primary key auto_increment,&quot; \
+         &quot;date DATE NOT NULL,&quot; \
+         &quot;provinceName VARCHAR(40) NOT NULL,&quot; \
+         &quot;confirmed INT NOT NULL,&quot; \
+         &quot;cured INT NOT NULL,&quot; \
+         &quot;dead INT NOT NULL,&quot; \
+         &quot;suspected INT NOT NULL,&quot;\
+         &quot;statisticsData VARCHAR(150))ENGINE=InnoDB DEFAULT CHARSET=utf8&quot;)
+    #表3 地区表(省下各市)
+    sql.append(&quot;CREATE TABLE IF NOT EXISTS ChinaCity(&quot; \
+         &quot;id INT primary key auto_increment,&quot; \
+         &quot;date DATE NOT NULL,&quot; \
+         &quot;provinceName VARCHAR(40) NOT NULL,&quot; \
+         &quot;cityName VARCHAR(20) NOT NULL,&quot;\
+         &quot;confirmed INT NOT NULL,&quot; \
+         &quot;cured INT NOT NULL,&quot; \
+         &quot;dead INT NOT NULL,&quot; \
+         &quot;suspected INT NOT NULL)ENGINE=InnoDB DEFAULT CHARSET=utf8&quot;)
+    for sql1 in sql:
+        self.cursor.execute(sql1)
+        #print(&quot;成功  &quot;,sql1)
+
+#将爬取数据存入数据库
+def storeData(self):
+    if self.ifStore()==True:
+        if self.change:
+            self.deleteFirst()
+            self.change=False
+        self.storeGlobalJson()
+        self.storeChinaJson()
+    else:
+        print(&quot;数据已存在不重复&quot;)
+
+#建立数据库
+def createDB(self,dbName):
+    # 不存在则创建
+    sql=&#39;CREATE DATABASE IF NOT EXISTS %s&#39; % dbName
+    self.cursor.execute(sql)
+
+#数据库中不含当日数据
+def ifHaveTodayData(self):
+    self.cursor.execute(&quot;SELECT count(*) FROM Global WHERE date=\&#39;%s\&#39;&quot; % self.today)
+    cnt = self.cursor.fetchone()[0]
+    if (cnt == 0):
+        return True
+    else:
+        return False
+
+#判断当前时间的数据是否与数据库中的数据重复
+def ifStore(self):
+    self.change=False
+
+    if(self.ifHaveTodayData()):
+        #self.change=True
+        return True
+    else: #当点的date在数据库中存在，但数据不相同（仅比较前5个数据）
+        num=0
+        change=False
+        for country in self.globalJson:
+            if num==5:
+                break
+            sql123=&quot;SELECT confirmed,cured,dead FROM Global WHERE date=\&#39;%s\&#39; AND countryName=\&#39;%s\&#39; &quot;%(self.today,country[&#39;provinceName&#39;])
+            self.cursor.execute(&quot;SELECT confirmed,cured,dead FROM Global WHERE date=\&#39;%s\&#39; AND countryName=\&#39;%s\&#39; &quot;%(self.today,country[&#39;provinceName&#39;]))
+            listA=self.cursor.fetchone()
+            listB=self.createCountryList(country)
+            if  self.ifEqual(listA,listB)==False :
+                self.change=True
+                return True
+            num+=1
+    return False
+
+#提取国家的部分数据
+def createCountryList(self,country):
+    list=[]
+    list.append(country[&#39;confirmedCount&#39;])
+    list.append(country[&#39;curedCount&#39;])
+    list.append(country[&#39;deadCount&#39;])
+
+    return list
+
+#判断两个list中的数据是否相同
+def ifEqual(self,lista,listb):
+    for i in range(0,len(lista)):
+        if lista[i]!=listb[i]:
+            print(&quot;查出有数据更新！！！！！！&quot;)
+            return False
+    return True
+
+#存储全球疫情数据
+def storeGlobalJson(self):
+    for county in self.globalJson:
+        c=GLOBAL(county)
+        list=c.toList()
+        self.insertIntoGlobal(list)
+
+#存储国内疫情数据
+def storeChinaJson(self):
+    for province in self.chinaJson:
+        p=ChinaProvice(province)
+        self.insertIntoChinaProvince(p.toList())
+        self.insertIntoChinaCity(p.getAllCities())
+
+# 将数据存入表一
+def insertIntoGlobal(self,list):
+    sql=&quot;INSERT INTO Global(date,continents,countryName,shortCode,confirmed,cured,dead,statisticsData)  Values(%s,%s,%s,%s,%s,%s,%s,%s)&quot;
+    try:
+        self.cursor.execute(sql, list)
+    except:
+        print(&quot;错误发生：list=&quot;,list)
+
+# 将数据存入表二
+def insertIntoChinaProvince(self,list):
+    sql = &quot;INSERT INTO ChinaProvince(date,provinceName,confirmed,suspected,cured,dead,statisticsData)  Values(%s,%s,%s,%s,%s,%s,%s)&quot;
+    self.cursor.execute(sql, list)
+
+# 将数据存入表三
+def insertIntoChinaCity(self,lists):
+    sql = &quot;INSERT INTO ChinaCity(date,provinceName,cityName,confirmed,suspected,cured,dead)  Values(%s,%s,%s,%s,%s,%s,%s)&quot;
+    self.cursor.executemany(sql, lists)
+
+# 删除同一天内的过时数据
+def deleteFirst(self):
+    print(&quot;先删除已有的&quot;)
+    for t in self.t_name:
+        sql=&quot;DELETE FROM %s WHERE date=\&#39;%s\&#39;&quot;%(t,self.today)
+        self.cursor.execute(sql)
+</code></pre><p>class GLOBAL:<br>    def <strong>init</strong> (self,jsonData):<br>        self.date=str(datetime.date.today())<br>        self.continents=jsonData[‘continents’]<br>        self.countryName=jsonData[‘provinceName’]<br>        self.shortcode=jsonData[‘countryShortCode’]<br>        self.confirmed=jsonData[‘confirmedCount’]<br>        self.cured=jsonData[‘curedCount’]<br>        self.dead=jsonData[‘deadCount’]<br>        self.statisticsData=jsonData[‘statisticsData’]</p>
+<pre><code>def toList(self):
+    globalList=[]
+    for name,value in vars(self).items():
+        globalList.append(value)
+        #print(&#39;[%s]=%s&#39;%(name,value))
+    return (globalList)
+</code></pre><p>class ChinaProvice:<br>    def <strong>init</strong>(self,jsonData):<br>        self.date = str(datetime.date.today())<br>        self.p_name=jsonData[‘provinceName’]<br>        self.confirmed = jsonData[‘confirmedCount’]<br>        self.suspected = jsonData[‘suspectedCount’]<br>        self.cured = jsonData[‘curedCount’]<br>        self.dead = jsonData[‘deadCount’]<br>        self.statisticsData = jsonData[‘statisticsData’]<br>        self.citiesJson=jsonData[‘cities’]</p>
+<pre><code>def getAllCities(self):
+    cities=[]
+    if(len(self.citiesJson)!=0):
+        for city in self.citiesJson:
+            c=ChinaCity(city,self.p_name)
+            cities.append(c.toList())
+    return cities
+
+def toList(self):
+    pro_list = []
+    for name, value in vars(self).items():
+        if(name!=&#39;citiesJson&#39;):
+            pro_list.append(value)
+        # print(&#39;[%s]=%s&#39;%(name,value))
+    #print(pro_list)
+    return pro_list
+</code></pre><p>class ChinaCity:<br>    def <strong>init</strong>(self,jsonData,p_name):<br>        self.date = str(datetime.date.today())<br>        self.p_name=p_name<br>        self.cityName=jsonData[‘cityName’]<br>        self.confirmed = jsonData[‘confirmedCount’]<br>        self.suspected=jsonData[‘suspectedCount’]<br>        self.cured = jsonData[‘curedCount’]<br>        self.dead = jsonData[‘deadCount’]</p>
+<pre><code>def toList(self):
+    cityList=[]
+    for name,value in vars(self).items():
+        cityList.append(value)
+        #print(&#39;[%s]=%s&#39;%(name,value))
+    #print( cityList)
+    return cityList
+</code></pre><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">#### [8]遇到的问题</span><br><span class="line"></span><br><span class="line">- 拼写问题略过</span><br><span class="line"></span><br><span class="line">- UnicodeEncodeError: &#39;charmap&#39; codec can&#39;t encode characters in position 0-2: character maps to &lt;undefined&gt;</span><br><span class="line"></span><br><span class="line">爬取的是一个中文网站，必然涉及中文编码问题。</span><br><span class="line">[失败的方法参考](https:&#x2F;&#x2F;stackoverflow.com&#x2F;questions&#x2F;27092833&#x2F;unicodeencodeerror-charmap-codec-cant-encode-characters)</span><br><span class="line">这样的后果是在操作soup的时候报错。</span><br><span class="line"></span><br><span class="line">对于python3来说，所谓重新读入也毫无意义。</span><br><span class="line">真正的方法应该是MySQLdb的connection连接设置不完全&#x3D;&#x3D;</span><br><span class="line">[真正有意义的方法](https:&#x2F;&#x2F;blog.csdn.net&#x2F;brink_compiling&#x2F;article&#x2F;details&#x2F;51233087)</span><br><span class="line"></span><br><span class="line">- MySQLdb._exceptions.ProgrammingError: %d format: a number is required, not bytes</span><br><span class="line">对于MySQLdb的cursor.execute中的sql语句并非原始的sql语句，其中所有的占位符号应该均为%s</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">### 4 Vue前端</span><br><span class="line">展示内容：当前最新的累计确症、死亡、治愈</span><br><span class="line"></span><br><span class="line">用vue-paper-dashboard-master+iview的表格组件改的。</span><br><span class="line">（任何模板都有局限性。遇到不能用的地方或是不合心意的地方，要记住没什么东西是不能动的。）</span><br><span class="line"></span><br><span class="line">- 为了生成能给前端应用的Json数据，为opertionDb.py加两个方法</span><br></pre></td></tr></table></figure>
+<h1 id="从数据库中提取全球数据"><a href="#从数据库中提取全球数据" class="headerlink" title="从数据库中提取全球数据"></a>从数据库中提取全球数据</h1><pre><code>def grabGlobalData(self):
+    sql=&quot;SELECT countryName,shortCode,confirmed,cured,dead FROM Global WHERE date=\&#39;%s\&#39; ORDER BY confirmed DESC&quot;
+    #sql1=sql % self.today
+    self.cursor.execute(sql % self.today)
+    g_list=self.cursor.fetchall()
+    g_Json=[]
+    for g in g_list:
+        gData={&#39;name&#39;:g[0],&#39;shortCode&#39;:g[1],&#39;confirmed&#39;:g[2],&#39;cured&#39;:g[3],&#39;dead&#39;:g[4]}
+        g_Json.append(gData)
+    #print(&quot;g_Json=&quot;, g_Json)
+    return g_Json
+
+#从数据库提取国内数据
+def grabChinaData(self):
+    sql1=&quot;SELECT provinceName,confirmed,suspected,cured,dead,id FROM ChinaProvince WHERE date=\&#39;%s\&#39; ORDER BY confirmed DESC&quot;
+    sql2=&quot;SELECT cityName,confirmed,suspected,cured,dead,id FROM ChinaCity WHERE date=\&#39;%s\&#39; AND provinceName=\&#39;%s\&#39; ORDER BY confirmed DESC&quot;
+    self.cursor.execute(sql1 % self.today)
+    p_list=self.cursor.fetchall()
+    p_Json=[]
+    for p in p_list:
+        pData={&#39;name&#39;:p[0],&#39;confirmed&#39;:p[1],&#39;suspected&#39;:p[2],&#39;cured&#39;:p[3],&#39;dead&#39;:p[4],&#39;id&#39;:p[5]}
+        cc=self.cursor.execute(sql2%(self.today,p[0]))
+        if(cc!=0):
+            c_list=self.cursor.fetchall()
+            c_Json=[]
+            for c in c_list:
+                cData={&#39;name&#39;:c[0],&#39;confirmed&#39;:c[1],&#39;suspected&#39;:c[2],&#39;cured&#39;:c[3],&#39;dead&#39;:c[4],&#39;id&#39;:c[5]}
+                c_Json.append(cData)
+            if len(c_Json)!=0:
+                pData.update({&#39;children&#39;:c_Json})
+        #else:
+        #    print(&quot;pName=&quot;,p[0])
+        p_Json.append(pData)
+    #print(&quot;p_Json=&quot;,p_Json)
+    return p_Json
+</code></pre><p>~~~</p>
+<ul>
+<li>iview的table<br>注意使用树形table时，要加id。<br>同时，我国有34个省|直辖市|特别行政区，展开后，又有444个数据项（地级市+境外输入等），不分页会造成浏览器卡顿。所以记得分页。<br><a href="https://www.jianshu.com/p/f88d949403ae" target="_blank" rel="noopener">iview中分页组件(Page)使用指南</a></li>
+</ul>
+<h3 id="5-后端"><a href="#5-后端" class="headerlink" title="5 后端"></a>5 后端</h3><p>采用Django。除了2、3部分叙述的爬虫+数据处理+数据存储问题，Django要做的，只是相应前端的GET请求，返回数据即可。<br>相关内容看<strong>Django学习记录</strong></p>
+<h3 id="6-可改进的方面"><a href="#6-可改进的方面" class="headerlink" title="6 可改进的方面"></a>6 可改进的方面</h3><p>因为时间所限，许多功能并没有去完成。以下留下相关思考。<br>选取的数据部分为了简洁没有去取当前确症（累计确症-死亡-治愈等）,也没有去取历史数据。<br>而这些内容+已经选取的数据，可以完成——<br>1.用户自主查询<br>2.选择查看历史数据<br>3.绘制统计图<br>等</p>
+
+    </div>
+
+    
+    
+    
+
+ 
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Python-Django-Vue-%E7%88%AC%E8%99%AB-%E6%AD%A3%E5%88%99/" rel="tag"><i class="fa fa-tags" aria-hidden="true"></i>
+ Python Django Vue 爬虫 正则</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2020/04/06/NLP/%E5%AD%A6%E4%B9%A0greedyCWS%E6%BA%90%E7%A0%81/" rel="prev" title="学习greedyCWS源码">
+      <i class="fa fa-chevron-left"></i> 学习greedyCWS源码
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2020/04/11/C++/%E5%85%B3%E4%BA%8E%E5%A4%9A%E4%B8%AAc-%E6%96%87%E4%BB%B6%E7%9A%84makefile%E7%BC%96%E5%86%99%E7%BB%83%E4%B9%A0/" rel="next" title="关于多个c++文件的makefile编写练习">
+      关于多个c++文件的makefile编写练习 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-两种构思"><span class="nav-number">1.</span> <span class="nav-text">1 两种构思</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-数据源选取-爬取"><span class="nav-number">2.</span> <span class="nav-text">2 数据源选取+爬取</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#1-腾讯"><span class="nav-number">2.0.1.</span> <span class="nav-text">[1] 腾讯</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#2-新浪"><span class="nav-number">2.0.2.</span> <span class="nav-text">[2] 新浪</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#3-卫建委"><span class="nav-number">2.0.3.</span> <span class="nav-text">[3] 卫建委</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#4-凤凰"><span class="nav-number">2.0.4.</span> <span class="nav-text">[4] 凤凰</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#5-丁香园"><span class="nav-number">2.0.5.</span> <span class="nav-text">[5] 丁香园</span></a></li></ol></li></ol></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#需要安装的依赖"><span class="nav-number"></span> <span class="nav-text">需要安装的依赖</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#MySQldb的安装"><span class="nav-number"></span> <span class="nav-text">MySQldb的安装</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#传入数据自行生成"><span class="nav-number"></span> <span class="nav-text">传入数据自行生成</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#从数据库中提取全球数据"><span class="nav-number"></span> <span class="nav-text">从数据库中提取全球数据</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#5-后端"><span class="nav-number">1.</span> <span class="nav-text">5 后端</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#6-可改进的方面"><span class="nav-number">2.</span> <span class="nav-text">6 可改进的方面</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Mona"
+      src="/images/A.png">
+  <p class="site-author-name" itemprop="name">Mona</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">110</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">37</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">72</span>
+        <span class="site-state-item-name">标签</span>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/moneyna" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;moneyna" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+	 
+   <a href="/">
+      <img class="site-author-image" itemprop="image"
+        src="/images/A.png"
+        alt="Mona" />
+   </a>
+
+  
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Mona</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v4.2.0
+  </div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">主题 – <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> v7.7.2
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+</body>
+</html>
