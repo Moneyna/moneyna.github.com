@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/A.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-minimal.min.css">
+  <script src="/lib/pace/pace.min.js"></script>
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"yoursite.com","root":"/","scheme":"Pisces","version":"7.7.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="1 前言链表（分单链表和双向链表） 2 AC代码[1]  Design Linked List 概述设计链表。  思路要特别注意空指针的处理。   123456789101112131415161718192021222324252627282930313233343536373839404142434445464748495051525354555657585960616263646566676">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Leetcode-LinkedList篇">
+<meta property="og:url" content="http://yoursite.com/2020/05/05/ACM/Leetcode-LinkedList%E7%AF%87/index.html">
+<meta property="og:site_name" content="Moneyna 的杂货铺">
+<meta property="og:description" content="1 前言链表（分单链表和双向链表） 2 AC代码[1]  Design Linked List 概述设计链表。  思路要特别注意空指针的处理。   123456789101112131415161718192021222324252627282930313233343536373839404142434445464748495051525354555657585960616263646566676">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2020-05-05T08:02:19.000Z">
+<meta property="article:modified_time" content="2020-05-06T16:11:18.623Z">
+<meta property="article:author" content="Mona">
+<meta property="article:tag" content="Leetcode LinkedList">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://yoursite.com/2020/05/05/ACM/Leetcode-LinkedList%E7%AF%87/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true
+  };
+</script>
+
+  <title>Leetcode-LinkedList篇 | Moneyna 的杂货铺</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Moneyna 的杂货铺</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">人生得意需尽欢</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+  </ul>
+
+</nav>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/05/05/ACM/Leetcode-LinkedList%E7%AF%87/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/A.png">
+      <meta itemprop="name" content="Mona">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Moneyna 的杂货铺">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Leetcode-LinkedList篇
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-05-05 16:02:19" itemprop="dateCreated datePublished" datetime="2020-05-05T16:02:19+08:00">2020-05-05</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/ACM/" itemprop="url" rel="index"><span itemprop="name">ACM</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h3 id="1-前言"><a href="#1-前言" class="headerlink" title="1 前言"></a>1 前言</h3><p>链表（分单链表和双向链表）</p>
+<h3 id="2-AC代码"><a href="#2-AC代码" class="headerlink" title="2 AC代码"></a>2 AC代码</h3><h4 id="1-Design-Linked-List"><a href="#1-Design-Linked-List" class="headerlink" title="[1]  Design Linked List"></a>[1]  Design Linked List</h4><ul>
+<li><p>概述<br>设计链表。</p>
+</li>
+<li><p>思路<br>要特别注意空指针的处理。</p>
+</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br></pre></td><td class="code"><pre><span class="line">struct node&#123;</span><br><span class="line">    node* next;</span><br><span class="line">    int val;</span><br><span class="line">    </span><br><span class="line">    node(int value)&#123;</span><br><span class="line">        next&#x3D;nullptr;</span><br><span class="line">        val&#x3D;value;</span><br><span class="line">    &#125;</span><br><span class="line">    node()&#123;</span><br><span class="line">        next&#x3D;nullptr;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">class MyLinkedList &#123;</span><br><span class="line">private:</span><br><span class="line">    node* head;</span><br><span class="line">    int len;</span><br><span class="line">    </span><br><span class="line">public:</span><br><span class="line">    &#x2F;** Initialize your data structure here. *&#x2F;</span><br><span class="line">    MyLinkedList() &#123;</span><br><span class="line">        this-&gt;head&#x3D;nullptr;</span><br><span class="line">        this-&gt;len&#x3D;0;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    </span><br><span class="line">    &#x2F;** Get the value of the index-th node in the linked list. If the index is invalid, return -1. *&#x2F;</span><br><span class="line">    int get(int index) &#123;</span><br><span class="line">        if(this-&gt;head&#x3D;&#x3D;nullptr)</span><br><span class="line">            return -1;</span><br><span class="line">        int i&#x3D;0;</span><br><span class="line">        for(auto ptr&#x3D;this-&gt;head;ptr!&#x3D;nullptr;ptr&#x3D;ptr-&gt;next,i++)&#123;</span><br><span class="line">               if(i&#x3D;&#x3D;index)&#123;</span><br><span class="line">                    return ptr-&gt;val;   </span><br><span class="line">               &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        return -1;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    &#x2F;** Add a node of value val before the first element of the linked list. After the insertion, the new node will be the first node of the linked list. *&#x2F;</span><br><span class="line">    void addAtHead(int val) &#123;</span><br><span class="line">        node* n1&#x3D;new node(val);</span><br><span class="line">        n1-&gt;next&#x3D;this-&gt;head;</span><br><span class="line">        this-&gt;head&#x3D;n1;</span><br><span class="line">        this-&gt;len++;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    &#x2F;** Append a node of value val to the last element of the linked list. *&#x2F;</span><br><span class="line">    void addAtTail(int val) &#123;</span><br><span class="line">        if(this-&gt;head&#x3D;&#x3D;nullptr)</span><br><span class="line">        &#123;</span><br><span class="line">            this-&gt;addAtHead(val);</span><br><span class="line">            return;</span><br><span class="line">        &#125;</span><br><span class="line">        node* tail&#x3D;this-&gt;head;</span><br><span class="line">        for(auto ptr&#x3D;this-&gt;head;ptr!&#x3D;nullptr;ptr&#x3D;ptr-&gt;next)&#123;</span><br><span class="line">              if(ptr-&gt;next&#x3D;&#x3D;nullptr)&#123;</span><br><span class="line">                tail&#x3D;ptr;   </span><br><span class="line">              &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        node* n1&#x3D;new node(val);</span><br><span class="line">        tail-&gt;next&#x3D;n1;</span><br><span class="line">        this-&gt;len++;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    &#x2F;** Add a node of value val before the index-th node in the linked list. If index equals to the length of linked list, the node will be appended to the end of linked list. If index is greater than the length, the node will not be inserted. *&#x2F;</span><br><span class="line">    void addAtIndex(int index, int val) &#123;</span><br><span class="line"></span><br><span class="line">        if(index&gt;this-&gt;len||index&lt;0)</span><br><span class="line">            return;</span><br><span class="line">        if(index&#x3D;&#x3D;this-&gt;len)</span><br><span class="line">        &#123;    </span><br><span class="line">            this-&gt;addAtTail(val);</span><br><span class="line">            return;</span><br><span class="line">        &#125;</span><br><span class="line">        if(index&#x3D;&#x3D;0)&#123;</span><br><span class="line">            this-&gt;addAtHead(val);</span><br><span class="line">            return;</span><br><span class="line">        &#125;</span><br><span class="line">        if(this-&gt;head&#x3D;&#x3D;nullptr)</span><br><span class="line">            return ;</span><br><span class="line">        node* n1&#x3D;new node(val);</span><br><span class="line">        node *pre&#x3D;nullptr,*cur&#x3D;nullptr;</span><br><span class="line">        int i&#x3D;0;</span><br><span class="line">        for(auto ptr&#x3D;this-&gt;head;ptr!&#x3D;nullptr;ptr&#x3D;ptr-&gt;next,i++)&#123;</span><br><span class="line">            if(i&#x3D;&#x3D;index-1)&#123;</span><br><span class="line">                pre&#x3D;ptr;   </span><br><span class="line">            &#125;</span><br><span class="line">            if(i&#x3D;&#x3D;index)&#123;</span><br><span class="line">                cur&#x3D;ptr;</span><br><span class="line">                break;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        n1-&gt;next&#x3D;cur;</span><br><span class="line">        pre-&gt;next&#x3D;n1;</span><br><span class="line">        this-&gt;len++;</span><br><span class="line">        return;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    &#x2F;** Delete the index-th node in the linked list, if the index is valid. *&#x2F;</span><br><span class="line">    void deleteAtIndex(int index) &#123;</span><br><span class="line">        if(this-&gt;head&#x3D;&#x3D;nullptr)</span><br><span class="line">            return ;</span><br><span class="line">        if(index&gt;(this-&gt;len-1)||index&lt;0)</span><br><span class="line">            return;</span><br><span class="line">        if(index&#x3D;&#x3D;0)&#123;</span><br><span class="line">            this-&gt;head&#x3D;this-&gt;head-&gt;next;</span><br><span class="line">            this-&gt;len--;</span><br><span class="line">            return;</span><br><span class="line">        &#125;</span><br><span class="line">        node *pre&#x3D;nullptr,*cur&#x3D;nullptr,*aft&#x3D;nullptr;</span><br><span class="line">        int i&#x3D;0;</span><br><span class="line">        for(auto ptr&#x3D;this-&gt;head;ptr!&#x3D;nullptr;ptr&#x3D;ptr-&gt;next,i++)&#123;</span><br><span class="line">            if(i&#x3D;&#x3D;index-1)&#123;</span><br><span class="line">                pre&#x3D;ptr;   </span><br><span class="line">            &#125;</span><br><span class="line">            if(i&#x3D;&#x3D;index)&#123;</span><br><span class="line">                cur&#x3D;ptr;</span><br><span class="line">            &#125;</span><br><span class="line">            if(i&#x3D;&#x3D;index+1)&#123;</span><br><span class="line">                aft&#x3D;ptr;   </span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        &#x2F;&#x2F;删除最后一个元素</span><br><span class="line">        if(aft&#x3D;&#x3D;nullptr)</span><br><span class="line">        &#123;</span><br><span class="line">            pre-&gt;next&#x3D;nullptr;</span><br><span class="line">            this-&gt;len--;</span><br><span class="line">            return;</span><br><span class="line">        &#125;else&#123;</span><br><span class="line">            pre-&gt;next&#x3D;aft;</span><br><span class="line">            this-&gt;len--;</span><br><span class="line">            return;</span><br><span class="line">        &#125;</span><br><span class="line">        return;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">&#x2F;**</span><br><span class="line"> * Your MyLinkedList object will be instantiated and called as such:</span><br><span class="line"> * MyLinkedList* obj &#x3D; new MyLinkedList();</span><br><span class="line"> * int param_1 &#x3D; obj-&gt;get(index);</span><br><span class="line"> * obj-&gt;addAtHead(val);</span><br><span class="line"> * obj-&gt;addAtTail(val);</span><br><span class="line"> * obj-&gt;addAtIndex(index,val);</span><br><span class="line"> * obj-&gt;deleteAtIndex(index);</span><br><span class="line"> *&#x2F;</span><br></pre></td></tr></table></figure>
+<h4 id="2-Linked-List-Cycle"><a href="#2-Linked-List-Cycle" class="headerlink" title="[2] Linked List Cycle"></a>[2] Linked List Cycle</h4><p><a href="https://leetcode.com/explore/learn/card/linked-list/214/two-pointer-technique/1212/" target="_blank" rel="noopener">题目</a></p>
+<ul>
+<li><p>概述<br>是否有圈。</p>
+</li>
+<li><p>思路<br>用两个指针，一个快一个慢，看二者是否相遇。（快指针走2，慢指针走1，在M后，二者会相遇）<br>若没有圈，快指针会先走到NULL</p>
+</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;**</span><br><span class="line"> * Definition for singly-linked list.</span><br><span class="line"> * struct ListNode &#123;</span><br><span class="line"> *     int val;</span><br><span class="line"> *     ListNode *next;</span><br><span class="line"> *     ListNode(int x) : val(x), next(NULL) &#123;&#125;</span><br><span class="line"> * &#125;;</span><br><span class="line"> *&#x2F;</span><br><span class="line">class Solution &#123;</span><br><span class="line">public:</span><br><span class="line">    bool hasCycle(ListNode *head) &#123;</span><br><span class="line">        if(head&#x3D;&#x3D;NULL)</span><br><span class="line">            return false;</span><br><span class="line">        ListNode *p1&#x3D;head,*p2&#x3D;head;</span><br><span class="line">        </span><br><span class="line">        for(;p2!&#x3D;NULL;p2&#x3D;p2-&gt;next)&#123;</span><br><span class="line">           </span><br><span class="line">            for(int i&#x3D;0;i&lt;2;i++)</span><br><span class="line">                if(p1-&gt;next!&#x3D;NULL)</span><br><span class="line">                    p1&#x3D;p1-&gt;next;</span><br><span class="line">                else&#123;</span><br><span class="line">                    return false;   </span><br><span class="line">                &#125;</span><br><span class="line">             if(p1&#x3D;&#x3D;p2)&#123;</span><br><span class="line">                return true;   </span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        return false;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    </span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<h4 id="3-Linked-List-Cycle-II"><a href="#3-Linked-List-Cycle-II" class="headerlink" title="[3] Linked List Cycle II"></a>[3] Linked List Cycle II</h4><p>[题目]（<a href="https://leetcode.com/explore/learn/card/linked-list/214/two-pointer-technique/1214/）" target="_blank" rel="noopener">https://leetcode.com/explore/learn/card/linked-list/214/two-pointer-technique/1214/）</a></p>
+<ul>
+<li><p>概述<br>找出圈开始的位置（最后一个元素指向的元素）</p>
+</li>
+<li><p>思路<br>存下所有点，重复的第一个就是圈开始的位置。</p>
+</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;**</span><br><span class="line"> * Definition for singly-linked list.</span><br><span class="line"> * struct ListNode &#123;</span><br><span class="line"> *     int val;</span><br><span class="line"> *     ListNode *next;</span><br><span class="line"> *     ListNode(int x) : val(x), next(NULL) &#123;&#125;</span><br><span class="line"> * &#125;;</span><br><span class="line"> *&#x2F;</span><br><span class="line">class Solution &#123;</span><br><span class="line">public:</span><br><span class="line">    ListNode *detectCycle(ListNode *head) &#123;</span><br><span class="line">        if(head&#x3D;&#x3D;NULL)</span><br><span class="line">            return NULL;</span><br><span class="line">        map&lt;ListNode*,ListNode*&gt; mmap;</span><br><span class="line">        ListNode *p1&#x3D;head,*p2&#x3D;head;</span><br><span class="line">        </span><br><span class="line">        for(;p2!&#x3D;NULL;p2&#x3D;p2-&gt;next)&#123;</span><br><span class="line">           if(mmap.find(p2)!&#x3D;mmap.end())</span><br><span class="line">               return mmap[p2];</span><br><span class="line">           else</span><br><span class="line">               mmap.insert(make_pair(p2,p2));</span><br><span class="line">           </span><br><span class="line">        &#125;</span><br><span class="line">        return NULL;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<h4 id="4-Intersection-of-Two-Linked-Lists"><a href="#4-Intersection-of-Two-Linked-Lists" class="headerlink" title="[4]  Intersection of Two Linked Lists"></a>[4]  Intersection of Two Linked Lists</h4><p><a href="https://leetcode.com/explore/learn/card/linked-list/214/two-pointer-technique/1215/" target="_blank" rel="noopener">题目</a></p>
+<ul>
+<li><p>概述<br>两个链表会合的位置。</p>
+</li>
+<li><p>思路<br>存下来，从后向前匹配。</p>
+</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;**</span><br><span class="line"> * Definition for singly-linked list.</span><br><span class="line"> * struct ListNode &#123;</span><br><span class="line"> *     int val;</span><br><span class="line"> *     ListNode *next;</span><br><span class="line"> *     ListNode(int x) : val(x), next(NULL) &#123;&#125;</span><br><span class="line"> * &#125;;</span><br><span class="line"> *&#x2F;</span><br><span class="line">class Solution &#123;</span><br><span class="line">public:</span><br><span class="line">    ListNode *getIntersectionNode(ListNode *headA, ListNode *headB) &#123;</span><br><span class="line">        if(headA&#x3D;&#x3D;NULL||headB&#x3D;&#x3D;NULL)&#123;</span><br><span class="line">            return NULL;   </span><br><span class="line">        &#125;</span><br><span class="line">        </span><br><span class="line">        vector&lt;ListNode*&gt; a,b;</span><br><span class="line">        for(auto p1&#x3D;headA;p1!&#x3D;NULL;p1&#x3D;p1-&gt;next)&#123;</span><br><span class="line">            a.insert(a.end(),p1);   </span><br><span class="line">        &#125;</span><br><span class="line">        for(auto p1&#x3D;headB;p1!&#x3D;NULL;p1&#x3D;p1-&gt;next)&#123;</span><br><span class="line">            b.insert(b.end(),p1);   </span><br><span class="line">        &#125;</span><br><span class="line">        &#x2F;&#x2F;从后往前找</span><br><span class="line">        int len1&#x3D;a.size(),len2&#x3D;b.size();</span><br><span class="line">        ListNode * p1&#x3D;nullptr;</span><br><span class="line">        for(int i&#x3D;len1-1,j&#x3D;len2-1;i&gt;&#x3D;0&amp;&amp;j&gt;&#x3D;0;i--,j--)&#123;</span><br><span class="line">            if(a[i]&#x3D;&#x3D;b[j])</span><br><span class="line">            &#123;</span><br><span class="line">                cout&lt;&lt;&quot;i&#x3D;&quot;&lt;&lt;i&lt;&lt;endl;</span><br><span class="line">                p1&#x3D;a[i];</span><br><span class="line">            &#125;else&#123;</span><br><span class="line">                   return p1;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        return p1;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<h4 id="5-Remove-Nth-Node-From-End-of-List"><a href="#5-Remove-Nth-Node-From-End-of-List" class="headerlink" title="[5] Remove Nth Node From End of List"></a>[5] Remove Nth Node From End of List</h4><ul>
+<li><p>概述<br>移除指定元素。</p>
+</li>
+<li><p>思路<br>先把所有的指针都存下来。</p>
+</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;**</span><br><span class="line"> * Definition for singly-linked list.</span><br><span class="line"> * struct ListNode &#123;</span><br><span class="line"> *     int val;</span><br><span class="line"> *     ListNode *next;</span><br><span class="line"> *     ListNode() : val(0), next(nullptr) &#123;&#125;</span><br><span class="line"> *     ListNode(int x) : val(x), next(nullptr) &#123;&#125;</span><br><span class="line"> *     ListNode(int x, ListNode *next) : val(x), next(next) &#123;&#125;</span><br><span class="line"> * &#125;;</span><br><span class="line"> *&#x2F;</span><br><span class="line">class Solution &#123;</span><br><span class="line">public:</span><br><span class="line">    ListNode* removeNthFromEnd(ListNode* head, int n) &#123;</span><br><span class="line">        if(head&#x3D;&#x3D;nullptr)</span><br><span class="line">            return head;</span><br><span class="line">        vector&lt;ListNode*&gt; list;</span><br><span class="line">        for(auto p1&#x3D;head;p1!&#x3D;nullptr;p1&#x3D;p1-&gt;next)&#123;</span><br><span class="line">            list.insert(list.end(),p1);</span><br><span class="line">        &#125;</span><br><span class="line">        int len&#x3D;list.size();</span><br><span class="line">        cout&lt;&lt;&quot;len&#x3D;&quot;&lt;&lt;len&lt;&lt;&quot; n&#x3D;&quot;&lt;&lt;n&lt;&lt;endl;</span><br><span class="line">        if(n&#x3D;&#x3D;len)&#123;</span><br><span class="line">            head&#x3D;head-&gt;next;</span><br><span class="line">        &#125;else if(n&#x3D;&#x3D;1)&#123;</span><br><span class="line">            list[len-2]-&gt;next&#x3D;nullptr;   </span><br><span class="line">        &#125;else&#123;</span><br><span class="line">            list[len-n-1]-&gt;next&#x3D;list[len-n+1];   </span><br><span class="line">        &#125;</span><br><span class="line">        return head;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<h4 id="6-Reverse-Linked-List"><a href="#6-Reverse-Linked-List" class="headerlink" title="[6] Reverse Linked List"></a>[6] Reverse Linked List</h4><p><a href="https://leetcode.com/explore/learn/card/linked-list/219/classic-problems/1205/" target="_blank" rel="noopener">题目</a></p>
+<ul>
+<li>概述<br>倒序。</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;**</span><br><span class="line"> * Definition for singly-linked list.</span><br><span class="line"> * struct ListNode &#123;</span><br><span class="line"> *     int val;</span><br><span class="line"> *     ListNode *next;</span><br><span class="line"> *     ListNode() : val(0), next(nullptr) &#123;&#125;</span><br><span class="line"> *     ListNode(int x) : val(x), next(nullptr) &#123;&#125;</span><br><span class="line"> *     ListNode(int x, ListNode *next) : val(x), next(next) &#123;&#125;</span><br><span class="line"> * &#125;;</span><br><span class="line"> *&#x2F;</span><br><span class="line">class Solution &#123;</span><br><span class="line">public:</span><br><span class="line">    ListNode* reverseList(ListNode* head) &#123;</span><br><span class="line">        if(head&#x3D;&#x3D;nullptr||head-&gt;next&#x3D;&#x3D;nullptr)&#123;</span><br><span class="line">            return head;   </span><br><span class="line">        &#125;</span><br><span class="line">        </span><br><span class="line">        ListNode *p1&#x3D;head,*p2&#x3D;head-&gt;next,*ori&#x3D;head;</span><br><span class="line">        for(;p2!&#x3D;nullptr&amp;&amp;p1!&#x3D;nullptr;)&#123;</span><br><span class="line">           </span><br><span class="line">                ListNode* p3&#x3D;p2-&gt;next;</span><br><span class="line">                p2-&gt;next&#x3D;p1; </span><br><span class="line">                head&#x3D;p2;</span><br><span class="line">                if(p1&#x3D;&#x3D;ori)</span><br><span class="line">                    p1-&gt;next&#x3D;nullptr;</span><br><span class="line">                p1&#x3D;p2;</span><br><span class="line">                p2&#x3D;p3;</span><br><span class="line">           </span><br><span class="line">        &#125;</span><br><span class="line">       </span><br><span class="line">            </span><br><span class="line">        return head;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<h4 id="7-Remove-Linked-List-Elements"><a href="#7-Remove-Linked-List-Elements" class="headerlink" title="[7] Remove Linked List Elements"></a>[7] Remove Linked List Elements</h4><p><a href="https://leetcode.com/explore/learn/card/linked-list/219/classic-problems/1207/" target="_blank" rel="noopener">题目</a></p>
+<ul>
+<li><p>概述<br>把特定值代表的结点从list里删了。</p>
+</li>
+<li><p>思路<br>三个判断。尤其是循环判断很关键。</p>
+</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;**</span><br><span class="line"> * Definition for singly-linked list.</span><br><span class="line"> * struct ListNode &#123;</span><br><span class="line"> *     int val;</span><br><span class="line"> *     ListNode *next;</span><br><span class="line"> *     ListNode() : val(0), next(nullptr) &#123;&#125;</span><br><span class="line"> *     ListNode(int x) : val(x), next(nullptr) &#123;&#125;</span><br><span class="line"> *     ListNode(int x, ListNode *next) : val(x), next(next) &#123;&#125;</span><br><span class="line"> * &#125;;</span><br><span class="line"> *&#x2F;</span><br><span class="line">class Solution &#123;</span><br><span class="line">public:</span><br><span class="line">    ListNode* removeElements(ListNode* head, int val) &#123;</span><br><span class="line">        if(head&#x3D;&#x3D;nullptr)</span><br><span class="line">        &#123;   </span><br><span class="line">            return head;</span><br><span class="line">        &#125;</span><br><span class="line">        if(head-&gt;val&#x3D;&#x3D;val&amp;&amp;head-&gt;next&#x3D;&#x3D;nullptr)&#123;</span><br><span class="line">            return nullptr;   </span><br><span class="line">        &#125;</span><br><span class="line">        while(head-&gt;val&#x3D;&#x3D;val)&#123;</span><br><span class="line">            head&#x3D;head-&gt;next;   </span><br><span class="line">            if(head&#x3D;&#x3D;nullptr)&#123;</span><br><span class="line">                return nullptr;   </span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        ListNode* ori&#x3D;head,*pre&#x3D;head,*p1&#x3D;head-&gt;next;</span><br><span class="line">        cout&lt;&lt;&quot;审核通过！&quot;&lt;&lt;endl;</span><br><span class="line">        for(;p1!&#x3D;nullptr;p1&#x3D;p1-&gt;next)&#123;</span><br><span class="line">            if(p1-&gt;val&#x3D;&#x3D;val)&#123;</span><br><span class="line">                pre-&gt;next&#x3D;p1-&gt;next;</span><br><span class="line">            &#125;else&#123;</span><br><span class="line">                pre&#x3D;p1;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        return head;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<h4 id="8-Odd-Even-Linked-List"><a href="#8-Odd-Even-Linked-List" class="headerlink" title="[8] Odd Even Linked List"></a>[8] Odd Even Linked List</h4><p><a href="https://leetcode.com/explore/learn/card/linked-list/219/classic-problems/1208/" target="_blank" rel="noopener">题目</a></p>
+<ul>
+<li><p>概述<br>奇数的点在前，偶数点在后，且相对顺序不变。（In-place变换）</p>
+</li>
+<li><p>思路<br>遍历，奇数与奇数串，偶数与偶数串。再组合。</p>
+</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;**</span><br><span class="line"> * Definition for singly-linked list.</span><br><span class="line"> * struct ListNode &#123;</span><br><span class="line"> *     int val;</span><br><span class="line"> *     ListNode *next;</span><br><span class="line"> *     ListNode() : val(0), next(nullptr) &#123;&#125;</span><br><span class="line"> *     ListNode(int x) : val(x), next(nullptr) &#123;&#125;</span><br><span class="line"> *     ListNode(int x, ListNode *next) : val(x), next(next) &#123;&#125;</span><br><span class="line"> * &#125;;</span><br><span class="line"> *&#x2F;</span><br><span class="line">class Solution &#123;</span><br><span class="line">public:</span><br><span class="line">    ListNode* oddEvenList(ListNode* head) &#123;</span><br><span class="line">        if(head&#x3D;&#x3D;nullptr||head-&gt;next&#x3D;&#x3D;nullptr)&#123;</span><br><span class="line">            return head;   </span><br><span class="line">        &#125;</span><br><span class="line">        ListNode* h1&#x3D;head,*h2&#x3D;head-&gt;next,*h22&#x3D;head-&gt;next,*p1&#x3D;h2-&gt;next,*p2;</span><br><span class="line">        if(p1&#x3D;&#x3D;nullptr)&#123;</span><br><span class="line">               return head;</span><br><span class="line">        &#125;else&#123;</span><br><span class="line">            p2&#x3D;p1-&gt;next;   </span><br><span class="line">        &#125;</span><br><span class="line">        for(;p1!&#x3D;nullptr;)&#123;</span><br><span class="line">            cout&lt;&lt;&quot;p1-&gt;val&#x3D;&quot;&lt;&lt;p1-&gt;val&lt;&lt;endl;</span><br><span class="line">            h1-&gt;next&#x3D;p1;</span><br><span class="line">            h2-&gt;next&#x3D;p2;</span><br><span class="line">            if(p2!&#x3D;nullptr)&#123;</span><br><span class="line">                h1&#x3D;p1;</span><br><span class="line">                p1&#x3D;p2-&gt;next;</span><br><span class="line">                if(p1!&#x3D;nullptr)&#123;</span><br><span class="line">                   h2&#x3D;p2;</span><br><span class="line">                   p2&#x3D;p1-&gt;next;</span><br><span class="line">                &#125;else&#123;</span><br><span class="line">                    p2-&gt;next&#x3D;nullptr;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;else&#123;</span><br><span class="line">                h1&#x3D;p1;</span><br><span class="line">                p1&#x3D;nullptr;   </span><br><span class="line">            &#125;</span><br><span class="line">            </span><br><span class="line">        &#125;</span><br><span class="line">        h1-&gt;next&#x3D;h22;</span><br><span class="line">        return head;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<h4 id="9-Palindrome-Linked-List"><a href="#9-Palindrome-Linked-List" class="headerlink" title="[9]  Palindrome Linked List"></a>[9]  Palindrome Linked List</h4><p><a href="https://leetcode.com/explore/learn/card/linked-list/219/classic-problems/1209/" target="_blank" rel="noopener">题目</a></p>
+<ul>
+<li><p>概述<br>判断是否为回文</p>
+</li>
+<li><p>思路<br>取到数组去判断。</p>
+</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;**</span><br><span class="line"> * Definition for singly-linked list.</span><br><span class="line"> * struct ListNode &#123;</span><br><span class="line"> *     int val;</span><br><span class="line"> *     ListNode *next;</span><br><span class="line"> *     ListNode() : val(0), next(nullptr) &#123;&#125;</span><br><span class="line"> *     ListNode(int x) : val(x), next(nullptr) &#123;&#125;</span><br><span class="line"> *     ListNode(int x, ListNode *next) : val(x), next(next) &#123;&#125;</span><br><span class="line"> * &#125;;</span><br><span class="line"> *&#x2F;</span><br><span class="line">class Solution &#123;</span><br><span class="line">public:</span><br><span class="line">    bool isPalindrome(ListNode* head) &#123;</span><br><span class="line">        vector&lt;int&gt; vec;</span><br><span class="line">        for(auto p1&#x3D;head;p1!&#x3D;nullptr;p1&#x3D;p1-&gt;next)&#123;</span><br><span class="line">            vec.push_back(p1-&gt;val);   </span><br><span class="line">        &#125;</span><br><span class="line">        int len&#x3D;vec.size();</span><br><span class="line">        for(int i&#x3D;0,j&#x3D;len-1;i&lt;&#x3D;j;i++,j--)&#123;</span><br><span class="line">            if(vec[i]!&#x3D;vec[j])</span><br><span class="line">                return false;</span><br><span class="line">        &#125;</span><br><span class="line">        return true;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<h4 id="10-Merge-Two-Sorted-Lists"><a href="#10-Merge-Two-Sorted-Lists" class="headerlink" title="[10] Merge Two Sorted Lists"></a>[10] Merge Two Sorted Lists</h4><p><a href="https://leetcode.com/explore/learn/card/linked-list/213/conclusion/1227/" target="_blank" rel="noopener">题目</a></p>
+<ul>
+<li><p>概述<br>组合两个链表</p>
+</li>
+<li><p>思路<br>同题8</p>
+</li>
+</ul>
+<h4 id="11"><a href="#11" class="headerlink" title="[11]"></a>[11]</h4><ul>
+<li><p>概述</p>
+</li>
+<li><p>思路</p>
+</li>
+</ul>
+<h4 id="12"><a href="#12" class="headerlink" title="[12]"></a>[12]</h4><ul>
+<li><p>概述</p>
+</li>
+<li><p>思路</p>
+</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+ 
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Leetcode-LinkedList/" rel="tag"><i class="fa fa-tags" aria-hidden="true"></i>
+ Leetcode LinkedList</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2020/04/29/ACM/Leetcode-Array101%E7%AF%87/" rel="prev" title="Leetcode-Array101篇">
+      <i class="fa fa-chevron-left"></i> Leetcode-Array101篇
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2020/11/06/WIFI%E5%AE%A4%E5%86%85%E5%AE%9A%E4%BD%8D/WIFI%E5%AE%9A%E4%BD%8D%E7%AC%94%E8%AE%B0/" rel="next" title="WIFI室内定位/WIFI定位笔记">
+      WIFI室内定位/WIFI定位笔记 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-前言"><span class="nav-number">1.</span> <span class="nav-text">1 前言</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-AC代码"><span class="nav-number">2.</span> <span class="nav-text">2 AC代码</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-Design-Linked-List"><span class="nav-number">2.1.</span> <span class="nav-text">[1]  Design Linked List</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-Linked-List-Cycle"><span class="nav-number">2.2.</span> <span class="nav-text">[2] Linked List Cycle</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-Linked-List-Cycle-II"><span class="nav-number">2.3.</span> <span class="nav-text">[3] Linked List Cycle II</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-Intersection-of-Two-Linked-Lists"><span class="nav-number">2.4.</span> <span class="nav-text">[4]  Intersection of Two Linked Lists</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#5-Remove-Nth-Node-From-End-of-List"><span class="nav-number">2.5.</span> <span class="nav-text">[5] Remove Nth Node From End of List</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#6-Reverse-Linked-List"><span class="nav-number">2.6.</span> <span class="nav-text">[6] Reverse Linked List</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#7-Remove-Linked-List-Elements"><span class="nav-number">2.7.</span> <span class="nav-text">[7] Remove Linked List Elements</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#8-Odd-Even-Linked-List"><span class="nav-number">2.8.</span> <span class="nav-text">[8] Odd Even Linked List</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#9-Palindrome-Linked-List"><span class="nav-number">2.9.</span> <span class="nav-text">[9]  Palindrome Linked List</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#10-Merge-Two-Sorted-Lists"><span class="nav-number">2.10.</span> <span class="nav-text">[10] Merge Two Sorted Lists</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#11"><span class="nav-number">2.11.</span> <span class="nav-text">[11]</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#12"><span class="nav-number">2.12.</span> <span class="nav-text">[12]</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Mona"
+      src="/images/A.png">
+  <p class="site-author-name" itemprop="name">Mona</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">115</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">38</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">75</span>
+        <span class="site-state-item-name">标签</span>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/moneyna" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;moneyna" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+	 
+   <a href="/">
+      <img class="site-author-image" itemprop="image"
+        src="/images/A.png"
+        alt="Mona" />
+   </a>
+
+  
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Mona</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v4.2.0
+  </div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">主题 – <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> v7.7.2
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+</body>
+</html>

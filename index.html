@@ -151,6 +151,416 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/11/06/WIFI%E5%AE%A4%E5%86%85%E5%AE%9A%E4%BD%8D/WIFI%E5%AE%9A%E4%BD%8D%E7%AC%94%E8%AE%B0/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/A.png">
+      <meta itemprop="name" content="Mona">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Moneyna 的杂货铺">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          
+            <a href="/2020/11/06/WIFI%E5%AE%A4%E5%86%85%E5%AE%9A%E4%BD%8D/WIFI%E5%AE%9A%E4%BD%8D%E7%AC%94%E8%AE%B0/" class="post-title-link" itemprop="url">WIFI室内定位/WIFI定位笔记</a>
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-11-06 21:11:34" itemprop="dateCreated datePublished" datetime="2020-11-06T21:11:34+08:00">2020-11-06</time>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>—<br>title: WIFI室内定位学习笔记<br>categories: WIFI室内定位<br>tags: WIFI定位 WIFI</p>
+<h2 id="date-2020-11-03-09-17-20"><a href="#date-2020-11-03-09-17-20" class="headerlink" title="date: 2020-11-03 09:17:20"></a>date: 2020-11-03 09:17:20</h2><h3 id="前言（一些发现）"><a href="#前言（一些发现）" class="headerlink" title="前言（一些发现）"></a>前言（一些发现）</h3><ul>
+<li>室内定位精度应该要有一定追求，粒度如果是一个房间那完全不足以说明真实的位置</li>
+<li>输入已知是CSI，输出是什么呢？—-》需要知道地图吗？在线生成地图吗？</li>
+<li><del>能找一个简易教程吗？</del></li>
+<li>要明确我是否需要管信号采集、地图绘制（及房间和AP定位），还是说我只管利用？</li>
+<li><del>传感器需不需要嵌入式编程？</del></li>
+<li>如果是数据交给我，数据格式是什么呢？</li>
+<li>询问学姐需要训练的，还是不要训练的？</li>
+<li>需要的精度是多少？常规方法精度在2.5m左右，精确处理后大概在1.5m</li>
+</ul>
+<p><em>2020-11-06更新</em><br>目前顺序：<br>github参考<br>CSI tools采集数据<br>数据库设计<br>采用指纹法</p>
+<h2 id="一、理论学习"><a href="#一、理论学习" class="headerlink" title="一、理论学习"></a>一、理论学习</h2><h3 id="1-《基于WIFI的室内定位》"><a href="#1-《基于WIFI的室内定位》" class="headerlink" title="1 《基于WIFI的室内定位》"></a>1 《基于WIFI的室内定位》</h3><p><strong>原来内容来自书《Advanced Location-Based Technologies and Services》的第二章</strong><br><a href="https://blog.csdn.net/coutamg/article/details/69791748" target="_blank" rel="noopener">博客地址</a></p>
+<p>采用位置指纹法</p>
+<ul>
+<li><p>1 定位分类</p>
+<ul>
+<li>远程定位/网络定位：如果待定位设备是在发送信号，由一些固定的接收设备感知待定位设备的信号或信息然后给它定位，这种方式</li>
+<li>自身定位： 待定位设备是在接受信号，接受固定的发送设备的信号与信息</li>
+<li>混合定位</li>
+</ul>
+</li>
+<li><p>2 两种最常用的信号特征（可以用于做位置指纹）</p>
+<ul>
+<li><p>多径结构（功率时延分布）：由于传播时延与强度不同使得同一位置接受到多条多径分量。</p>
+</li>
+<li><p>RSS（Received Signal Strength）:接受信号强度，精度很低，需要通过收集一定数量（区别于只用一个）的RSS作为指纹。</p>
+</li>
+</ul>
+</li>
+<li><p>3 基于位置指纹的定位算法<br>可分为确定性的定位算法与概率型的定位算法<br><strong>（目前猜测概率型的更适合？）</strong></p>
+</li>
+<li><p>4 误差分析<br>误差的来源有无线电传播的复杂性、删减信号（Censored Data）等<br>误差在11年左右还是以m为数量级</p>
+</li>
+</ul>
+<h3 id="2-《基于WIFI指纹的室内定位》"><a href="#2-《基于WIFI指纹的室内定位》" class="headerlink" title="2 《基于WIFI指纹的室内定位》"></a>2 《基于WIFI指纹的室内定位》</h3><p><a href="https://blog.csdn.net/u014527548/article/details/104701867?utm_medium=distribute.pc_relevant.none-task-blog-BlogCommendFromMachineLearnPai2-3.add_param_isCf&amp;depth_1-utm_source=distribute.pc_relevant.none-task-blog-BlogCommendFromMachineLearnPai2-3.add_param_isCf" target="_blank" rel="noopener">博客</a></p>
+<p>可能存在的问题：似乎没有使用CSI？</p>
+<p>涉及两篇论文：<br>1.Miyagusuku R , Yamashita A , Asama H . Data Information Fusion From Multiple Access Points for WiFi-Based Self-localization[J]. IEEE Robotics and Automation Letters, 2019, 4(2):269-276.<br>2.R. Miyagusuku, A. Yamashita, and H. Asama, “Precise and accurate wireless signal strength mappings using Gaussian processes and path loss models,” Robotics and Autonomous Systems, vol. 103, pp. 134– 150, 2018.</p>
+<p><strong>待看</strong></p>
+<h3 id="3-毕业设计之-—-wifi指纹室内定位系统"><a href="#3-毕业设计之-—-wifi指纹室内定位系统" class="headerlink" title="3 毕业设计之 — wifi指纹室内定位系统"></a>3 毕业设计之 — wifi指纹室内定位系统</h3><p><a href="https://blog.csdn.net/HUXINY/article/details/109386516?utm_medium=distribute.pc_relevant.none-task-blog-title-10&amp;spm=1001.2101.3001.4242" target="_blank" rel="noopener">博客</a></p>
+<p>一些定位算法的简介</p>
+<h3 id="4-基于WiFi-的CSI和RSS混合指纹室内定位"><a href="#4-基于WiFi-的CSI和RSS混合指纹室内定位" class="headerlink" title="4 基于WiFi 的CSI和RSS混合指纹室内定位"></a>4 基于WiFi 的CSI和RSS混合指纹室内定位</h3><p><a href="https://blog.csdn.net/qq_25123119/article/details/74784052?utm_medium=distribute.pc_relevant.none-task-blog-title-7&amp;spm=1001.2101.3001.4242" target="_blank" rel="noopener">博客</a></p>
+<p>有一张示意图</p>
+<h3 id="4-三边定位算法-WiFi和RFID结合解决室内定位问题"><a href="#4-三边定位算法-WiFi和RFID结合解决室内定位问题" class="headerlink" title="4 三边定位算法 - WiFi和RFID结合解决室内定位问题"></a>4 三边定位算法 - WiFi和RFID结合解决室内定位问题</h3><p><a href="www.elecfans.com/tongxin/rf/20130108304360_2.html">博客</a></p>
+<p>三个AP，用RSS，怎么就没有用CSI的呢？</p>
+<h3 id="5-基于Android平台改进的室内WiFi定位算法的研究"><a href="#5-基于Android平台改进的室内WiFi定位算法的研究" class="headerlink" title="5 基于Android平台改进的室内WiFi定位算法的研究"></a>5 基于Android平台改进的室内WiFi定位算法的研究</h3><p><a href="www.chinaaet.com/tech/designapplication/3000062483">博客</a></p>
+<p>Again，CSI呢？</p>
+<h3 id="5-《嘈杂环境中利用CSI信息的室内轨迹跟踪技术》"><a href="#5-《嘈杂环境中利用CSI信息的室内轨迹跟踪技术》" class="headerlink" title="5 《嘈杂环境中利用CSI信息的室内轨迹跟踪技术》"></a>5 《嘈杂环境中利用CSI信息的室内轨迹跟踪技术》</h3><p><a href="www.signal.org.cn/CN/abstract/abstract10818.shtml">论文地址</a></p>
+<p>Related Work里提到了CSI可以作为RSSI的等价替代品应用于指纹定位中<br>而RSSI的主要缺点正是多径效应带来的干扰</p>
+<p>提到本文应用的方法无需体现采集，好像也只需要一台发射设备和接受设备</p>
+<p>在Linux装CSI tools就可以接受CSI？</p>
+<p>这个是用于室内跟踪的，学姐需不需要跟踪？<br>如果能复现这个论文，那整个代码逻辑就是：<br>实现绘制地图，跟踪位置并可以在地图上显示（打点）</p>
+<p><strong>需要重新再阅读一遍，重点在于无需提前获取数据</strong></p>
+<h3 id="6-《基于稀疏表示的CSI室内定位方法》"><a href="#6-《基于稀疏表示的CSI室内定位方法》" class="headerlink" title="6 《基于稀疏表示的CSI室内定位方法》"></a>6 《基于稀疏表示的CSI室内定位方法》</h3><p><a href="www.jos.org.cn/jos/ch/reader/create_pdf.aspx?file_no=16003&amp;journal_id=jos">论文</a></p>
+<p>只使用一个AP是因为一般家庭就一个AP，不过如果是很复杂的环境（及多个AP），还需要考虑干扰<br>（题外话：RSSI的多径效应一是因为有多个AP，另一个原因是反射、折射、散射）</p>
+<p>该论文只是提取了更为精准的指纹（类似机器学习的表征学习）<br>难点集中在数据采集与训练</p>
+<h3 id="7-《基于Kmeans聚类的CSI室内定位》"><a href="#7-《基于Kmeans聚类的CSI室内定位》" class="headerlink" title="7 《基于Kmeans聚类的CSI室内定位》"></a>7 《基于Kmeans聚类的CSI室内定位》</h3><p><a href="https://kns.cnki.net/kcms/detail/detail.aspx?dbcode=CJFD&amp;dbname=CJFDLAST2017&amp;filename=DZJY201612020&amp;v=ewRgRUTNHiBwb2at6ENykUVltu0ih2OzGSCkuIFe1er504WVmshDznLBzwpUPYaS" target="_blank" rel="noopener">论文</a></p>
+<p>作为一篇16年的论文，奠基作用在于CSI、K-means、聚类、欧式距离<br>不过近段时间（包括上篇2020年发表）的论文已经证明，欧式效果不如贝叶斯等</p>
+<p>实验是在matlab中仿真的</p>
+<h3 id="8-《基于聚类的组合时间反转算法的CSI指纹室内定位研究》"><a href="#8-《基于聚类的组合时间反转算法的CSI指纹室内定位研究》" class="headerlink" title="8 《基于聚类的组合时间反转算法的CSI指纹室内定位研究》"></a>8 《基于聚类的组合时间反转算法的CSI指纹室内定位研究》</h3><p><a href="https://kns.cnki.net/kcms/detail/detail.aspx?dbcode=CJFD&amp;dbname=CJFDLAST2019&amp;filename=DSSS201811012&amp;v=sRPZFPi3F%25mmd2Bd%25mmd2FkLVvJPkUXOir8cuFADkq0%25mmd2BewOvIOkgibdQK0Ch4SrlTcSjHMOaGv" target="_blank" rel="noopener">论文</a></p>
+<p>不管是CSI还是RSSI，都存在统一地点不同时刻或是统一时刻不同设备测得的CSI（RSSI）信号结果不同的问题<br>所以二者不能直接作为指纹使用，而需进行一些处理<br>—&gt;任何处理都是为了提取指纹</p>
+<p>该文亮点也正是在指纹提取阶段<br>且实验环境是matlab</p>
+<p>可见在wifi定位领域，使用最多的两种语言是matlab和python<br>猜测原因是，matlab的数据处理方便而python可以方便应用机器学习算法</p>
+<h3 id="9-《基于智能手机的室内定位技术综述》"><a href="#9-《基于智能手机的室内定位技术综述》" class="headerlink" title="9 《基于智能手机的室内定位技术综述》"></a>9 《基于智能手机的室内定位技术综述》</h3><p><a href="https://zhuanlan.zhihu.com/p/121648191" target="_blank" rel="noopener">博客</a></p>
+<p>智能手机还不支持CSI，仅仅支持RSSI</p>
+<h3 id="10-《复杂室内环境下基于CSI的定位方法》"><a href="#10-《复杂室内环境下基于CSI的定位方法》" class="headerlink" title="10 《复杂室内环境下基于CSI的定位方法》"></a>10 《复杂室内环境下基于CSI的定位方法》</h3><p><a href="www.infocomm-journal.com/wlw/CN/abstract/abstract168444.shtml">论文</a></p>
+<p>这篇论文的相关工作分析的很到位</p>
+<p>CSI 可以同时提供子载波相位和振幅信息</p>
+<p>该文的重点也是对CSI的特征提取，与6类似，但方法比6要精确<br>（不过怀疑6、10实现起来都很复杂）</p>
+<h3 id="11-《基于CSI的室内指纹定位研究》"><a href="#11-《基于CSI的室内指纹定位研究》" class="headerlink" title="11 《基于CSI的室内指纹定位研究》"></a>11 《基于CSI的室内指纹定位研究》</h3><p><a href="https://kns.cnki.net/KXReader/Detail?TIMESTAMP=637402068106250000&amp;DBCODE=CJFD&amp;TABLEName=CJFDLAST2019&amp;FileName=TXJS201902010&amp;RESULT=1&amp;SIGN=ihzrRulA8wJQnbtmHjionVlTNGk%3d" target="_blank" rel="noopener">论文</a></p>
+<p>论文最后的缺点总结写的挺好的，的确存在测试环境单一、人为调整发射与接受同一高度的问题（如10和其他论文的调到1.2m）</p>
+<p><strong>暂时搁置</strong></p>
+<h3 id="12-基于机器学习的室内高精度指纹定位方法研究-张玄黎"><a href="#12-基于机器学习的室内高精度指纹定位方法研究-张玄黎" class="headerlink" title="12 基于机器学习的室内高精度指纹定位方法研究 张玄黎"></a>12 基于机器学习的室内高精度指纹定位方法研究 张玄黎</h3><p><a href="https://kns.cnki.net/kcms/detail/detail.aspx?dbcode=CPFD&amp;dbname=CPFDLAST2018&amp;filename=ZGGC201810001098&amp;v=r1NZusEXnB6NFpmRXVTWHSifAVY%25mmd2F2WJTiseNEVjCX3GG4Gv4pUP%25mmd2BOPQ8ArSPhmY%25mmd2FccjdEuAKoSo%3d" target="_blank" rel="noopener">论文</a></p>
+<h3 id="13-基于CSI的室内多场景指纹定位算法研究-司雄"><a href="#13-基于CSI的室内多场景指纹定位算法研究-司雄" class="headerlink" title="13 基于CSI的室内多场景指纹定位算法研究 司雄"></a>13 基于CSI的室内多场景指纹定位算法研究 司雄</h3><p><a href="https://kns.cnki.net/kcms/detail/detail.aspx?dbcode=CMFD&amp;dbname=CMFD202001&amp;filename=1019071941.nh&amp;v=Ekg6V%25mmd2Fgf1dG2i9GT3rLyxpa4d8iEeg4uEu8IYHpzs0XwVexptCZZAEmC9Te2ePlS" target="_blank" rel="noopener">论文</a></p>
+<h3 id="14-WLAN室内位置指纹定位研究-刘静"><a href="#14-WLAN室内位置指纹定位研究-刘静" class="headerlink" title="14 WLAN室内位置指纹定位研究 刘静"></a>14 WLAN室内位置指纹定位研究 刘静</h3><p><a href="https://kns.cnki.net/kcms/detail/detail.aspx?dbcode=CMFD&amp;dbname=CMFD202001&amp;filename=1020612263.nh&amp;v=NGYrJDyRKE5bWi0cjLADifB4Jf9%25mmd2BMRkFBSGE4tVgV0VD2UmB472QiWKryCMzstG4" target="_blank" rel="noopener">论文</a></p>
+<h3 id="15-基于信道状态信息的室内指纹定位研究-宋长泽"><a href="#15-基于信道状态信息的室内指纹定位研究-宋长泽" class="headerlink" title="15 基于信道状态信息的室内指纹定位研究 宋长泽"></a>15 基于信道状态信息的室内指纹定位研究 宋长泽</h3><p><a href="https://kns.cnki.net/kcms/detail/detail.aspx?dbcode=CMFD&amp;dbname=CMFD201902&amp;filename=1019604733.nh&amp;v=MNqPzsaClpPpGqzsiECaudMDy%25mmd2BzcBvJHbAQ2NiR27KMkff2cSEnERgl3vQH97nVx" target="_blank" rel="noopener">论文</a></p>
+<h3 id="16-基于信道状态信息的室内指纹定位算法研究-朱瑾华"><a href="#16-基于信道状态信息的室内指纹定位算法研究-朱瑾华" class="headerlink" title="16 基于信道状态信息的室内指纹定位算法研究 朱瑾华"></a>16 基于信道状态信息的室内指纹定位算法研究 朱瑾华</h3><p><a href="https://kns.cnki.net/kcms/detail/detail.aspx?dbcode=CMFD&amp;dbname=CMFD202001&amp;filename=1019618738.nh&amp;v=GZswD%25mmd2BLHcIC9txh9UsslfweYZmgZacowO5VZxypkE3%25mmd2FOQPpy%25mmd2BYbB2JKqJ6wpwbqC" target="_blank" rel="noopener">论文</a></p>
+<h3 id="17-基于信道状态信息的室内指纹定位算法研究-王藜谚"><a href="#17-基于信道状态信息的室内指纹定位算法研究-王藜谚" class="headerlink" title="17 基于信道状态信息的室内指纹定位算法研究 王藜谚"></a>17 基于信道状态信息的室内指纹定位算法研究 王藜谚</h3><p><a href="https://kns.cnki.net/kcms/detail/detail.aspx?dbcode=CMFD&amp;dbname=CMFD202002&amp;filename=1020730504.nh&amp;v=SWJ10JIq3UAl%25mmd2BVJTBcSDsTklCSvn0qjBtp%25mmd2F2cnHxgeAAvgKWPmT7%25mmd2BY8BGieHYmsQ" target="_blank" rel="noopener">论文</a></p>
+<h3 id="18-基于CSI相位矫正的室内指纹定位技术研究-刘兆岩"><a href="#18-基于CSI相位矫正的室内指纹定位技术研究-刘兆岩" class="headerlink" title="18 基于CSI相位矫正的室内指纹定位技术研究 刘兆岩"></a>18 基于CSI相位矫正的室内指纹定位技术研究 刘兆岩</h3><p><a href="https://kns.cnki.net/kcms/detail/detail.aspx?dbcode=CJFD&amp;dbname=CJFDLAST2020&amp;filename=WXDG202002005&amp;v=9jCz0cgA5KtGoDmM1UYU0DqU951BKjOqQ3qMM44GMLCTlpBUEMT4oh%25mmd2BU%25mmd2FI4MTVsO" target="_blank" rel="noopener">论文</a></p>
+<h3 id="19-基于CSI相位矫正的室内指纹定位技术研究-党小超"><a href="#19-基于CSI相位矫正的室内指纹定位技术研究-党小超" class="headerlink" title="19 基于CSI相位矫正的室内指纹定位技术研究 党小超"></a>19 基于CSI相位矫正的室内指纹定位技术研究 党小超</h3><p><a href="https://wenku.baidu.com/view/5fbe17895627a5e9856a561252d380eb639423f9.html" target="_blank" rel="noopener">论文</a></p>
+<h3 id="20-室内定位技术-山东大学"><a href="#20-室内定位技术-山东大学" class="headerlink" title="20 室内定位技术 山东大学"></a>20 室内定位技术 山东大学</h3><p><a href="https://navrs.wh.sdu.edu.cn/info/1278/1142.htm" target="_blank" rel="noopener">博客</a></p>
+<h3 id="21-基于CSI的室内指纹定位研究"><a href="#21-基于CSI的室内指纹定位研究" class="headerlink" title="21 基于CSI的室内指纹定位研究"></a>21 基于CSI的室内指纹定位研究</h3><p><a href="https://www.codercto.com/a/83162.html" target="_blank" rel="noopener">博客</a></p>
+<h2 id="二、一些代码实现"><a href="#二、一些代码实现" class="headerlink" title="二、一些代码实现"></a>二、一些代码实现</h2><h3 id="1-室内定位系列"><a href="#1-室内定位系列" class="headerlink" title="1 室内定位系列"></a>1 室内定位系列</h3><p><a href="https://www.cnblogs.com/rubbninja/p/6120964.html" target="_blank" rel="noopener">博客</a></p>
+<p><a href="https://github.com/jiangqideng/codeInBlogs/tree/master/IP_raytracing" target="_blank" rel="noopener">仿真RSS数据（matlab）</a></p>
+<p><a href="https://www.cnblogs.com/rubbninja/p/6186847.html" target="_blank" rel="noopener">Python代码</a></p>
+<p>指纹法是先离线存储某个粒度（1m或更宽）的RSS，再获取target的RSS，与存储的指纹做匹配</p>
+<p>之后还介绍了两种轨迹追踪方法，也可以改进改进使用</p>
+<h3 id="2-基于Wi-Fi的室内定位系统"><a href="#2-基于Wi-Fi的室内定位系统" class="headerlink" title="2 基于Wi-Fi的室内定位系统"></a>2 基于Wi-Fi的室内定位系统</h3><p><a href="https://zhuanlan.zhihu.com/p/142461771" target="_blank" rel="noopener">博客</a><br><a href="https://github.com/GXW19961104/Indoor-Positioning" target="_blank" rel="noopener">Github代码地址</a></p>
+<p>服务器端的逻辑很直接，首先数据库存储好，客户端发确定定位，服务器匹配，返回结果给客户端</p>
+<p>问题：客户端怎么确定定位的？RSS与CSI使用上有没有区别？</p>
+<p>部分答：因为这个项目是基于Android的，所以直接调用了安卓系统自带的RSSI采集、WIFI强度采集等内容，其实简化了很多步骤</p>
+<p>而且数据之间的沟通使用的JSON</p>
+<h3 id="3-基于SVM算法的位置指纹WiFi室内定位"><a href="#3-基于SVM算法的位置指纹WiFi室内定位" class="headerlink" title="3 基于SVM算法的位置指纹WiFi室内定位"></a>3 基于SVM算法的位置指纹WiFi室内定位</h3><p><a href="https://www.jianshu.com/p/873615e6205c" target="_blank" rel="noopener">博客</a></p>
+<p>依然是RSSI，但梳理了过程<br>疑惑的是每个地方的RSSI是手动测量的<br>难道没有自动方式吗？（所以才需要模拟数据？）</p>
+<h3 id="4-基于-Wi-Fi-的室内定位系统"><a href="#4-基于-Wi-Fi-的室内定位系统" class="headerlink" title="4 基于 Wi-Fi 的室内定位系统"></a>4 基于 Wi-Fi 的室内定位系统</h3><p><a href="https://blog.csdn.net/weixin_43378396/article/details/90764374" target="_blank" rel="noopener">博客</a></p>
+<p><a href="https://github.com/clvsit/Wi-Fi-based-indoor-positioning" target="_blank" rel="noopener">github项目地址</a><br>至少有一个不同的平面图？</p>
+<h3 id="5-人工智能教程：svm-wifi做室内定位"><a href="#5-人工智能教程：svm-wifi做室内定位" class="headerlink" title="5 人工智能教程：svm wifi做室内定位"></a>5 人工智能教程：svm wifi做室内定位</h3><p><a href="https://www.bilibili.com/video/av63815760/" target="_blank" rel="noopener">bilibili视频</a></p>
+<p><a href="archive.ics.uci.edu/ml/datasets/Wireless+Indoor+Localization">wifi数据</a><br>数据里是4个不同位置中不同设备测量的6个AP强度<br>对我比较无用</p>
+<h3 id="6-东南大学SRTP项目基于机器学习的室内定位"><a href="#6-东南大学SRTP项目基于机器学习的室内定位" class="headerlink" title="6 东南大学SRTP项目基于机器学习的室内定位"></a>6 东南大学SRTP项目基于机器学习的室内定位</h3><p><a href="https://github.com/scp10086/CSI-indoor-location" target="_blank" rel="noopener">github项目地址</a></p>
+<p>提供的很多资料链接不是失效就是过时了</p>
+<p>给了一份原创的CSI tool安装指南，但是仅仅作用于Ubuntu12.x版本，不知道能不能用我自己的fedora30装</p>
+<p>看来是不太轻松了……</p>
+<p>可能会涉及安装一个一新系统或换内核。（为什么那个博客说虚拟机不可呢？）</p>
+<h3 id="7-Awesome-WiFi-CSI-Research"><a href="#7-Awesome-WiFi-CSI-Research" class="headerlink" title="7 Awesome-WiFi-CSI-Research"></a>7 Awesome-WiFi-CSI-Research</h3><p><a href="https://github.com/zhangjianye88/Awesome-WiFi-CSI-Research" target="_blank" rel="noopener">github项目地址</a></p>
+<h3 id="8-IndoorLocationWiFi"><a href="#8-IndoorLocationWiFi" class="headerlink" title="8 IndoorLocationWiFi"></a>8 IndoorLocationWiFi</h3><p><a href="https://github.com/wantnaM/IndoorLocationWiFi" target="_blank" rel="noopener">github项目地址</a></p>
+<h3 id="9"><a href="#9" class="headerlink" title="9"></a>9</h3><p><a href="">github项目地址</a></p>
+<h2 id="三、CSI-tools的安装"><a href="#三、CSI-tools的安装" class="headerlink" title="三、CSI tools的安装"></a>三、CSI tools的安装</h2><p><a href="dhalperi.github.io/linux-80211n-csitool/installation.html">官网地址</a></p>
+<p>CSI tools是10年的一篇论文中使用的工具，所以才会要求使用Ubuntu 10.x-14.x之间的版本<br>但其实真正有要求的是内核版本，要求在 3.2~4.2</p>
+<p>换内核后，大概需要将安装指南里的命令行替换为fedora的命令</p>
+<p>还涉及到IWL 5300……<br>不知道会不会有什么影响</p>
+<p>802.11n 是我想的那个吗？</p>
+<p><strong>部分没有看的安装指南</strong><br><a href="https://blog.csdn.net/qq_20604671/article/details/53996239" target="_blank" rel="noopener">CSI Tool安装使用讲解</a><br><a href="https://blog.csdn.net/u014645508/article/details/81359409" target="_blank" rel="noopener">Linux 802.11n CSI tool安装教程</a></p>
+<p><a href="https://github.com/seemoo-lab/mobisys2018_nexmon_channel_state_information_extractor" target="_blank" rel="noopener">另一篇提供了CSI获取工具的论文代码网址（但对支持网卡不了接）</a></p>
+<p><a href="https://blog.csdn.net/xin_yu_xin/article/details/42184899" target="_blank" rel="noopener">Ubuntu更换内核方法</a><br><a href="https://blog.csdn.net/tenorange/article/details/80914559" target="_blank" rel="noopener">Ubuntu更换Linux内核版本</a></p>
+<h2 id="四、CSI处理"><a href="#四、CSI处理" class="headerlink" title="四、CSI处理"></a>四、CSI处理</h2><h3 id="1-Monitor模式和AP模式下获取WiFi的CSI信号"><a href="#1-Monitor模式和AP模式下获取WiFi的CSI信号" class="headerlink" title="1 Monitor模式和AP模式下获取WiFi的CSI信号"></a>1 Monitor模式和AP模式下获取WiFi的CSI信号</h3><p><a href="https://blog.csdn.net/qq_20386411/article/details/83240781" target="_blank" rel="noopener">博客</a></p>
+<h3 id="2-原创-Linux-802-11n-CSI-tool-Monitor模式"><a href="#2-原创-Linux-802-11n-CSI-tool-Monitor模式" class="headerlink" title="2 [原创]Linux 802.11n CSI tool Monitor模式"></a>2 [原创]Linux 802.11n CSI tool Monitor模式</h3><p><a href="https://blog.csdn.net/u014645508/article/details/82993718?utm_source=blogxgwz1" target="_blank" rel="noopener">博客</a></p>
+<h3 id="3-CSI信号的处理"><a href="#3-CSI信号的处理" class="headerlink" title="3 CSI信号的处理"></a>3 CSI信号的处理</h3><p><a href="https://blog.csdn.net/qq_20386411/article/details/83384614" target="_blank" rel="noopener">博客</a></p>
+<h3 id="4"><a href="#4" class="headerlink" title="4"></a>4</h3><p><a href="">博客</a></p>
+<h3 id="5"><a href="#5" class="headerlink" title="5"></a>5</h3><p><a href="">博客</a></p>
+<h3 id="6"><a href="#6" class="headerlink" title="6"></a>6</h3><p><a href="">博客</a></p>
+
+      
+    </div>
+
+    
+    
+    
+
+ 
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+        
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/05/05/ACM/Leetcode-LinkedList%E7%AF%87/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/A.png">
+      <meta itemprop="name" content="Mona">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Moneyna 的杂货铺">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          
+            <a href="/2020/05/05/ACM/Leetcode-LinkedList%E7%AF%87/" class="post-title-link" itemprop="url">Leetcode-LinkedList篇</a>
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-05-05 16:02:19" itemprop="dateCreated datePublished" datetime="2020-05-05T16:02:19+08:00">2020-05-05</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/ACM/" itemprop="url" rel="index"><span itemprop="name">ACM</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h3 id="1-前言"><a href="#1-前言" class="headerlink" title="1 前言"></a>1 前言</h3><p>链表（分单链表和双向链表）</p>
+<h3 id="2-AC代码"><a href="#2-AC代码" class="headerlink" title="2 AC代码"></a>2 AC代码</h3><h4 id="1-Design-Linked-List"><a href="#1-Design-Linked-List" class="headerlink" title="[1]  Design Linked List"></a>[1]  Design Linked List</h4><ul>
+<li><p>概述<br>设计链表。</p>
+</li>
+<li><p>思路<br>要特别注意空指针的处理。</p>
+</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br></pre></td><td class="code"><pre><span class="line">struct node&#123;</span><br><span class="line">    node* next;</span><br><span class="line">    int val;</span><br><span class="line">    </span><br><span class="line">    node(int value)&#123;</span><br><span class="line">        next&#x3D;nullptr;</span><br><span class="line">        val&#x3D;value;</span><br><span class="line">    &#125;</span><br><span class="line">    node()&#123;</span><br><span class="line">        next&#x3D;nullptr;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">class MyLinkedList &#123;</span><br><span class="line">private:</span><br><span class="line">    node* head;</span><br><span class="line">    int len;</span><br><span class="line">    </span><br><span class="line">public:</span><br><span class="line">    &#x2F;** Initialize your data structure here. *&#x2F;</span><br><span class="line">    MyLinkedList() &#123;</span><br><span class="line">        this-&gt;head&#x3D;nullptr;</span><br><span class="line">        this-&gt;len&#x3D;0;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    </span><br><span class="line">    &#x2F;** Get the value of the index-th node in the linked list. If the index is invalid, return -1. *&#x2F;</span><br><span class="line">    int get(int index) &#123;</span><br><span class="line">        if(this-&gt;head&#x3D;&#x3D;nullptr)</span><br><span class="line">            return -1;</span><br><span class="line">        int i&#x3D;0;</span><br><span class="line">        for(auto ptr&#x3D;this-&gt;head;ptr!&#x3D;nullptr;ptr&#x3D;ptr-&gt;next,i++)&#123;</span><br><span class="line">               if(i&#x3D;&#x3D;index)&#123;</span><br><span class="line">                    return ptr-&gt;val;   </span><br><span class="line">               &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        return -1;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    &#x2F;** Add a node of value val before the first element of the linked list. After the insertion, the new node will be the first node of the linked list. *&#x2F;</span><br><span class="line">    void addAtHead(int val) &#123;</span><br><span class="line">        node* n1&#x3D;new node(val);</span><br><span class="line">        n1-&gt;next&#x3D;this-&gt;head;</span><br><span class="line">        this-&gt;head&#x3D;n1;</span><br><span class="line">        this-&gt;len++;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    &#x2F;** Append a node of value val to the last element of the linked list. *&#x2F;</span><br><span class="line">    void addAtTail(int val) &#123;</span><br><span class="line">        if(this-&gt;head&#x3D;&#x3D;nullptr)</span><br><span class="line">        &#123;</span><br><span class="line">            this-&gt;addAtHead(val);</span><br><span class="line">            return;</span><br><span class="line">        &#125;</span><br><span class="line">        node* tail&#x3D;this-&gt;head;</span><br><span class="line">        for(auto ptr&#x3D;this-&gt;head;ptr!&#x3D;nullptr;ptr&#x3D;ptr-&gt;next)&#123;</span><br><span class="line">              if(ptr-&gt;next&#x3D;&#x3D;nullptr)&#123;</span><br><span class="line">                tail&#x3D;ptr;   </span><br><span class="line">              &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        node* n1&#x3D;new node(val);</span><br><span class="line">        tail-&gt;next&#x3D;n1;</span><br><span class="line">        this-&gt;len++;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    &#x2F;** Add a node of value val before the index-th node in the linked list. If index equals to the length of linked list, the node will be appended to the end of linked list. If index is greater than the length, the node will not be inserted. *&#x2F;</span><br><span class="line">    void addAtIndex(int index, int val) &#123;</span><br><span class="line"></span><br><span class="line">        if(index&gt;this-&gt;len||index&lt;0)</span><br><span class="line">            return;</span><br><span class="line">        if(index&#x3D;&#x3D;this-&gt;len)</span><br><span class="line">        &#123;    </span><br><span class="line">            this-&gt;addAtTail(val);</span><br><span class="line">            return;</span><br><span class="line">        &#125;</span><br><span class="line">        if(index&#x3D;&#x3D;0)&#123;</span><br><span class="line">            this-&gt;addAtHead(val);</span><br><span class="line">            return;</span><br><span class="line">        &#125;</span><br><span class="line">        if(this-&gt;head&#x3D;&#x3D;nullptr)</span><br><span class="line">            return ;</span><br><span class="line">        node* n1&#x3D;new node(val);</span><br><span class="line">        node *pre&#x3D;nullptr,*cur&#x3D;nullptr;</span><br><span class="line">        int i&#x3D;0;</span><br><span class="line">        for(auto ptr&#x3D;this-&gt;head;ptr!&#x3D;nullptr;ptr&#x3D;ptr-&gt;next,i++)&#123;</span><br><span class="line">            if(i&#x3D;&#x3D;index-1)&#123;</span><br><span class="line">                pre&#x3D;ptr;   </span><br><span class="line">            &#125;</span><br><span class="line">            if(i&#x3D;&#x3D;index)&#123;</span><br><span class="line">                cur&#x3D;ptr;</span><br><span class="line">                break;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        n1-&gt;next&#x3D;cur;</span><br><span class="line">        pre-&gt;next&#x3D;n1;</span><br><span class="line">        this-&gt;len++;</span><br><span class="line">        return;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    &#x2F;** Delete the index-th node in the linked list, if the index is valid. *&#x2F;</span><br><span class="line">    void deleteAtIndex(int index) &#123;</span><br><span class="line">        if(this-&gt;head&#x3D;&#x3D;nullptr)</span><br><span class="line">            return ;</span><br><span class="line">        if(index&gt;(this-&gt;len-1)||index&lt;0)</span><br><span class="line">            return;</span><br><span class="line">        if(index&#x3D;&#x3D;0)&#123;</span><br><span class="line">            this-&gt;head&#x3D;this-&gt;head-&gt;next;</span><br><span class="line">            this-&gt;len--;</span><br><span class="line">            return;</span><br><span class="line">        &#125;</span><br><span class="line">        node *pre&#x3D;nullptr,*cur&#x3D;nullptr,*aft&#x3D;nullptr;</span><br><span class="line">        int i&#x3D;0;</span><br><span class="line">        for(auto ptr&#x3D;this-&gt;head;ptr!&#x3D;nullptr;ptr&#x3D;ptr-&gt;next,i++)&#123;</span><br><span class="line">            if(i&#x3D;&#x3D;index-1)&#123;</span><br><span class="line">                pre&#x3D;ptr;   </span><br><span class="line">            &#125;</span><br><span class="line">            if(i&#x3D;&#x3D;index)&#123;</span><br><span class="line">                cur&#x3D;ptr;</span><br><span class="line">            &#125;</span><br><span class="line">            if(i&#x3D;&#x3D;index+1)&#123;</span><br><span class="line">                aft&#x3D;ptr;   </span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        &#x2F;&#x2F;删除最后一个元素</span><br><span class="line">        if(aft&#x3D;&#x3D;nullptr)</span><br><span class="line">        &#123;</span><br><span class="line">            pre-&gt;next&#x3D;nullptr;</span><br><span class="line">            this-&gt;len--;</span><br><span class="line">            return;</span><br><span class="line">        &#125;else&#123;</span><br><span class="line">            pre-&gt;next&#x3D;aft;</span><br><span class="line">            this-&gt;len--;</span><br><span class="line">            return;</span><br><span class="line">        &#125;</span><br><span class="line">        return;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">&#x2F;**</span><br><span class="line"> * Your MyLinkedList object will be instantiated and called as such:</span><br><span class="line"> * MyLinkedList* obj &#x3D; new MyLinkedList();</span><br><span class="line"> * int param_1 &#x3D; obj-&gt;get(index);</span><br><span class="line"> * obj-&gt;addAtHead(val);</span><br><span class="line"> * obj-&gt;addAtTail(val);</span><br><span class="line"> * obj-&gt;addAtIndex(index,val);</span><br><span class="line"> * obj-&gt;deleteAtIndex(index);</span><br><span class="line"> *&#x2F;</span><br></pre></td></tr></table></figure>
+<h4 id="2-Linked-List-Cycle"><a href="#2-Linked-List-Cycle" class="headerlink" title="[2] Linked List Cycle"></a>[2] Linked List Cycle</h4><p><a href="https://leetcode.com/explore/learn/card/linked-list/214/two-pointer-technique/1212/" target="_blank" rel="noopener">题目</a></p>
+<ul>
+<li><p>概述<br>是否有圈。</p>
+</li>
+<li><p>思路<br>用两个指针，一个快一个慢，看二者是否相遇。（快指针走2，慢指针走1，在M后，二者会相遇）<br>若没有圈，快指针会先走到NULL</p>
+</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;**</span><br><span class="line"> * Definition for singly-linked list.</span><br><span class="line"> * struct ListNode &#123;</span><br><span class="line"> *     int val;</span><br><span class="line"> *     ListNode *next;</span><br><span class="line"> *     ListNode(int x) : val(x), next(NULL) &#123;&#125;</span><br><span class="line"> * &#125;;</span><br><span class="line"> *&#x2F;</span><br><span class="line">class Solution &#123;</span><br><span class="line">public:</span><br><span class="line">    bool hasCycle(ListNode *head) &#123;</span><br><span class="line">        if(head&#x3D;&#x3D;NULL)</span><br><span class="line">            return false;</span><br><span class="line">        ListNode *p1&#x3D;head,*p2&#x3D;head;</span><br><span class="line">        </span><br><span class="line">        for(;p2!&#x3D;NULL;p2&#x3D;p2-&gt;next)&#123;</span><br><span class="line">           </span><br><span class="line">            for(int i&#x3D;0;i&lt;2;i++)</span><br><span class="line">                if(p1-&gt;next!&#x3D;NULL)</span><br><span class="line">                    p1&#x3D;p1-&gt;next;</span><br><span class="line">                else&#123;</span><br><span class="line">                    return false;   </span><br><span class="line">                &#125;</span><br><span class="line">             if(p1&#x3D;&#x3D;p2)&#123;</span><br><span class="line">                return true;   </span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        return false;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    </span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<h4 id="3-Linked-List-Cycle-II"><a href="#3-Linked-List-Cycle-II" class="headerlink" title="[3] Linked List Cycle II"></a>[3] Linked List Cycle II</h4><p>[题目]（<a href="https://leetcode.com/explore/learn/card/linked-list/214/two-pointer-technique/1214/）" target="_blank" rel="noopener">https://leetcode.com/explore/learn/card/linked-list/214/two-pointer-technique/1214/）</a></p>
+<ul>
+<li><p>概述<br>找出圈开始的位置（最后一个元素指向的元素）</p>
+</li>
+<li><p>思路<br>存下所有点，重复的第一个就是圈开始的位置。</p>
+</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;**</span><br><span class="line"> * Definition for singly-linked list.</span><br><span class="line"> * struct ListNode &#123;</span><br><span class="line"> *     int val;</span><br><span class="line"> *     ListNode *next;</span><br><span class="line"> *     ListNode(int x) : val(x), next(NULL) &#123;&#125;</span><br><span class="line"> * &#125;;</span><br><span class="line"> *&#x2F;</span><br><span class="line">class Solution &#123;</span><br><span class="line">public:</span><br><span class="line">    ListNode *detectCycle(ListNode *head) &#123;</span><br><span class="line">        if(head&#x3D;&#x3D;NULL)</span><br><span class="line">            return NULL;</span><br><span class="line">        map&lt;ListNode*,ListNode*&gt; mmap;</span><br><span class="line">        ListNode *p1&#x3D;head,*p2&#x3D;head;</span><br><span class="line">        </span><br><span class="line">        for(;p2!&#x3D;NULL;p2&#x3D;p2-&gt;next)&#123;</span><br><span class="line">           if(mmap.find(p2)!&#x3D;mmap.end())</span><br><span class="line">               return mmap[p2];</span><br><span class="line">           else</span><br><span class="line">               mmap.insert(make_pair(p2,p2));</span><br><span class="line">           </span><br><span class="line">        &#125;</span><br><span class="line">        return NULL;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<h4 id="4-Intersection-of-Two-Linked-Lists"><a href="#4-Intersection-of-Two-Linked-Lists" class="headerlink" title="[4]  Intersection of Two Linked Lists"></a>[4]  Intersection of Two Linked Lists</h4><p><a href="https://leetcode.com/explore/learn/card/linked-list/214/two-pointer-technique/1215/" target="_blank" rel="noopener">题目</a></p>
+<ul>
+<li><p>概述<br>两个链表会合的位置。</p>
+</li>
+<li><p>思路<br>存下来，从后向前匹配。</p>
+</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;**</span><br><span class="line"> * Definition for singly-linked list.</span><br><span class="line"> * struct ListNode &#123;</span><br><span class="line"> *     int val;</span><br><span class="line"> *     ListNode *next;</span><br><span class="line"> *     ListNode(int x) : val(x), next(NULL) &#123;&#125;</span><br><span class="line"> * &#125;;</span><br><span class="line"> *&#x2F;</span><br><span class="line">class Solution &#123;</span><br><span class="line">public:</span><br><span class="line">    ListNode *getIntersectionNode(ListNode *headA, ListNode *headB) &#123;</span><br><span class="line">        if(headA&#x3D;&#x3D;NULL||headB&#x3D;&#x3D;NULL)&#123;</span><br><span class="line">            return NULL;   </span><br><span class="line">        &#125;</span><br><span class="line">        </span><br><span class="line">        vector&lt;ListNode*&gt; a,b;</span><br><span class="line">        for(auto p1&#x3D;headA;p1!&#x3D;NULL;p1&#x3D;p1-&gt;next)&#123;</span><br><span class="line">            a.insert(a.end(),p1);   </span><br><span class="line">        &#125;</span><br><span class="line">        for(auto p1&#x3D;headB;p1!&#x3D;NULL;p1&#x3D;p1-&gt;next)&#123;</span><br><span class="line">            b.insert(b.end(),p1);   </span><br><span class="line">        &#125;</span><br><span class="line">        &#x2F;&#x2F;从后往前找</span><br><span class="line">        int len1&#x3D;a.size(),len2&#x3D;b.size();</span><br><span class="line">        ListNode * p1&#x3D;nullptr;</span><br><span class="line">        for(int i&#x3D;len1-1,j&#x3D;len2-1;i&gt;&#x3D;0&amp;&amp;j&gt;&#x3D;0;i--,j--)&#123;</span><br><span class="line">            if(a[i]&#x3D;&#x3D;b[j])</span><br><span class="line">            &#123;</span><br><span class="line">                cout&lt;&lt;&quot;i&#x3D;&quot;&lt;&lt;i&lt;&lt;endl;</span><br><span class="line">                p1&#x3D;a[i];</span><br><span class="line">            &#125;else&#123;</span><br><span class="line">                   return p1;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        return p1;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<h4 id="5-Remove-Nth-Node-From-End-of-List"><a href="#5-Remove-Nth-Node-From-End-of-List" class="headerlink" title="[5] Remove Nth Node From End of List"></a>[5] Remove Nth Node From End of List</h4><ul>
+<li><p>概述<br>移除指定元素。</p>
+</li>
+<li><p>思路<br>先把所有的指针都存下来。</p>
+</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;**</span><br><span class="line"> * Definition for singly-linked list.</span><br><span class="line"> * struct ListNode &#123;</span><br><span class="line"> *     int val;</span><br><span class="line"> *     ListNode *next;</span><br><span class="line"> *     ListNode() : val(0), next(nullptr) &#123;&#125;</span><br><span class="line"> *     ListNode(int x) : val(x), next(nullptr) &#123;&#125;</span><br><span class="line"> *     ListNode(int x, ListNode *next) : val(x), next(next) &#123;&#125;</span><br><span class="line"> * &#125;;</span><br><span class="line"> *&#x2F;</span><br><span class="line">class Solution &#123;</span><br><span class="line">public:</span><br><span class="line">    ListNode* removeNthFromEnd(ListNode* head, int n) &#123;</span><br><span class="line">        if(head&#x3D;&#x3D;nullptr)</span><br><span class="line">            return head;</span><br><span class="line">        vector&lt;ListNode*&gt; list;</span><br><span class="line">        for(auto p1&#x3D;head;p1!&#x3D;nullptr;p1&#x3D;p1-&gt;next)&#123;</span><br><span class="line">            list.insert(list.end(),p1);</span><br><span class="line">        &#125;</span><br><span class="line">        int len&#x3D;list.size();</span><br><span class="line">        cout&lt;&lt;&quot;len&#x3D;&quot;&lt;&lt;len&lt;&lt;&quot; n&#x3D;&quot;&lt;&lt;n&lt;&lt;endl;</span><br><span class="line">        if(n&#x3D;&#x3D;len)&#123;</span><br><span class="line">            head&#x3D;head-&gt;next;</span><br><span class="line">        &#125;else if(n&#x3D;&#x3D;1)&#123;</span><br><span class="line">            list[len-2]-&gt;next&#x3D;nullptr;   </span><br><span class="line">        &#125;else&#123;</span><br><span class="line">            list[len-n-1]-&gt;next&#x3D;list[len-n+1];   </span><br><span class="line">        &#125;</span><br><span class="line">        return head;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<h4 id="6-Reverse-Linked-List"><a href="#6-Reverse-Linked-List" class="headerlink" title="[6] Reverse Linked List"></a>[6] Reverse Linked List</h4><p><a href="https://leetcode.com/explore/learn/card/linked-list/219/classic-problems/1205/" target="_blank" rel="noopener">题目</a></p>
+<ul>
+<li>概述<br>倒序。</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;**</span><br><span class="line"> * Definition for singly-linked list.</span><br><span class="line"> * struct ListNode &#123;</span><br><span class="line"> *     int val;</span><br><span class="line"> *     ListNode *next;</span><br><span class="line"> *     ListNode() : val(0), next(nullptr) &#123;&#125;</span><br><span class="line"> *     ListNode(int x) : val(x), next(nullptr) &#123;&#125;</span><br><span class="line"> *     ListNode(int x, ListNode *next) : val(x), next(next) &#123;&#125;</span><br><span class="line"> * &#125;;</span><br><span class="line"> *&#x2F;</span><br><span class="line">class Solution &#123;</span><br><span class="line">public:</span><br><span class="line">    ListNode* reverseList(ListNode* head) &#123;</span><br><span class="line">        if(head&#x3D;&#x3D;nullptr||head-&gt;next&#x3D;&#x3D;nullptr)&#123;</span><br><span class="line">            return head;   </span><br><span class="line">        &#125;</span><br><span class="line">        </span><br><span class="line">        ListNode *p1&#x3D;head,*p2&#x3D;head-&gt;next,*ori&#x3D;head;</span><br><span class="line">        for(;p2!&#x3D;nullptr&amp;&amp;p1!&#x3D;nullptr;)&#123;</span><br><span class="line">           </span><br><span class="line">                ListNode* p3&#x3D;p2-&gt;next;</span><br><span class="line">                p2-&gt;next&#x3D;p1; </span><br><span class="line">                head&#x3D;p2;</span><br><span class="line">                if(p1&#x3D;&#x3D;ori)</span><br><span class="line">                    p1-&gt;next&#x3D;nullptr;</span><br><span class="line">                p1&#x3D;p2;</span><br><span class="line">                p2&#x3D;p3;</span><br><span class="line">           </span><br><span class="line">        &#125;</span><br><span class="line">       </span><br><span class="line">            </span><br><span class="line">        return head;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<h4 id="7-Remove-Linked-List-Elements"><a href="#7-Remove-Linked-List-Elements" class="headerlink" title="[7] Remove Linked List Elements"></a>[7] Remove Linked List Elements</h4><p><a href="https://leetcode.com/explore/learn/card/linked-list/219/classic-problems/1207/" target="_blank" rel="noopener">题目</a></p>
+<ul>
+<li><p>概述<br>把特定值代表的结点从list里删了。</p>
+</li>
+<li><p>思路<br>三个判断。尤其是循环判断很关键。</p>
+</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;**</span><br><span class="line"> * Definition for singly-linked list.</span><br><span class="line"> * struct ListNode &#123;</span><br><span class="line"> *     int val;</span><br><span class="line"> *     ListNode *next;</span><br><span class="line"> *     ListNode() : val(0), next(nullptr) &#123;&#125;</span><br><span class="line"> *     ListNode(int x) : val(x), next(nullptr) &#123;&#125;</span><br><span class="line"> *     ListNode(int x, ListNode *next) : val(x), next(next) &#123;&#125;</span><br><span class="line"> * &#125;;</span><br><span class="line"> *&#x2F;</span><br><span class="line">class Solution &#123;</span><br><span class="line">public:</span><br><span class="line">    ListNode* removeElements(ListNode* head, int val) &#123;</span><br><span class="line">        if(head&#x3D;&#x3D;nullptr)</span><br><span class="line">        &#123;   </span><br><span class="line">            return head;</span><br><span class="line">        &#125;</span><br><span class="line">        if(head-&gt;val&#x3D;&#x3D;val&amp;&amp;head-&gt;next&#x3D;&#x3D;nullptr)&#123;</span><br><span class="line">            return nullptr;   </span><br><span class="line">        &#125;</span><br><span class="line">        while(head-&gt;val&#x3D;&#x3D;val)&#123;</span><br><span class="line">            head&#x3D;head-&gt;next;   </span><br><span class="line">            if(head&#x3D;&#x3D;nullptr)&#123;</span><br><span class="line">                return nullptr;   </span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        ListNode* ori&#x3D;head,*pre&#x3D;head,*p1&#x3D;head-&gt;next;</span><br><span class="line">        cout&lt;&lt;&quot;审核通过！&quot;&lt;&lt;endl;</span><br><span class="line">        for(;p1!&#x3D;nullptr;p1&#x3D;p1-&gt;next)&#123;</span><br><span class="line">            if(p1-&gt;val&#x3D;&#x3D;val)&#123;</span><br><span class="line">                pre-&gt;next&#x3D;p1-&gt;next;</span><br><span class="line">            &#125;else&#123;</span><br><span class="line">                pre&#x3D;p1;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        return head;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<h4 id="8-Odd-Even-Linked-List"><a href="#8-Odd-Even-Linked-List" class="headerlink" title="[8] Odd Even Linked List"></a>[8] Odd Even Linked List</h4><p><a href="https://leetcode.com/explore/learn/card/linked-list/219/classic-problems/1208/" target="_blank" rel="noopener">题目</a></p>
+<ul>
+<li><p>概述<br>奇数的点在前，偶数点在后，且相对顺序不变。（In-place变换）</p>
+</li>
+<li><p>思路<br>遍历，奇数与奇数串，偶数与偶数串。再组合。</p>
+</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;**</span><br><span class="line"> * Definition for singly-linked list.</span><br><span class="line"> * struct ListNode &#123;</span><br><span class="line"> *     int val;</span><br><span class="line"> *     ListNode *next;</span><br><span class="line"> *     ListNode() : val(0), next(nullptr) &#123;&#125;</span><br><span class="line"> *     ListNode(int x) : val(x), next(nullptr) &#123;&#125;</span><br><span class="line"> *     ListNode(int x, ListNode *next) : val(x), next(next) &#123;&#125;</span><br><span class="line"> * &#125;;</span><br><span class="line"> *&#x2F;</span><br><span class="line">class Solution &#123;</span><br><span class="line">public:</span><br><span class="line">    ListNode* oddEvenList(ListNode* head) &#123;</span><br><span class="line">        if(head&#x3D;&#x3D;nullptr||head-&gt;next&#x3D;&#x3D;nullptr)&#123;</span><br><span class="line">            return head;   </span><br><span class="line">        &#125;</span><br><span class="line">        ListNode* h1&#x3D;head,*h2&#x3D;head-&gt;next,*h22&#x3D;head-&gt;next,*p1&#x3D;h2-&gt;next,*p2;</span><br><span class="line">        if(p1&#x3D;&#x3D;nullptr)&#123;</span><br><span class="line">               return head;</span><br><span class="line">        &#125;else&#123;</span><br><span class="line">            p2&#x3D;p1-&gt;next;   </span><br><span class="line">        &#125;</span><br><span class="line">        for(;p1!&#x3D;nullptr;)&#123;</span><br><span class="line">            cout&lt;&lt;&quot;p1-&gt;val&#x3D;&quot;&lt;&lt;p1-&gt;val&lt;&lt;endl;</span><br><span class="line">            h1-&gt;next&#x3D;p1;</span><br><span class="line">            h2-&gt;next&#x3D;p2;</span><br><span class="line">            if(p2!&#x3D;nullptr)&#123;</span><br><span class="line">                h1&#x3D;p1;</span><br><span class="line">                p1&#x3D;p2-&gt;next;</span><br><span class="line">                if(p1!&#x3D;nullptr)&#123;</span><br><span class="line">                   h2&#x3D;p2;</span><br><span class="line">                   p2&#x3D;p1-&gt;next;</span><br><span class="line">                &#125;else&#123;</span><br><span class="line">                    p2-&gt;next&#x3D;nullptr;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;else&#123;</span><br><span class="line">                h1&#x3D;p1;</span><br><span class="line">                p1&#x3D;nullptr;   </span><br><span class="line">            &#125;</span><br><span class="line">            </span><br><span class="line">        &#125;</span><br><span class="line">        h1-&gt;next&#x3D;h22;</span><br><span class="line">        return head;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<h4 id="9-Palindrome-Linked-List"><a href="#9-Palindrome-Linked-List" class="headerlink" title="[9]  Palindrome Linked List"></a>[9]  Palindrome Linked List</h4><p><a href="https://leetcode.com/explore/learn/card/linked-list/219/classic-problems/1209/" target="_blank" rel="noopener">题目</a></p>
+<ul>
+<li><p>概述<br>判断是否为回文</p>
+</li>
+<li><p>思路<br>取到数组去判断。</p>
+</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;**</span><br><span class="line"> * Definition for singly-linked list.</span><br><span class="line"> * struct ListNode &#123;</span><br><span class="line"> *     int val;</span><br><span class="line"> *     ListNode *next;</span><br><span class="line"> *     ListNode() : val(0), next(nullptr) &#123;&#125;</span><br><span class="line"> *     ListNode(int x) : val(x), next(nullptr) &#123;&#125;</span><br><span class="line"> *     ListNode(int x, ListNode *next) : val(x), next(next) &#123;&#125;</span><br><span class="line"> * &#125;;</span><br><span class="line"> *&#x2F;</span><br><span class="line">class Solution &#123;</span><br><span class="line">public:</span><br><span class="line">    bool isPalindrome(ListNode* head) &#123;</span><br><span class="line">        vector&lt;int&gt; vec;</span><br><span class="line">        for(auto p1&#x3D;head;p1!&#x3D;nullptr;p1&#x3D;p1-&gt;next)&#123;</span><br><span class="line">            vec.push_back(p1-&gt;val);   </span><br><span class="line">        &#125;</span><br><span class="line">        int len&#x3D;vec.size();</span><br><span class="line">        for(int i&#x3D;0,j&#x3D;len-1;i&lt;&#x3D;j;i++,j--)&#123;</span><br><span class="line">            if(vec[i]!&#x3D;vec[j])</span><br><span class="line">                return false;</span><br><span class="line">        &#125;</span><br><span class="line">        return true;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<h4 id="10-Merge-Two-Sorted-Lists"><a href="#10-Merge-Two-Sorted-Lists" class="headerlink" title="[10] Merge Two Sorted Lists"></a>[10] Merge Two Sorted Lists</h4><p><a href="https://leetcode.com/explore/learn/card/linked-list/213/conclusion/1227/" target="_blank" rel="noopener">题目</a></p>
+<ul>
+<li><p>概述<br>组合两个链表</p>
+</li>
+<li><p>思路<br>同题8</p>
+</li>
+</ul>
+<h4 id="11"><a href="#11" class="headerlink" title="[11]"></a>[11]</h4><ul>
+<li><p>概述</p>
+</li>
+<li><p>思路</p>
+</li>
+</ul>
+<h4 id="12"><a href="#12" class="headerlink" title="[12]"></a>[12]</h4><ul>
+<li><p>概述</p>
+</li>
+<li><p>思路</p>
+</li>
+</ul>
+
+      
+    </div>
+
+    
+    
+    
+
+ 
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+        
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/04/29/ACM/Leetcode-Array101%E7%AF%87/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/A.png">
+      <meta itemprop="name" content="Mona">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Moneyna 的杂货铺">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          
+            <a href="/2020/04/29/ACM/Leetcode-Array101%E7%AF%87/" class="post-title-link" itemprop="url">Leetcode-Array101篇</a>
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-04-29 22:52:20" itemprop="dateCreated datePublished" datetime="2020-04-29T22:52:20+08:00">2020-04-29</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/ACM/" itemprop="url" rel="index"><span itemprop="name">ACM</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p>开始刷leetcode。<br>从头开始。</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2020/04/29/ACM/Leetcode-Array101%E7%AF%87/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+
+ 
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+        
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/04/26/Spring/SpringBoot%E5%90%8E%E7%AB%AF%E4%B8%8EThymeleaf%E5%89%8D%E7%AB%AF%E7%9A%84%E4%BA%8C%E4%B8%89%E4%BA%8B/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -678,235 +1088,6 @@
   
   
 
-        
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/04/11/Python-&&-ML/%E5%85%A8%E7%90%83%E7%96%AB%E6%83%85%E5%8A%A8%E6%80%81%E7%88%AC%E8%99%AB%E7%B3%BB%E7%BB%9F%E6%9E%84%E5%BB%BA%E8%AE%B0%E5%BD%95/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/A.png">
-      <meta itemprop="name" content="Mona">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Moneyna 的杂货铺">
-    </span>
-      <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">
-          
-            <a href="/2020/04/11/Python-&&-ML/%E5%85%A8%E7%90%83%E7%96%AB%E6%83%85%E5%8A%A8%E6%80%81%E7%88%AC%E8%99%AB%E7%B3%BB%E7%BB%9F%E6%9E%84%E5%BB%BA%E8%AE%B0%E5%BD%95/" class="post-title-link" itemprop="url">全球疫情动态爬虫系统构建记录</a>
-        </h1>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2020-04-11 11:16:23" itemprop="dateCreated datePublished" datetime="2020-04-11T11:16:23+08:00">2020-04-11</time>
-            </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Python/" itemprop="url" rel="index"><span itemprop="name">Python</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h3 id="1-两种构思"><a href="#1-两种构思" class="headerlink" title="1 两种构思"></a>1 两种构思</h3><ul>
-<li>使用Python爬虫，则用Django后端+Vue前端</li>
-</ul>
-<p>暂时先使用该方案</p>
-<ul>
-<li>使用JAVA爬虫，则用Spring Boot后端+Vue前端</li>
-</ul>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2020/04/11/Python-&&-ML/%E5%85%A8%E7%90%83%E7%96%AB%E6%83%85%E5%8A%A8%E6%80%81%E7%88%AC%E8%99%AB%E7%B3%BB%E7%BB%9F%E6%9E%84%E5%BB%BA%E8%AE%B0%E5%BD%95/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-
- 
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-        
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/04/06/NLP/%E5%AD%A6%E4%B9%A0greedyCWS%E6%BA%90%E7%A0%81/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/A.png">
-      <meta itemprop="name" content="Mona">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Moneyna 的杂货铺">
-    </span>
-      <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">
-          
-            <a href="/2020/04/06/NLP/%E5%AD%A6%E4%B9%A0greedyCWS%E6%BA%90%E7%A0%81/" class="post-title-link" itemprop="url">学习greedyCWS源码</a>
-        </h1>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2020-04-06 12:10:23" itemprop="dateCreated datePublished" datetime="2020-04-06T12:10:23+08:00">2020-04-06</time>
-            </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/NLP/" itemprop="url" rel="index"><span itemprop="name">NLP</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p><a href="https://github.com/jcyk/greedyCWS" target="_blank" rel="noopener">Source code for an ACL2017 paper on Chinese word segmentation</a></p>
-<p>学习Python难的不是基础语法，而是如何使用Python各式各样的生态。<br>在这份源码中，使用了深度学习框架Dynet。</p>
-<p>接下来会按照代码顺序，一点点更新我的理解。<br>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2020/04/06/NLP/%E5%AD%A6%E4%B9%A0greedyCWS%E6%BA%90%E7%A0%81/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-
- 
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-        
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/03/31/Git/%E5%8F%91%E5%B8%83%E8%87%AA%E5%B7%B1%E7%9A%84%E6%9B%B4%E6%96%B0%E5%88%B0github%E4%BB%93%E5%BA%93/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/A.png">
-      <meta itemprop="name" content="Mona">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Moneyna 的杂货铺">
-    </span>
-      <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">
-          
-            <a href="/2020/03/31/Git/%E5%8F%91%E5%B8%83%E8%87%AA%E5%B7%B1%E7%9A%84%E6%9B%B4%E6%96%B0%E5%88%B0github%E4%BB%93%E5%BA%93/" class="post-title-link" itemprop="url">发布自己的更新到github仓库</a>
-        </h1>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2020-03-31 16:20:22" itemprop="dateCreated datePublished" datetime="2020-03-31T16:20:22+08:00">2020-03-31</time>
-            </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Git/" itemprop="url" rel="index"><span itemprop="name">Git</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">git add fronted2</span><br><span class="line">git commit -m &quot;这次更新简短说明&quot;</span><br><span class="line"></span><br><span class="line">#part1 本地分支 master 远程分支</span><br><span class="line">git push origin part1:master</span><br></pre></td></tr></table></figure>
-
-      
-    </div>
-
-    
-    
-    
-
- 
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
   </div>
 
   
@@ -979,7 +1160,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">112</span>
+          <span class="site-state-item-count">115</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -990,7 +1171,7 @@
         <span class="site-state-item-name">分类</span></a>
       </div>
       <div class="site-state-item site-state-tags">
-        <span class="site-state-item-count">73</span>
+        <span class="site-state-item-count">75</span>
         <span class="site-state-item-name">标签</span>
       </div>
   </nav>

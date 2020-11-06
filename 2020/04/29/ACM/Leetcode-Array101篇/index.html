@@ -1,0 +1,599 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/A.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-minimal.min.css">
+  <script src="/lib/pace/pace.min.js"></script>
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"yoursite.com","root":"/","scheme":"Pisces","version":"7.7.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="前言开始刷leetcode。从头开始。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Leetcode-Array101篇">
+<meta property="og:url" content="http://yoursite.com/2020/04/29/ACM/Leetcode-Array101%E7%AF%87/index.html">
+<meta property="og:site_name" content="Moneyna 的杂货铺">
+<meta property="og:description" content="前言开始刷leetcode。从头开始。">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2020-04-29T14:52:20.000Z">
+<meta property="article:modified_time" content="2020-05-05T07:59:55.423Z">
+<meta property="article:author" content="Mona">
+<meta property="article:tag" content="ACM leetcode">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://yoursite.com/2020/04/29/ACM/Leetcode-Array101%E7%AF%87/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true
+  };
+</script>
+
+  <title>Leetcode-Array101篇 | Moneyna 的杂货铺</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Moneyna 的杂货铺</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">人生得意需尽欢</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+  </ul>
+
+</nav>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/04/29/ACM/Leetcode-Array101%E7%AF%87/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/A.png">
+      <meta itemprop="name" content="Mona">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Moneyna 的杂货铺">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Leetcode-Array101篇
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-04-29 22:52:20" itemprop="dateCreated datePublished" datetime="2020-04-29T22:52:20+08:00">2020-04-29</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/ACM/" itemprop="url" rel="index"><span itemprop="name">ACM</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p>开始刷leetcode。<br>从头开始。</p>
+<a id="more"></a>
+<h3 id="记录AC代码"><a href="#记录AC代码" class="headerlink" title="记录AC代码"></a>记录AC代码</h3><h4 id="1-Max-Consecutive-Ones"><a href="#1-Max-Consecutive-Ones" class="headerlink" title="[1] Max Consecutive Ones"></a>[1] Max Consecutive Ones</h4><p><a href="https://leetcode.com/explore/learn/card/fun-with-arrays/521/introduction/3238/" target="_blank" rel="noopener">第一题地址</a></p>
+<ul>
+<li><p>题目概述<br>寻找0、1字符串中，最长连续1的个数</p>
+</li>
+<li><p>代码需要注意的地方<br>for循环退出只后，还需再比较一次。</p>
+</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">class Solution &#123;</span><br><span class="line">public:</span><br><span class="line">    int findMaxConsecutiveOnes(vector&lt;int&gt;&amp; nums) &#123;</span><br><span class="line">        int len&#x3D;1,maxlen&#x3D;0,pre&#x3D;-1;</span><br><span class="line">        for(int i&#x3D;0;i&lt;nums.size();i++)&#123;</span><br><span class="line">            if(pre&#x3D;&#x3D;nums[i])</span><br><span class="line">                len++;</span><br><span class="line">            else&#123;</span><br><span class="line">                if(pre&#x3D;&#x3D;1)&#123;</span><br><span class="line">                    maxlen&#x3D;(maxlen&lt;len)?len:maxlen;   </span><br><span class="line">                &#125;</span><br><span class="line">                pre&#x3D;nums[i];</span><br><span class="line">                len&#x3D;1;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        if(pre&#x3D;&#x3D;1)</span><br><span class="line">            maxlen&#x3D;(maxlen&lt;len)?len:maxlen;</span><br><span class="line">        return maxlen;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>优秀代码<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">int findMaxConsecutiveOnes(vector&lt;int&gt;&amp; nums) &#123;</span><br><span class="line">        int max_cnt &#x3D; 0, cnt &#x3D; 0;</span><br><span class="line">        for (auto n : nums) &#123;</span><br><span class="line">            if (n &#x3D;&#x3D; 1) max_cnt &#x3D; max(++cnt, max_cnt);</span><br><span class="line">            else cnt &#x3D; 0;</span><br><span class="line">        &#125;</span><br><span class="line">        return max_cnt;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<h4 id="2-Find-Numbers-with-Even-Number-of-Digits"><a href="#2-Find-Numbers-with-Even-Number-of-Digits" class="headerlink" title="[2]  Find Numbers with Even Number of Digits"></a>[2]  Find Numbers with Even Number of Digits</h4><p><a href="https://leetcode.com/explore/learn/card/fun-with-arrays/521/introduction/3237/" target="_blank" rel="noopener">题目</a></p>
+<ul>
+<li><p>概述：<br>需找一个数组中，数位为偶数的数的个数。比如，1222，22，144444.</p>
+</li>
+<li><p>思考<br>反复除100，在10～99之间的是，1～9的不是</p>
+</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">class Solution &#123;</span><br><span class="line">public:</span><br><span class="line">    int findNumbers(vector&lt;int&gt;&amp; nums) &#123;</span><br><span class="line">        int cnt&#x3D;0;</span><br><span class="line">        for(int i&#x3D;0;i&lt;nums.size();i++)&#123;</span><br><span class="line">            int num&#x3D;nums[i];</span><br><span class="line">            while(num!&#x3D;0)&#123;</span><br><span class="line">                if(num&gt;&#x3D;1&amp;&amp;num&lt;&#x3D;9)</span><br><span class="line">                    break;</span><br><span class="line">                if(num&gt;&#x3D;10&amp;&amp;num&lt;&#x3D;99)</span><br><span class="line">                &#123;</span><br><span class="line">                    cnt++;</span><br><span class="line">                    break;</span><br><span class="line">                &#125;</span><br><span class="line">                num&#x2F;&#x3D;100;  </span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        return cnt;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>优秀代码<br>注意到数据范围是n&lt;=1e5<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">class Solution &#123;</span><br><span class="line">public:</span><br><span class="line">    int findNumbers(vector&lt;int&gt;&amp; nums) &#123;</span><br><span class="line">        int n,count&#x3D;0;</span><br><span class="line">        for(int i&#x3D;0;i&lt;nums.size();i++)</span><br><span class="line">        &#123;</span><br><span class="line">            n&#x3D;nums[i];</span><br><span class="line">            if(( 10&lt;&#x3D;n &amp;&amp; n&lt;&#x3D;99) || (1000&lt;&#x3D;n &amp;&amp; n&lt;&#x3D;9999 ) || ( n&#x3D;&#x3D;100000 ))</span><br><span class="line">            &#123;</span><br><span class="line">               count++;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        return count;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<h4 id="3-Squares-of-a-Sorted-Array"><a href="#3-Squares-of-a-Sorted-Array" class="headerlink" title="[3] Squares of a Sorted Array"></a>[3] Squares of a Sorted Array</h4><p><a href="https://leetcode.com/explore/featured/card/fun-with-arrays/521/introduction/3240/" target="_blank" rel="noopener">题目</a></p>
+<ul>
+<li><p>概述<br>平方数组中元素后，再升序排列</p>
+</li>
+<li><p>思路</p>
+</li>
+</ul>
+<ol>
+<li>平方后排序</li>
+<li>按绝对值排序后，再平方</li>
+</ol>
+<p>法一：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">class Solution &#123;</span><br><span class="line">public:</span><br><span class="line">    bool static cmp(int a,int b)&#123;</span><br><span class="line">        return abs(a)&lt;abs(b);   </span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    vector&lt;int&gt; sortedSquares(vector&lt;int&gt;&amp; A) &#123;</span><br><span class="line">        sort(A.begin(),A.end(),cmp);</span><br><span class="line">        </span><br><span class="line">        vector&lt;int&gt; B;</span><br><span class="line">        for(int num:A)&#123;</span><br><span class="line">            B.insert(B.end(),num*num);   </span><br><span class="line">        &#125;</span><br><span class="line">        sort(B.begin(),B.end(),cmp);</span><br><span class="line">        return B;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></p>
+<p>法二：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">class Solution &#123;</span><br><span class="line">public:</span><br><span class="line">    bool static cmp(int a,int b)&#123;</span><br><span class="line">        return abs(a)&lt;abs(b);   </span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    vector&lt;int&gt; sortedSquares(vector&lt;int&gt;&amp; A) &#123;</span><br><span class="line">        sort(A.begin(),A.end(),cmp);</span><br><span class="line">        </span><br><span class="line">        vector&lt;int&gt; B;</span><br><span class="line">        for(int num:A)&#123;</span><br><span class="line">            B.insert(B.end(),num*num);   </span><br><span class="line">        &#125;</span><br><span class="line">        return B;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></p>
+<h4 id="4-Duplicate-Zeros"><a href="#4-Duplicate-Zeros" class="headerlink" title="[4] Duplicate Zeros"></a>[4] Duplicate Zeros</h4><p><a href="https://leetcode.com/explore/featured/card/fun-with-arrays/525/inserting-items-into-an-array/3245/" target="_blank" rel="noopener">题目</a></p>
+<ul>
+<li><p>概述：<br>在数组中的0后再插入一个0，超出数组范围的数被抛弃。<br>（对于Vector，可以采用插入后删除末尾元素的方法）</p>
+</li>
+<li><p>思路：<br>遍历，插入0，抛弃只后。</p>
+</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">class Solution &#123;</span><br><span class="line">public:</span><br><span class="line">    void duplicateZeros(vector&lt;int&gt;&amp; arr) &#123;</span><br><span class="line">        int len&#x3D;arr.size();</span><br><span class="line">        for(int i&#x3D;0;i&lt;len;i++)</span><br><span class="line">        &#123;</span><br><span class="line">               if(arr[i]&#x3D;&#x3D;0)</span><br><span class="line">               &#123;</span><br><span class="line">                    arr.insert(arr.begin()+i,0);</span><br><span class="line">i++;</span><br><span class="line">               &#125;</span><br><span class="line">            </span><br><span class="line">        &#125;</span><br><span class="line">        while(arr.size()&gt;len)&#123;</span><br><span class="line">            arr.erase(arr.begin()+len+1);</span><br><span class="line">        &#125;</span><br><span class="line">        </span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>JAVA代码版：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">class Solution &#123;</span><br><span class="line">    public void duplicateZeros(int[] arr) &#123;</span><br><span class="line">        for(int i&#x3D;0;i&lt;arr.length;i++)</span><br><span class="line">        &#123;</span><br><span class="line">            if(arr[i]&#x3D;&#x3D;0)&#123;</span><br><span class="line">                for(int j&#x3D;arr.length-1;j&gt;i+1;j--)</span><br><span class="line">                &#123;</span><br><span class="line">                    arr[j]&#x3D;arr[j-1];</span><br><span class="line">                &#125;</span><br><span class="line">                if(i!&#x3D;arr.length-1)</span><br><span class="line">                    arr[i+1]&#x3D;0;</span><br><span class="line">                i++;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h4 id="5-Merge-Sorted-Array"><a href="#5-Merge-Sorted-Array" class="headerlink" title="[5] Merge Sorted Array"></a>[5] Merge Sorted Array</h4><p><a href="https://leetcode.com/explore/featured/card/fun-with-arrays/525/inserting-items-into-an-array/3253/" target="_blank" rel="noopener">题目</a></p>
+<ul>
+<li>概述<br>合并两个数组</li>
+<li>思路<br>用两个指向原数组的首元素的指针，放入较小的，直到合并完成。</li>
+</ul>
+<p>针对Vuector而言，只需要找到插入位置插入后删除最后的0。</p>
+<ul>
+<li>需要注意的问题：<br>虽然可以使用vec.resize(m)去删除末尾的0，但这也使得插入操作无法完成。<br>另外注意，对于遍历完nums1数组后nums2还没有完成的状况，要特别写代码。</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">class Solution &#123;</span><br><span class="line">public:</span><br><span class="line">    void merge(vector&lt;int&gt;&amp; nums1, int m, vector&lt;int&gt;&amp; nums2, int n) &#123;</span><br><span class="line">        int idx1&#x3D;0,idx2&#x3D;0;</span><br><span class="line">        for(int i&#x3D;0;i&lt;m+n;i++)&#123;</span><br><span class="line">            if(idx2&#x3D;&#x3D;n)</span><br><span class="line">                break;</span><br><span class="line">            if(nums1[i]&gt;&#x3D;nums2[idx2]||i&gt;&#x3D;m+idx2)&#123;</span><br><span class="line">                nums1.insert(nums1.begin()+i,nums2[idx2]);</span><br><span class="line">                idx2++;   </span><br><span class="line">                </span><br><span class="line">                nums1.erase(nums1.end()-1);</span><br><span class="line">            &#125;</span><br><span class="line">           </span><br><span class="line">            </span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>优秀代码<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">while(n&gt;0)&#123;</span><br><span class="line"> 	A[m+n-1] &#x3D; (m&#x3D;&#x3D;0||B[n-1] &gt; A[m-1]) ? B[--n] : A[--m];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<h4 id="6-Remove-Element"><a href="#6-Remove-Element" class="headerlink" title="[6] Remove Element"></a>[6] Remove Element</h4><p><a href="https://leetcode.com/explore/featured/card/fun-with-arrays/526/deleting-items-from-an-array/3247/" target="_blank" rel="noopener">题目</a></p>
+<ul>
+<li><p>概述<br>在数组中删除给的值。</p>
+</li>
+<li><p>思路<br>（错误思路）循环遍历，用后面的非val替换第一个val<br>因为这样不能即使记录第一个val的位置。</p>
+</li>
+</ul>
+<p>（思路2）<br>将最后的非Val元素与第一个Val替换。<br>需要维护一个指待最后非val位置的指针。</p>
+<p>另外需要注意的是<br>1.空数组要特判<br>2.返回的长度是下标+1，不是下标本身。<br>3.当前指针所指待位置是val时，下标要-1</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line">class Solution &#123;</span><br><span class="line">public:</span><br><span class="line">    int removeElement(vector&lt;int&gt;&amp; nums, int val) &#123;</span><br><span class="line">        int len&#x3D;nums.size(),cnt;</span><br><span class="line">        if(len&#x3D;&#x3D;0)</span><br><span class="line">            return 0;</span><br><span class="line">        int lidx&#x3D;-1,fidx&#x3D;0;</span><br><span class="line">        lidx&#x3D;findIdx(nums,val,len-1,-1);</span><br><span class="line"></span><br><span class="line">        for(;fidx&lt;len;fidx++)&#123;</span><br><span class="line">            if(fidx&gt;&#x3D;lidx)&#123;</span><br><span class="line">                if(nums[fidx]&#x3D;&#x3D;val)</span><br><span class="line">                    fidx-&#x3D;1;</span><br><span class="line">                break;</span><br><span class="line">            &#125;  </span><br><span class="line">            if(nums[fidx]&#x3D;&#x3D;val)&#123;</span><br><span class="line">                if(lidx!&#x3D;-1)&#123;</span><br><span class="line">                    swap(nums,fidx,lidx);</span><br><span class="line">                    lidx&#x3D;findIdx(nums,val,lidx-1,fidx);</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        return fidx+1&lt;0?0:fidx+1;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    int findIdx(vector&lt;int&gt;&amp; nums, int val,int begin,int end)&#123;</span><br><span class="line">        for(int i&#x3D;begin;i&gt;end;i--)&#123;</span><br><span class="line">            </span><br><span class="line">            if(nums[i]!&#x3D;val)</span><br><span class="line">            &#123;    </span><br><span class="line">                return i;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        return -1;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    void swap(vector&lt;int&gt;&amp; nums,int i,int j)</span><br><span class="line">    &#123;</span><br><span class="line">        int tmp&#x3D;nums[i];</span><br><span class="line">        nums[i]&#x3D;nums[j];</span><br><span class="line">        nums[j]&#x3D;tmp;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>优秀代码<br>思路相同，但这份代码通过将for改为while，减少了指针运用及查找非elem元素<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">int removeElement(int A[], int n, int elem) &#123;</span><br><span class="line">    int i &#x3D; 0;</span><br><span class="line">    while (i &lt; n) &#123;</span><br><span class="line">        if (A[i] &#x3D;&#x3D; elem) &#123;</span><br><span class="line">            A[i] &#x3D; A[n - 1];</span><br><span class="line">            n--;</span><br><span class="line">        &#125;</span><br><span class="line">        else</span><br><span class="line">            i++;</span><br><span class="line">    &#125;</span><br><span class="line">    return n;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<h4 id="7-Remove-Duplicates-from-Sorted-Array"><a href="#7-Remove-Duplicates-from-Sorted-Array" class="headerlink" title="[7]  Remove Duplicates from Sorted Array"></a>[7]  Remove Duplicates from Sorted Array</h4><p><a href="https://leetcode.com/explore/featured/card/fun-with-arrays/526/deleting-items-from-an-array/3248/" target="_blank" rel="noopener">题目</a></p>
+<ul>
+<li>概述<br>去除相同元素。<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">class Solution &#123;</span><br><span class="line">public:</span><br><span class="line">    int removeDuplicates(vector&lt;int&gt;&amp; nums) &#123;</span><br><span class="line">        int idx&#x3D;0,pre&#x3D;-1;</span><br><span class="line">        </span><br><span class="line">        for(int i&#x3D;0;i&lt;nums.size();i++)&#123;</span><br><span class="line">            if(nums[i]!&#x3D;pre||i&#x3D;&#x3D;0)&#123;</span><br><span class="line">                pre&#x3D;nums[i];</span><br><span class="line">                nums[idx++]&#x3D;nums[i];</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        return idx;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<h4 id="8-Check-If-N-and-Its-Double-Exist"><a href="#8-Check-If-N-and-Its-Double-Exist" class="headerlink" title="[8]  Check If N and Its Double Exist"></a>[8]  Check If N and Its Double Exist</h4><p><a href="https://leetcode.com/explore/featured/card/fun-with-arrays/526/deleting-items-from-an-array/3248/" target="_blank" rel="noopener">题目</a></p>
+<ul>
+<li><p>概述<br>判断数组中有没有两个数是二倍关系。</p>
+</li>
+<li><p>思路<br>遍历，用map存，看有没有一个数的2倍或1/2存在。复杂度O（n）</p>
+</li>
+<li><p>注意<br>/2操作若是奇数做，会损精度。</p>
+</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">class Solution &#123;</span><br><span class="line">public:</span><br><span class="line">    bool checkIfExist(vector&lt;int&gt;&amp; arr) &#123;</span><br><span class="line">        map&lt;int,int&gt; mmap;</span><br><span class="line">        for(int i&#x3D;0;i&lt;arr.size();i++)&#123;</span><br><span class="line">            if(mmap.find(arr[i]*2)!&#x3D;mmap.end())&#123;</span><br><span class="line">                return true;   </span><br><span class="line">            &#125;</span><br><span class="line">            if(arr[i]%2&#x3D;&#x3D;0&amp;&amp;mmap.find(arr[i]&#x2F;2)!&#x3D;mmap.end())</span><br><span class="line">            &#123;</span><br><span class="line">                return true;   </span><br><span class="line">            &#125;</span><br><span class="line">            mmap.insert(make_pair(arr[i],i));</span><br><span class="line">            </span><br><span class="line">        &#125;</span><br><span class="line">        return false;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<h4 id="9-Valid-Mountain-Array"><a href="#9-Valid-Mountain-Array" class="headerlink" title="[9] Valid Mountain Array"></a>[9] Valid Mountain Array</h4><p><a href="https://leetcode.com/explore/featured/card/fun-with-arrays/527/searching-for-items-in-an-array/3251/" target="_blank" rel="noopener">题目</a></p>
+<ul>
+<li><p>概述<br>判断给的数组是否是前段严格递增，后段严格递减。（长度必须大于3）</p>
+</li>
+<li><p>思路<br>暴力。<br>需要特别提防直接递减的序列。</p>
+</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line">class Solution &#123;</span><br><span class="line">public:</span><br><span class="line">    bool validMountainArray(vector&lt;int&gt;&amp; A) &#123;</span><br><span class="line">        int len&#x3D;A.size(),cnt&#x3D;0;</span><br><span class="line">        bool gtr&#x3D;true;</span><br><span class="line">        if(len&lt;3)</span><br><span class="line">            return false;</span><br><span class="line">        for(int i&#x3D;0;i&lt;len-1;i++)&#123;</span><br><span class="line">            if(gtr)&#123;</span><br><span class="line">                if(A[i]&lt;A[i+1])</span><br><span class="line">                &#123;</span><br><span class="line">                    cnt++;</span><br><span class="line">                &#125;else if(A[i]&#x3D;&#x3D;A[i+1])&#123;</span><br><span class="line">                        return false;</span><br><span class="line">                &#125;else&#123;</span><br><span class="line">                    gtr&#x3D;false;   </span><br><span class="line">                &#125;</span><br><span class="line">                </span><br><span class="line">            &#125;else&#123;</span><br><span class="line">                if(cnt&#x3D;&#x3D;0)</span><br><span class="line">                    return false;</span><br><span class="line">                if(A[i+1]&gt;&#x3D;A[i])&#123;</span><br><span class="line">                    return false;   </span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        if(A[len-1]&gt;A[len-2])</span><br><span class="line">            return false;</span><br><span class="line">        return true;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>优秀代码<br>思路相同，学习代码。</li>
+</ul>
+<ol>
+<li>循环从1开始，相比从0开始，可以减去循环外再判断。</li>
+<li>维持条件，节约了判断条件的编写。</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">bool validMountainArray(vector&lt;int&gt;&amp; A) &#123;</span><br><span class="line">    if (A.size() &lt; 3 || A[0] &gt; A[1]) return false;</span><br><span class="line">    auto peak &#x3D; false;</span><br><span class="line">    for (auto i &#x3D; 1; i &lt; A.size(); ++i) &#123;</span><br><span class="line">        if (peak &amp; A[i - 1] &lt; A[i] || A[i - 1] &#x3D;&#x3D; A[i]) return false;</span><br><span class="line">        peak &#x3D; A[i - 1] &gt; A[i];</span><br><span class="line">    &#125;</span><br><span class="line">    return peak;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="10-Replace-Elements-with-Greatest-Element-on-Right-Side"><a href="#10-Replace-Elements-with-Greatest-Element-on-Right-Side" class="headerlink" title="[10] Replace Elements with Greatest Element on Right Side"></a>[10] Replace Elements with Greatest Element on Right Side</h4><p><a href="https://leetcode.com/explore/featured/card/fun-with-arrays/511/in-place-operations/3259/" target="_blank" rel="noopener">题目</a></p>
+<ul>
+<li><p>概述<br>将某一位替换为右侧的最大值，最后一位变成-1。</p>
+</li>
+<li><p>思路<br>1.暴力（纯暴力，也就是每次都搜，会超时。）<br>2.感觉可以线段树，先存储每个区间最大值。</p>
+</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">class Solution &#123;</span><br><span class="line">public:</span><br><span class="line">    vector&lt;int&gt; replaceElements(vector&lt;int&gt;&amp; arr) &#123;</span><br><span class="line">        int pre&#x3D;0;</span><br><span class="line">        for(int i&#x3D;1;i&lt;arr.size();i++)&#123;</span><br><span class="line">            arr[i-1]&#x3D;arr[i];</span><br><span class="line">            if(arr[i]&gt;pre)&#123;</span><br><span class="line">                for(int j&#x3D;i;j&gt;0;j--)&#123;</span><br><span class="line">                    if(arr[j]&gt;arr[j-1])</span><br><span class="line">                        arr[j-1]&#x3D;arr[j];</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">            pre&#x3D;arr[i];</span><br><span class="line">        &#125;</span><br><span class="line">        arr[arr.size()-1]&#x3D;-1;</span><br><span class="line">        return arr;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>优秀代码<br>从右往左遍历就无需特意为最后一值赋-1，也无需回复遍历<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">vector&lt;int&gt; replaceElements(vector&lt;int&gt;&amp; A, int mx &#x3D; -1) &#123;</span><br><span class="line">        for (int i &#x3D; A.size() - 1; i &gt;&#x3D; 0; --i)</span><br><span class="line">            mx &#x3D; max(mx, exchange(A[i], mx));</span><br><span class="line">        return A;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<h4 id="11-Move-Zeroes"><a href="#11-Move-Zeroes" class="headerlink" title="[11] Move Zeroes"></a>[11] Move Zeroes</h4><p><a href="https://leetcode.com/explore/featured/card/fun-with-arrays/511/in-place-operations/3157/" target="_blank" rel="noopener">题目</a></p>
+<ul>
+<li><p>概述<br>用最少的操作，将0元素移到最后，同时保留原有非0元素的顺序。</p>
+</li>
+<li><p>思路<br>用队列标0的位置，每次用非0值与队列首元素位置交换。</p>
+</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">class Solution &#123;</span><br><span class="line">public:</span><br><span class="line">    void moveZeroes(vector&lt;int&gt;&amp; nums) &#123;</span><br><span class="line">        queue&lt;int&gt; q1;</span><br><span class="line">        int len&#x3D;nums.size();</span><br><span class="line">        for(int i&#x3D;0;i&lt;len;i++)&#123;</span><br><span class="line">            if(nums[i]&#x3D;&#x3D;0)</span><br><span class="line">                q1.push(i);</span><br><span class="line">            else&#123;</span><br><span class="line">                if(!q1.empty())&#123;</span><br><span class="line">                    int d1&#x3D;q1.front();</span><br><span class="line">                    q1.pop();</span><br><span class="line">                    swap(nums,i,d1);</span><br><span class="line">                    q1.push(i);</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    void swap(vector&lt;int&gt;&amp; nums,int d1,int d2)&#123;</span><br><span class="line">        int tmp&#x3D;nums[d1];</span><br><span class="line">        nums[d1]&#x3D;nums[d2];</span><br><span class="line">        nums[d2]&#x3D;tmp;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>优秀代码<br>用一个count当了指针，把空间降到了O（1）<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">void moveZeroes(vector&lt;int&gt;&amp; nums) &#123;</span><br><span class="line">    int count &#x3D; 0;</span><br><span class="line">    for(int i&#x3D;0; i&lt; nums.size(); i++)</span><br><span class="line">    &#123;</span><br><span class="line">        if(nums[i]&#x3D;&#x3D;0)</span><br><span class="line">        &#123;</span><br><span class="line">            count++;</span><br><span class="line">        &#125;</span><br><span class="line">        else if(count!&#x3D;0)</span><br><span class="line">        &#123;</span><br><span class="line">            nums[i-count] &#x3D; nums[i];</span><br><span class="line">            nums[i] &#x3D; 0;</span><br><span class="line">        &#125;   </span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<h4 id="12-Sort-Array-By-Parity"><a href="#12-Sort-Array-By-Parity" class="headerlink" title="[12] Sort Array By Parity"></a>[12] Sort Array By Parity</h4><p><a href="https://leetcode.com/explore/featured/card/fun-with-arrays/511/in-place-operations/3260/" target="_blank" rel="noopener">题目</a></p>
+<ul>
+<li><p>概述<br>将队列A变为前面为偶数，后面是基数的样式。（偶数与偶数，奇数与奇数的位置无所谓）</p>
+</li>
+<li><p>思路<br>法一：与上题一样，使用队列<br>法二：从前找奇数，从后找偶数，对换。</p>
+</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">class Solution &#123;</span><br><span class="line">public:</span><br><span class="line">    vector&lt;int&gt; sortArrayByParity(vector&lt;int&gt;&amp; A) &#123;</span><br><span class="line">        queue&lt;int&gt; q;</span><br><span class="line">        int idx&#x3D;0;</span><br><span class="line">        for(int i&#x3D;0;i&lt;A.size();i++)&#123;</span><br><span class="line">            if(A[i]%2&#x3D;&#x3D;0)&#123;</span><br><span class="line">                A[idx++]&#x3D;A[i];   </span><br><span class="line">            &#125;else&#123;</span><br><span class="line">                q.push(A[i]);   </span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        while(!q.empty())&#123;</span><br><span class="line">            A[idx++]&#x3D;q.front();</span><br><span class="line">            q.pop();</span><br><span class="line">        &#125;</span><br><span class="line">	return A;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>优秀代码<br>位运算判断是否为偶数，代码更简便。<br>（这种交换和冒泡排序相似）<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">vector&lt;int&gt; sortArrayByParity(vector&lt;int&gt; &amp;A) &#123;</span><br><span class="line">       for (int i &#x3D; 0, j &#x3D; 0; j &lt; A.size(); j++)</span><br><span class="line">           if (A[j] &amp; 1 &#x3D;&#x3D; 0) swap(A[i++], A[j]);</span><br><span class="line">       return A;</span><br><span class="line">   &#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<h4 id="13-Height-Checker"><a href="#13-Height-Checker" class="headerlink" title="[13] Height Checker"></a>[13] Height Checker</h4><p><a href="https://leetcode.com/explore/featured/card/fun-with-arrays/523/conclusion/3228/" target="_blank" rel="noopener">题目</a></p>
+<ul>
+<li><p>概述<br>对于一组数组，求将他们变成非递减顺序需要移动的最少数量的元素个数。</p>
+</li>
+<li><p>思路<br>暴力。排序后比下标。</p>
+</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">class Solution &#123;</span><br><span class="line">public:</span><br><span class="line">    bool static cmp(int a,int b)&#123;</span><br><span class="line">        return a&lt;b;   </span><br><span class="line">    &#125;</span><br><span class="line">    int heightChecker(vector&lt;int&gt;&amp; heights) &#123;</span><br><span class="line">        vector&lt;int&gt; v2&#x3D;heights;</span><br><span class="line">        sort(v2.begin(),v2.end(),cmp);</span><br><span class="line">        int cnt&#x3D;0;</span><br><span class="line">        </span><br><span class="line">        for(int i&#x3D;0;i&lt;v2.size();i++)&#123;</span><br><span class="line">            if(heights[i]!&#x3D;v2[i])</span><br><span class="line">                cnt++;</span><br><span class="line">        &#125;</span><br><span class="line">        return cnt;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>优秀代码<br>需要学习的是这个解决问题的思路.<br>但对其他帮助不大。<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">class Solution &#123;</span><br><span class="line">    public int heightChecker(int[] heights) &#123;</span><br><span class="line">        int[] heightToFreq &#x3D; new int[101];</span><br><span class="line">        </span><br><span class="line">        for (int height : heights) &#123;</span><br><span class="line">            heightToFreq[height]++;</span><br><span class="line">        &#125;</span><br><span class="line">        </span><br><span class="line">        int result &#x3D; 0;</span><br><span class="line">        int curHeight &#x3D; 0;</span><br><span class="line">        </span><br><span class="line">        for (int i &#x3D; 0; i &lt; heights.length; i++) &#123;</span><br><span class="line">            while (heightToFreq[curHeight] &#x3D;&#x3D; 0) &#123;</span><br><span class="line">                curHeight++;</span><br><span class="line">            &#125;</span><br><span class="line">            </span><br><span class="line">            if (curHeight !&#x3D; heights[i]) &#123;</span><br><span class="line">                result++;</span><br><span class="line">            &#125;</span><br><span class="line">            heightToFreq[curHeight]--;</span><br><span class="line">        &#125;</span><br><span class="line">        </span><br><span class="line">        return result;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<h4 id="14-Third-Maximum-Number"><a href="#14-Third-Maximum-Number" class="headerlink" title="[14]  Third Maximum Number"></a>[14]  Third Maximum Number</h4><p><a href="https://leetcode.com/explore/featured/card/fun-with-arrays/523/conclusion/3231/" target="_blank" rel="noopener">题目</a></p>
+<ul>
+<li><p>概述<br>对于非空数组，找第三大的数，不存在就找最大值。时间复杂度要在O（n）<br>（对于1，1，1，2序列，因为重复1被视为一个数，所以不存在第三大值）</p>
+</li>
+<li><p>思路<br>放到set里，自动从小到大排。注意判断长度是不是大于3。返回len-3</p>
+</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">class Solution &#123;</span><br><span class="line">public:</span><br><span class="line">    int thirdMax(vector&lt;int&gt;&amp; nums) &#123;</span><br><span class="line">        set&lt;int&gt; s;</span><br><span class="line">        int len&#x3D;nums.size(),idx&#x3D;0;</span><br><span class="line">        for(int i&#x3D;0;i&lt;len;i++)&#123;</span><br><span class="line">               s.insert(nums[i]);</span><br><span class="line">        &#125;</span><br><span class="line">       &#x2F;&#x2F; cout&lt;&lt;&quot;s.size&#x3D;&quot;&lt;&lt;s.size()&lt;&lt;endl;</span><br><span class="line">        if(s.size()&gt;&#x3D;3)</span><br><span class="line">            idx&#x3D;s.size()-3;</span><br><span class="line">        else</span><br><span class="line">            idx&#x3D;s.size()-1;</span><br><span class="line">        int i&#x3D;0,ans&#x3D;-1;</span><br><span class="line">        for(auto it&#x3D;s.begin();it!&#x3D;s.end();it++)&#123;</span><br><span class="line">           &#x2F;&#x2F; cout&lt;&lt;&quot;i&#x3D;&quot;&lt;&lt;i&lt;&lt;&quot; idx&#x3D;&quot;&lt;&lt;idx&lt;&lt;endl;</span><br><span class="line">            if(i&#x3D;&#x3D;idx)&#123;</span><br><span class="line">                ans&#x3D;*it;   </span><br><span class="line">            &#125;</span><br><span class="line">            i++;</span><br><span class="line">        &#125;</span><br><span class="line">        return ans;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>优秀代码<br>都使用set的默认排序（升序），但一旦超过3每次都删除最小值，保证了最后的访问效率。<br>同时不是什么都插入，只有大于最小值的才插入。<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">int thirdMax(vector&lt;int&gt;&amp; nums) &#123;</span><br><span class="line">    set&lt;int&gt; top3;</span><br><span class="line">    for (int num : nums) &#123;</span><br><span class="line">        if (top3.size() &lt; 3 || num &gt; *top3.begin())</span><br><span class="line">            top3.insert(num);</span><br><span class="line">        if (top3.size() &gt; 3)</span><br><span class="line">            top3.erase(top3.begin());</span><br><span class="line">    &#125;</span><br><span class="line">    return top3.size() &#x3D;&#x3D; 3 ? *top3.begin() : *top3.rbegin();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<h4 id="15-Find-All-Numbers-Disappeared-in-an-Array"><a href="#15-Find-All-Numbers-Disappeared-in-an-Array" class="headerlink" title="[15] Find All Numbers Disappeared in an Array"></a>[15] Find All Numbers Disappeared in an Array</h4><p><a href="https://leetcode.com/explore/featured/card/fun-with-arrays/523/conclusion/3270/" target="_blank" rel="noopener">题目</a></p>
+<ul>
+<li><p>概述<br>对于[1,n]，找缺失的数。不要额外空间，时间复杂度O（N）</p>
+</li>
+<li><p>思路<br>遍历，将所有数，对应的原位置的数，变为相反数（不能单纯赋特定值，否则失去后面位置的指待）。则最后剩下的正数位置i+1为缺失值。</p>
+</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">class Solution &#123;</span><br><span class="line">public:</span><br><span class="line">    vector&lt;int&gt; findDisappearedNumbers(vector&lt;int&gt;&amp; nums) &#123;</span><br><span class="line">        int n&#x3D;nums.size();</span><br><span class="line">        vector&lt;int&gt; v;</span><br><span class="line">        cout&lt;&lt;&quot;n&#x3D;&quot;&lt;&lt;n&lt;&lt;endl;</span><br><span class="line">        for(int i&#x3D;0;i&lt;n;i++)&#123;</span><br><span class="line">            int idx&#x3D;abs(nums[i])-1;</span><br><span class="line">            nums[idx]&#x3D;nums[idx]&gt;0?-nums[idx]:nums[idx];</span><br><span class="line">          </span><br><span class="line">        &#125;</span><br><span class="line">        for(int i&#x3D;0;i&lt;n;i++)&#123;</span><br><span class="line">            if(nums[i]&gt;0)&#123;</span><br><span class="line">                v.insert(v.end(),i+1);    </span><br><span class="line">                &#x2F;&#x2F;cout&lt;&lt;&quot;i+1&#x3D;&quot;&lt;&lt;i+1&lt;&lt;endl;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        return v;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+    </div>
+
+    
+    
+    
+
+ 
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/ACM-leetcode/" rel="tag"><i class="fa fa-tags" aria-hidden="true"></i>
+ ACM leetcode</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2020/04/26/Spring/SpringBoot%E5%90%8E%E7%AB%AF%E4%B8%8EThymeleaf%E5%89%8D%E7%AB%AF%E7%9A%84%E4%BA%8C%E4%B8%89%E4%BA%8B/" rel="prev" title="SpringBoot后端与Thymeleaf前端的二三事">
+      <i class="fa fa-chevron-left"></i> SpringBoot后端与Thymeleaf前端的二三事
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2020/05/05/ACM/Leetcode-LinkedList%E7%AF%87/" rel="next" title="Leetcode-LinkedList篇">
+      Leetcode-LinkedList篇 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#前言"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#记录AC代码"><span class="nav-number">2.</span> <span class="nav-text">记录AC代码</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-Max-Consecutive-Ones"><span class="nav-number">2.1.</span> <span class="nav-text">[1] Max Consecutive Ones</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-Find-Numbers-with-Even-Number-of-Digits"><span class="nav-number">2.2.</span> <span class="nav-text">[2]  Find Numbers with Even Number of Digits</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-Squares-of-a-Sorted-Array"><span class="nav-number">2.3.</span> <span class="nav-text">[3] Squares of a Sorted Array</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-Duplicate-Zeros"><span class="nav-number">2.4.</span> <span class="nav-text">[4] Duplicate Zeros</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#5-Merge-Sorted-Array"><span class="nav-number">2.5.</span> <span class="nav-text">[5] Merge Sorted Array</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#6-Remove-Element"><span class="nav-number">2.6.</span> <span class="nav-text">[6] Remove Element</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#7-Remove-Duplicates-from-Sorted-Array"><span class="nav-number">2.7.</span> <span class="nav-text">[7]  Remove Duplicates from Sorted Array</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#8-Check-If-N-and-Its-Double-Exist"><span class="nav-number">2.8.</span> <span class="nav-text">[8]  Check If N and Its Double Exist</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#9-Valid-Mountain-Array"><span class="nav-number">2.9.</span> <span class="nav-text">[9] Valid Mountain Array</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#10-Replace-Elements-with-Greatest-Element-on-Right-Side"><span class="nav-number">2.10.</span> <span class="nav-text">[10] Replace Elements with Greatest Element on Right Side</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#11-Move-Zeroes"><span class="nav-number">2.11.</span> <span class="nav-text">[11] Move Zeroes</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#12-Sort-Array-By-Parity"><span class="nav-number">2.12.</span> <span class="nav-text">[12] Sort Array By Parity</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#13-Height-Checker"><span class="nav-number">2.13.</span> <span class="nav-text">[13] Height Checker</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#14-Third-Maximum-Number"><span class="nav-number">2.14.</span> <span class="nav-text">[14]  Third Maximum Number</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#15-Find-All-Numbers-Disappeared-in-an-Array"><span class="nav-number">2.15.</span> <span class="nav-text">[15] Find All Numbers Disappeared in an Array</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Mona"
+      src="/images/A.png">
+  <p class="site-author-name" itemprop="name">Mona</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">115</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">38</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">75</span>
+        <span class="site-state-item-name">标签</span>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/moneyna" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;moneyna" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+	 
+   <a href="/">
+      <img class="site-author-image" itemprop="image"
+        src="/images/A.png"
+        alt="Mona" />
+   </a>
+
+  
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Mona</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v4.2.0
+  </div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">主题 – <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> v7.7.2
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+</body>
+</html>
