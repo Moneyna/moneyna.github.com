@@ -151,6 +151,96 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/11/06/WIFI%E5%AE%A4%E5%86%85%E5%AE%9A%E4%BD%8D/CSITools%E5%AE%89%E8%A3%85%E8%AE%B0%E5%BD%95/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/A.png">
+      <meta itemprop="name" content="Mona">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Moneyna 的杂货铺">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          
+            <a href="/2020/11/06/WIFI%E5%AE%A4%E5%86%85%E5%AE%9A%E4%BD%8D/CSITools%E5%AE%89%E8%A3%85%E8%AE%B0%E5%BD%95/" class="post-title-link" itemprop="url">CSITools安装记录</a>
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-11-06 22:40:12" itemprop="dateCreated datePublished" datetime="2020-11-06T22:40:12+08:00">2020-11-06</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/WIFI%E5%AE%A4%E5%86%85%E5%AE%9A%E4%BD%8D/" itemprop="url" rel="index"><span itemprop="name">WIFI室内定位</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><h4 id="1-安装参考"><a href="#1-安装参考" class="headerlink" title="1 安装参考"></a>1 安装参考</h4><ul>
+<li><p>Fedora 安装低版本内核<br><a href="https://blog.csdn.net/weixin_34111790/article/details/93447617" target="_blank" rel="noopener">Fedora编译安装内核</a><br><a href="https://blog.csdn.net/ztguang/article/details/51319990" target="_blank" rel="noopener">dnf - Fedora 23 - kernel - 安装低版本内核</a><br><a href="https://www.cnblogs.com/Jelline/articles/2063565.html" target="_blank" rel="noopener">Ubuntu高版本内核编译低版本内核全过程</a></p>
+</li>
+<li><p>CSI tool 安装指南<br><a href="dhalperi.github.io/linux-80211n-csitool/installation.html">官网地址</a><br><a href="https://blog.csdn.net/qq_20604671/article/details/53996239" target="_blank" rel="noopener">CSI Tool安装使用讲解</a><br><a href="https://blog.csdn.net/u014645508/article/details/81359409" target="_blank" rel="noopener">Linux 802.11n CSI tool安装教程</a></p>
+</li>
+</ul>
+<h4 id="2-环境介绍"><a href="#2-环境介绍" class="headerlink" title="2 环境介绍"></a>2 环境介绍</h4><p>系统Fedora 30<br>属于红帽系列，所以命令行区别与Ubuntu<br>（不知道有没有其他不同）</p>
+<h3 id="1-安装流程"><a href="#1-安装流程" class="headerlink" title="1 安装流程"></a>1 安装流程</h3><p><a href="https://github.zhlh6.cn" target="_blank" rel="noopener">github下载加速链接</a></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">mkdir linux-csitool</span><br><span class="line">cd linux-csitool</span><br><span class="line"></span><br><span class="line">#1 Prerequisites</span><br><span class="line">sudo dnf install gcc make kernel-headers kernel-devel git-core</span><br><span class="line"></span><br><span class="line">#2 Build and Install the Modified Wireless Driver</span><br><span class="line">CSITOOL_KERNEL_TAG&#x3D;csitool-$(uname -r | cut -d . -f 1-2)</span><br><span class="line">git clone https:&#x2F;&#x2F;github.com&#x2F;dhalperi&#x2F;linux-80211n-csitool.git</span><br><span class="line">cd linux-80211n-csitool</span><br><span class="line">git checkout $&#123;CSITOOL_KERNEL_TAG&#125;</span><br></pre></td></tr></table></figure>
+<p><strong>这句出错</strong><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">make -C &#x2F;lib&#x2F;modules&#x2F;$(uname -r)&#x2F;build M&#x3D;$(pwd)&#x2F;drivers&#x2F;net&#x2F;wireless&#x2F;iwlwifi modules</span><br></pre></td></tr></table></figure></p>
+<p><strong>2020-11-06 记录</strong></p>
+<ul>
+<li><p>enum ieee80211_band 定义不全<br>看了一下bug源码的确没有找到enum ieee80211_band的定义，百度后发现它的完整定义应该是<br><a href="www.hep.by/gnu/kernel/80211/API-enum-ieee80211-band.html">参考网址</a></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">enum ieee80211_band &#123;</span><br><span class="line">  IEEE80211_BAND_2GHZ,</span><br><span class="line">  IEEE80211_BAND_5GHZ,</span><br><span class="line">  IEEE80211_NUM_BANDS</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>按照报错位置加在文件：linux-80211n-csitool/drivers/net/wireless/iwlwifi/iwl-eeprom.h中</p>
+</li>
+<li><p>error: ‘ieee80211_rssi_event’ defined as wrong kind of tag</p>
+</li>
+</ul>
+<p>报错位置是linux-80211n-csitool/drivers/net/wireless/iwlwifi/iwl-agn.h:567:15<br>报错提示的含义是同一个标签名在struct，union或enum中被重复定义了，在这里就是ieee80211_rssi_event</p>
+<p>但我翻遍了头文件定义都没有找到……</p>
+<p><strong>弄错了一个顺序，应该是先进入低版本内核，再进行安装，而不是通过安装来到低版本内核</strong><br>因为在CSI tool源码编译过程中调用了系统头文件，换句话说就是内核版本很重要</p>
+
+      
+    </div>
+
+    
+    
+    
+
+ 
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+        
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/11/03/WIFI%E5%AE%A4%E5%86%85%E5%AE%9A%E4%BD%8D/WIFI%E5%AE%9A%E4%BD%8D%E7%AC%94%E8%AE%B0/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1020,82 +1110,6 @@
   
   
 
-        
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/04/11/C++/%E5%85%B3%E4%BA%8E%E5%A4%9A%E4%B8%AAc-%E6%96%87%E4%BB%B6%E7%9A%84makefile%E7%BC%96%E5%86%99%E7%BB%83%E4%B9%A0/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/A.png">
-      <meta itemprop="name" content="Mona">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Moneyna 的杂货铺">
-    </span>
-      <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">
-          
-            <a href="/2020/04/11/C++/%E5%85%B3%E4%BA%8E%E5%A4%9A%E4%B8%AAc-%E6%96%87%E4%BB%B6%E7%9A%84makefile%E7%BC%96%E5%86%99%E7%BB%83%E4%B9%A0/" class="post-title-link" itemprop="url">关于多个c++文件的makefile编写练习</a>
-        </h1>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2020-04-11 20:42:24" itemprop="dateCreated datePublished" datetime="2020-04-11T20:42:24+08:00">2020-04-11</time>
-            </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/C/" itemprop="url" rel="index"><span itemprop="name">C++</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h3 id="1-背景"><a href="#1-背景" class="headerlink" title="1 背景"></a>1 背景</h3><p>在为自己的纯前端项目生成测试数据。<br>makefile部分正确无误，然而面临的真实困境却是生成的json数据格式有问题……有问题的本质原因还是Vue需要的就是这个有问题格式。<br>sigh</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2020/04/11/C++/%E5%85%B3%E4%BA%8E%E5%A4%9A%E4%B8%AAc-%E6%96%87%E4%BB%B6%E7%9A%84makefile%E7%BC%96%E5%86%99%E7%BB%83%E4%B9%A0/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-
- 
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
   </div>
 
   
@@ -1168,7 +1182,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">115</span>
+          <span class="site-state-item-count">116</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -1179,7 +1193,7 @@
         <span class="site-state-item-name">分类</span></a>
       </div>
       <div class="site-state-item site-state-tags">
-        <span class="site-state-item-count">76</span>
+        <span class="site-state-item-count">77</span>
         <span class="site-state-item-name">标签</span>
       </div>
   </nav>
