@@ -151,6 +151,77 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/10/22/MATLAB/fplot-%E7%BB%99%E7%AC%A6%E5%8F%B7%E5%87%BD%E6%95%B0%E7%BB%98%E5%9B%BE/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/A.png">
+      <meta itemprop="name" content="Mona">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Moneyna 的杂货铺">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          
+            <a href="/2019/10/22/MATLAB/fplot-%E7%BB%99%E7%AC%A6%E5%8F%B7%E5%87%BD%E6%95%B0%E7%BB%98%E5%9B%BE/" class="post-title-link" itemprop="url">fplot-给符号函数绘图</a>
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2019-10-22 21:01:23" itemprop="dateCreated datePublished" datetime="2019-10-22T21:01:23+08:00">2019-10-22</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/MATLAB/" itemprop="url" rel="index"><span itemprop="name">MATLAB</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>以函数f(x)=1/(1+exp(-(w*x+b)))为例<br>其中x为未知数，w,b为已知参数</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">syms x w b    %设置符号x w b</span><br><span class="line">f(x)&#x3D;1&#x2F;(1+exp(-(w*x+b)))   %exp(…)表示以e为底的指数，且注意matlab和其他编程语言一样，*不可省略</span><br><span class="line">dy2&#x3D;diff(f,2)   %diff() 用于求函数f(x)的二阶导数</span><br><span class="line">fplot(dy2)   %绘制dy2的图像，默认x的范围为[-5,5]</span><br><span class="line">axis([-10 10 -5 5])   %axis([xmin xmax ymin ymax]) 设置自变量与因变量的取值</span><br></pre></td></tr></table></figure>
+<p>pretty(dy2) 该命令可以用书面的形式表示函数，让函数更直观</p>
+
+      
+    </div>
+
+    
+    
+    
+
+ 
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+        
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/09/29/Hadoop/hadoop%E5%AE%89%E8%A3%85%E5%8F%82%E8%80%83%E7%BD%91%E5%9D%80/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -795,101 +866,6 @@
   
   
 
-        
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/07/16/USACO/USACO-2-2-Party-Lamps/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/A.png">
-      <meta itemprop="name" content="Mona">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Moneyna 的杂货铺">
-    </span>
-      <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">
-          
-            <a href="/2019/07/16/USACO/USACO-2-2-Party-Lamps/" class="post-title-link" itemprop="url">USACO-2-2-Party-Lamps</a>
-        </h1>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2019-07-16 12:43:40" itemprop="dateCreated datePublished" datetime="2019-07-16T12:43:40+08:00">2019-07-16</time>
-            </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/USACO/" itemprop="url" rel="index"><span itemprop="name">USACO</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p>一道经典题，可根据题意找规律</p>
-<h6 id="一共有四种按钮："><a href="#一共有四种按钮：" class="headerlink" title="一共有四种按钮："></a>一共有四种按钮：</h6><p>1 改变所有灯的状态<br>2 改变奇数号灯的状态<br>3 改变偶数号灯的状态<br>4 改变3k+1(k&gt;=0) 号灯的状态</p>
-<h6 id="其中存在以下几个规律："><a href="#其中存在以下几个规律：" class="headerlink" title="其中存在以下几个规律："></a>其中存在以下几个规律：</h6><p>1）任意两个按钮按两次等于没按。<br>2） 可以用6个灯模拟所有灯的状态，即以6为循环节。因为2-3号按钮的循环节为2，4号按钮的循环节为3，它们的最小公倍数为6。<br>3）对于1-3号按钮，任意两个各按一次等于按一次剩下的那个按钮<br>即按一次1+按一次2=按一次3<br>即按一次2+按一次3=按一次1<br>即按一次1+按一次3=按一次2<br>4） 只有8种状态，按二进制从小到大排序如下</p>
-<ul>
-<li>1：00 00 00 <strong>按1号按钮</strong></li>
-<li>2：00 11 10 <strong>按3、4号按钮</strong></li>
-<li>3：01 01 01 <strong>按2号按钮</strong></li>
-<li>4：01 10 11 <strong>按4号按钮</strong></li>
-<li>5：10 01 00 <strong>按1、4号按钮</strong></li>
-<li>6：10 10 10 <strong>按3号按钮</strong></li>
-<li>7：11 00 01 <strong>按2、4号按钮</strong></li>
-<li>8：11 11 11 <strong>不按</strong></li>
-</ul>
-<p>5）可根据C的不同分为4中情况</p>
-<ul>
-<li>C=0，考虑状态8</li>
-<li>C=1，考虑状态1 3 4 6</li>
-<li>C=2，不考虑4</li>
-<li>C&gt;2, 都考虑</li>
-</ul>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2019/07/16/USACO/USACO-2-2-Party-Lamps/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-
- 
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
   </div>
 
   
@@ -962,18 +938,18 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">116</span>
+          <span class="site-state-item-count">117</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
             <a href="/categories/">
           
-        <span class="site-state-item-count">39</span>
+        <span class="site-state-item-count">40</span>
         <span class="site-state-item-name">分类</span></a>
       </div>
       <div class="site-state-item site-state-tags">
-        <span class="site-state-item-count">77</span>
+        <span class="site-state-item-count">78</span>
         <span class="site-state-item-name">标签</span>
       </div>
   </nav>
