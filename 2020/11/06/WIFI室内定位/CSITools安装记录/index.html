@@ -29,7 +29,7 @@
 <meta property="og:description" content="前言1 安装参考 Fedora 安装低版本内核Fedora编译安装内核dnf - Fedora 23 - kernel - 安装低版本内核Ubuntu高版本内核编译低版本内核全过程  CSI tool 安装指南官网地址CSI Tool安装使用讲解Linux 802.11n CSI tool安装教程   2 环境介绍系统Fedora 30属于红帽系列，所以命令行区别与Ubuntu（不知道有没有其他不">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2020-11-06T14:40:12.000Z">
-<meta property="article:modified_time" content="2020-11-07T02:38:37.695Z">
+<meta property="article:modified_time" content="2020-11-08T13:51:01.724Z">
 <meta property="article:author" content="Mona">
 <meta property="article:tag" content="CSI采集">
 <meta name="twitter:card" content="summary">
@@ -224,6 +224,8 @@
 <p>报错位置是linux-80211n-csitool/drivers/net/wireless/iwlwifi/iwl-agn.h:567:15<br>报错提示的含义是同一个标签名在struct，union或enum中被重复定义了，在这里就是ieee80211_rssi_event</p>
 <p>但我翻遍了头文件定义都没有找到……</p>
 <p><strong>弄错了一个顺序，应该是先进入低版本内核，再进行安装，而不是通过安装来到低版本内核</strong><br>因为在CSI tool源码编译过程中调用了系统头文件，换句话说就是内核版本很重要</p>
+<p><strong>2020-11-08 记录</strong><br>犯蠢到用已经装了双系统（Fedora30+win10）的电脑直接去装了Ubuntu12.04<br>Ubuntu12.04还是太老了，大概是10年左右的系统，那时用的还是grub，而非grub2<br>所以并不能兼容到Fedora30里<br>最后成功把grub2引导弄丢了，好在win10<br>不得已走上了用fedora30的启动盘里的live模式修复了grub2<br>原来在live中是可以用sudo的（没有真的凉了）</p>
+<p>换电脑吧</p>
 
     </div>
 

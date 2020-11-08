@@ -198,7 +198,11 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p>  为了能安装CSI tool捕获CSI，第一步是把内核版本调到4.2.大概是Fedora23的样子</p>
+          <h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><blockquote>
+<p>2020-11-08记</p>
+<p><strong>失败了</strong>。编译低版本内核需要低版本gcc，而gcc并不向下兼容。以后有空再慢慢试，暂时搁置计划。</p>
+</blockquote>
+<p>  为了能安装CSI tool捕获CSI，第一步是把内核版本调到4.2.大概是Fedora23的样子</p>
 <p><em>参考安装指南</em><br><a href="https://blog.csdn.net/weixin_34111790/article/details/93447617" target="_blank" rel="noopener">Fedora编译安装内核</a><br><a href="https://blog.csdn.net/ztguang/article/details/51319990" target="_blank" rel="noopener">dnf - Fedora 23 - kernel - 安装低版本内核</a><br><a href="https://www.cnblogs.com/Jelline/articles/2063565.html" target="_blank" rel="noopener">Ubuntu高版本内核编译低版本内核全过程</a></p>
 <h3 id="安装纪实"><a href="#安装纪实" class="headerlink" title="安装纪实"></a>安装纪实</h3><ul>
 <li>前置条件</li>
@@ -215,6 +219,11 @@
 <p>dnf直接管理是没希望了，手动安装吧<br><a href="https://ftp.gnu.org/gnu/binutils/" target="_blank" rel="noopener">官网下载网址</a></p>
 <p>解压压缩包后按照README中内容进行手动安装<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">.&#x2F;configure</span><br><span class="line">sudo make</span><br><span class="line">sudo make isntall</span><br></pre></td></tr></table></figure></p>
 <p>但过程中遇到了鸡生蛋蛋生鸡的问题，bintuils的编译需要gcc，而gcc的安装又需要binutils去运行==<br>dnf对应版本的gcc太高了，需要依赖的bintutils也就高，要先降级gcc</p>
+<p>gcc安装过程参考之前的<a href="https://moneyna.github.io/2019/11/14/Linux-Centos/centos7-配置高版本gcc-（gcc-9-2-0）/" target="_blank" rel="noopener">centos7-配置高版本gcc-（gcc-9-2-0）</a></p>
+<p>不过要注意fedora23的发型时间对应15年11月，所以应该安装gcc-5.2.0<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">wget https:&#x2F;&#x2F;ftp.gnu.org&#x2F;gnu&#x2F;gcc&#x2F;gcc-5.2.0&#x2F;gcc-5.2.0.tar.gz</span><br></pre></td></tr></table></figure></p>
+<p>过程并不顺利，看来高版本并不能向下兼容<br><a href="https://www.vpser.net/manage/centos-6-upgrade-gcc.html" target="_blank" rel="noopener">一个新的参考</a><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">#升级到gcc 5.2</span><br><span class="line">wget https:&#x2F;&#x2F;copr.fedoraproject.org&#x2F;coprs&#x2F;hhorak&#x2F;devtoolset-4-rebuild-bootstrap&#x2F;repo&#x2F;epel-6&#x2F;hhorak-devtoolset-4-rebuild-bootstrap-epel-6.repo -O &#x2F;etc&#x2F;yum.repos.d&#x2F;devtoolset-4.repo</span><br><span class="line">yum install devtoolset-4-gcc devtoolset-4-gcc-c++ devtoolset-4-binutils -y</span><br><span class="line">scl enable devtoolset-4 bash</span><br></pre></td></tr></table></figure></p>
+<p>scl只是临时命令，退出后会复原</p>
+<p>== 失败</p>
 
       
     </div>
@@ -305,6 +314,8 @@
 <p>报错位置是linux-80211n-csitool/drivers/net/wireless/iwlwifi/iwl-agn.h:567:15<br>报错提示的含义是同一个标签名在struct，union或enum中被重复定义了，在这里就是ieee80211_rssi_event</p>
 <p>但我翻遍了头文件定义都没有找到……</p>
 <p><strong>弄错了一个顺序，应该是先进入低版本内核，再进行安装，而不是通过安装来到低版本内核</strong><br>因为在CSI tool源码编译过程中调用了系统头文件，换句话说就是内核版本很重要</p>
+<p><strong>2020-11-08 记录</strong><br>犯蠢到用已经装了双系统（Fedora30+win10）的电脑直接去装了Ubuntu12.04<br>Ubuntu12.04还是太老了，大概是10年左右的系统，那时用的还是grub，而非grub2<br>所以并不能兼容到Fedora30里<br>最后成功把grub2引导弄丢了，好在win10<br>不得已走上了用fedora30的启动盘里的live模式修复了grub2<br>原来在live中是可以用sudo的（没有真的凉了）</p>
+<p>换电脑吧</p>
 
       
     </div>
