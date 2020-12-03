@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/A.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-minimal.min.css">
+  <script src="/lib/pace/pace.min.js"></script>
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"yoursite.com","root":"/","scheme":"Pisces","version":"7.7.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="1 前言代码地址 2 细节SAGE：EM算法的变形，用于迭代估计参数TOF、AoA、DFS  sage_set_const.m1234567function sage_const &#x3D; sage_set_const(T, F, A, L, N, FI, TI, AS, TR, AR, DR, UR)% SAGE_SET_CONST: Set parameters for SAGE.">
+<meta property="og:type" content="article">
+<meta property="og:title" content="WIFI室内定位&#x2F;Widar2代码解析">
+<meta property="og:url" content="http://yoursite.com/2020/11/21/WIFI%E5%AE%A4%E5%86%85%E5%AE%9A%E4%BD%8D/Widar2%E4%BB%A3%E7%A0%81%E8%A7%A3%E6%9E%90/index.html">
+<meta property="og:site_name" content="Moneyna 的杂货铺">
+<meta property="og:description" content="1 前言代码地址 2 细节SAGE：EM算法的变形，用于迭代估计参数TOF、AoA、DFS  sage_set_const.m1234567function sage_const &#x3D; sage_set_const(T, F, A, L, N, FI, TI, AS, TR, AR, DR, UR)% SAGE_SET_CONST: Set parameters for SAGE.">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://yoursite.com/images/device_config.mat">
+<meta property="og:image" content="http://yoursite.com/images/S01.png">
+<meta property="og:image" content="http://yoursite.com/images/T01.png">
+<meta property="article:published_time" content="2020-11-21T12:07:23.000Z">
+<meta property="article:modified_time" content="2020-12-03T12:59:05.123Z">
+<meta property="article:author" content="Mona">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://yoursite.com/images/device_config.mat">
+
+<link rel="canonical" href="http://yoursite.com/2020/11/21/WIFI%E5%AE%A4%E5%86%85%E5%AE%9A%E4%BD%8D/Widar2%E4%BB%A3%E7%A0%81%E8%A7%A3%E6%9E%90/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true
+  };
+</script>
+
+  <title>WIFI室内定位/Widar2代码解析 | Moneyna 的杂货铺</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Moneyna 的杂货铺</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">人生得意需尽欢</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+  </ul>
+
+</nav>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/11/21/WIFI%E5%AE%A4%E5%86%85%E5%AE%9A%E4%BD%8D/Widar2%E4%BB%A3%E7%A0%81%E8%A7%A3%E6%9E%90/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/A.png">
+      <meta itemprop="name" content="Mona">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Moneyna 的杂货铺">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          WIFI室内定位/Widar2代码解析
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-11-21 20:07:23" itemprop="dateCreated datePublished" datetime="2020-11-21T20:07:23+08:00">2020-11-21</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/WIFI%E5%AE%A4%E5%86%85%E5%AE%9A%E4%BD%8D/" itemprop="url" rel="index"><span itemprop="name">WIFI室内定位</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h3 id="1-前言"><a href="#1-前言" class="headerlink" title="1 前言"></a>1 前言</h3><p><a href="http://tns.thss.tsinghua.edu.cn/wifiradar/index_chi.html" target="_blank" rel="noopener">代码地址</a></p>
+<h3 id="2-细节"><a href="#2-细节" class="headerlink" title="2 细节"></a>2 细节</h3><p>SAGE：EM算法的变形，用于迭代估计参数TOF、AoA、DFS</p>
+<blockquote>
+<p>sage_set_const.m<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">function sage_const &#x3D; sage_set_const(T, F, A, L, N, FI, TI, AS, TR, AR, DR, UR)</span><br><span class="line">% SAGE_SET_CONST: Set parameters for SAGE.</span><br><span class="line">    sage_const &#x3D; struct(&#39;T&#39;, T, &#39;F&#39;, F, &#39;A&#39;, A, &#39;L&#39;, L, &#39;N&#39;, N, ...</span><br><span class="line">        &#39;frequency_interval&#39;, FI, &#39;time_interval&#39;, TI, &#39;antenna_spatio&#39;, AS, ...</span><br><span class="line">        &#39;tof_range&#39;, TR, &#39;aoa_range&#39;, AR, &#39;doppler_range&#39;, DR, ...</span><br><span class="line">        &#39;update_ratio&#39;, UR);</span><br><span class="line">end</span><br></pre></td></tr></table></figure></p>
+</blockquote>
+<p>顺着理解代码太复杂了，倒着来</p>
+<p>最后的绘图<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">figure;</span><br><span class="line">plot(ground_truth(1,:), ground_truth(2,:), &#39;b--*&#39;); hold on;</span><br><span class="line">plot(location(1,:), location(2,:), &#39;r-*&#39;);hold on;</span><br><span class="line">ylim([yb(1)-1,yb(2)+1]);xlim([xb(1)-1,xb(2)+1]);</span><br></pre></td></tr></table></figure></p>
+<p>ylim与xlim是用于控制图片x、y轴范围<br>提问：<br>ground_truth、yb、xb的来历？</p>
+<p><strong>xb、yb定义于device_config.mat,表示地图的x范围和y范围，主要是为了绘图</strong><br><img src="/images/device_config.mat" alt="device_config.mat"></p>
+<p>c=299792458是光速<br>carrier_frequency是5.825GHz<br><strong>以上维持不变</strong><br>sample_rate是接收频率</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">% Localization</span><br><span class="line">%aoa: Arrival of angle </span><br><span class="line">location &#x3D; sage_localization(range, aoa, rx_loc, xb, yb);</span><br><span class="line">for ii &#x3D; 1:size(location,1)</span><br><span class="line">    location(ii,:) &#x3D; smooth(location(ii,:), round(0.5*(sample_rate&#x2F;T)));</span><br><span class="line">end</span><br></pre></td></tr></table></figure>
+<p>算了== ，还是顺着来</p>
+<p>static_file是什么？难道是指一个静态环境？<br><img src="/images/S01.png" alt="S01.mat中数据"></p>
+<p><img src="/images/T01.png" alt="T01.mat中数据"></p>
+<p>其中的csi_data以及time_stamp是从csi_tool中提取而来的吗？</p>
+<p>time_stamp可以直接提取，<del>而csi_data则是处理后得到的一个矩阵？</del><br>后者第二维为90</p>
+<p>90的来源是<a href="http://dhalperi.github.io/linux-80211n-csitool/faq.html" target="_blank" rel="noopener">http://dhalperi.github.io/linux-80211n-csitool/faq.html</a><br>提到的处理方法</p>
+<p>该方法最后的结果是1<em>3</em>30,而在这份代码中所有数据都被压缩到了一维</p>
+<blockquote>
+<p>function sage_const = sage_set_const(T, F, A, L, N, FI, TI, AS, TR, AR, DR, UR)<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">function sage_const &#x3D; sage_set_const(T, F, A, L, N, FI, TI, AS, TR, AR, DR, UR)</span><br><span class="line">% SAGE_SET_CONST: Set parameters for SAGE.</span><br><span class="line">    sage_const &#x3D; struct(&#39;T&#39;, T, &#39;F&#39;, F, &#39;A&#39;, A, &#39;L&#39;, L, &#39;N&#39;, N, ...</span><br><span class="line">        &#39;frequency_interval&#39;, FI, &#39;time_interval&#39;, TI, &#39;antenna_spatio&#39;, AS, ...</span><br><span class="line">        &#39;tof_range&#39;, TR, &#39;aoa_range&#39;, AR, &#39;doppler_range&#39;, DR, ...</span><br><span class="line">        &#39;update_ratio&#39;, UR);</span><br><span class="line">end</span><br></pre></td></tr></table></figure></p>
+<p>function sage_const = sage_generate_steering_vector(sage_const)</p>
+</blockquote>
+<p>从结构体里取出来是为了最下面三个公式的编码<br>但看不出三个公式在论文中的对应关系</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">function sage_const &#x3D; sage_generate_steering_vector(sage_const)</span><br><span class="line">% SAGE_GENERATE_STEERING_VECTOR: Generate steering vectors of time, frequency and space.</span><br><span class="line">    T &#x3D; sage_const.T;</span><br><span class="line">    F &#x3D; sage_const.F;</span><br><span class="line">    A &#x3D; sage_const.A;</span><br><span class="line">    frequency_interval &#x3D; sage_const.frequency_interval;</span><br><span class="line">    time_interval &#x3D; sage_const.time_interval;</span><br><span class="line">    antenna_spatio &#x3D; sage_const.antenna_spatio;</span><br><span class="line">    doppler_range &#x3D; sage_const.doppler_range;</span><br><span class="line">    aoa_range &#x3D; sage_const.aoa_range;</span><br><span class="line">    tof_range &#x3D; sage_const.tof_range;</span><br><span class="line">    </span><br><span class="line">    sage_const.tof_candidates &#x3D; exp(-1j * 2 * pi * frequency_interval * (0:F-1).&#39; * tof_range);</span><br><span class="line">    sage_const.aoa_candidates &#x3D; exp(-1j * 2 * pi * antenna_spatio * (0:A-1).&#39; * cos(aoa_range));</span><br><span class="line">    sage_const.doppler_candidates &#x3D; exp(1j * 2 * pi * time_interval * (0:T-1).&#39; * doppler_range);</span><br><span class="line">end</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>function result = csi_sanitization(csi_data)</p>
+</blockquote>
+<p>论文中CSI Cleaning部分<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line">function result &#x3D; csi_sanitization(csi_data)</span><br><span class="line">% CSI_SANITIZATION: Sanitize CSI by removing linear phase component.</span><br><span class="line">% F(x,y) &#x3D; Ax^2+2Bxy+Cy^2+2Dx+2Ey+F,</span><br><span class="line">% x_&#123;opt&#125; &#x3D; BE-CD&#x2F;(AC-B^2), </span><br><span class="line">% y_&#123;opt&#125; &#x3D; BD-AE&#x2F;(AC-B^2).</span><br><span class="line"></span><br><span class="line">    M&#x3D;3; % Antenna number</span><br><span class="line">    N&#x3D;30; % Subcarrier number</span><br><span class="line">    freq_delta &#x3D; 2*312.5e3; % Subcarrier frequency difference</span><br><span class="line">    </span><br><span class="line">    % Unwrap the csi phase</span><br><span class="line">    csi_phase &#x3D; zeros(1,M*N);</span><br><span class="line">    for jj &#x3D; 1:M</span><br><span class="line">        if jj &#x3D;&#x3D; 1</span><br><span class="line">            % angle()：求相位角</span><br><span class="line">            % unwrap(): 平移相位角</span><br><span class="line">            csi_phase((jj-1)*N+1:jj*N) &#x3D; unwrap(angle(csi_data((jj-1)*N+1:jj*N)));</span><br><span class="line">        else</span><br><span class="line">            % 求共轭</span><br><span class="line">            csi_diff &#x3D; angle(csi_data((jj-1)*N+1:jj*N).*conj(csi_data((jj-2)*N+1:(jj-1)*N)));</span><br><span class="line">            csi_phase((jj-1)*N+1:jj*N) &#x3D; unwrap(csi_phase((jj-2)*N+1:(jj-1)*N) + csi_diff);</span><br><span class="line">        end</span><br><span class="line">    end</span><br><span class="line">    </span><br><span class="line">    % Linear fitting</span><br><span class="line">    ai &#x3D; 2*pi*freq_delta*repmat((0:N-1),1,M);</span><br><span class="line">    bi &#x3D; ones(1, length(csi_phase));</span><br><span class="line">    ci &#x3D; csi_phase;</span><br><span class="line">    A &#x3D; ai * ai.&#39;;</span><br><span class="line">    B &#x3D; ai * bi.&#39;;</span><br><span class="line">    C &#x3D; bi * bi.&#39;;</span><br><span class="line">    D &#x3D; ai * ci.&#39;;</span><br><span class="line">    E &#x3D; bi * ci.&#39;;</span><br><span class="line">%     F &#x3D; ci * ci.&#39;;</span><br><span class="line">    rho_opt &#x3D; (B*E-C*D)&#x2F;((A*C-B^2));</span><br><span class="line">    beta_opt &#x3D; (B*D-A*E)&#x2F;((A*C-B^2));</span><br><span class="line">    </span><br><span class="line">    % Sanitization</span><br><span class="line">    csi_phase &#x3D; csi_phase + 2*pi*freq_delta*repmat((0:N-1), 1, M)*rho_opt + beta_opt;</span><br><span class="line">    result &#x3D; abs(csi_data) .* exp(1j * csi_phase);</span><br><span class="line">end</span><br></pre></td></tr></table></figure></p>
+<p>脉络还挺清晰的<br>明天早上起来试试自己房间</p>
+<p>一个静态数据，一个走动数据</p>
+
+    </div>
+
+    
+    
+    
+
+ 
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2020/11/10/WIFI%E5%AE%A4%E5%86%85%E5%AE%9A%E4%BD%8D/Ubuntu%E5%AE%89%E8%A3%85%E4%BD%8E%E7%89%88%E6%9C%AC%E5%86%85%E6%A0%B8%E8%AE%B0%E5%BD%95/" rel="prev" title="WIFI室内定位/Ubuntu安装低版本内核记录">
+      <i class="fa fa-chevron-left"></i> WIFI室内定位/Ubuntu安装低版本内核记录
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-前言"><span class="nav-number">1.</span> <span class="nav-text">1 前言</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-细节"><span class="nav-number">2.</span> <span class="nav-text">2 细节</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Mona"
+      src="/images/A.png">
+  <p class="site-author-name" itemprop="name">Mona</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">120</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">40</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">80</span>
+        <span class="site-state-item-name">标签</span>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/moneyna" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;moneyna" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+	 
+   <a href="/">
+      <img class="site-author-image" itemprop="image"
+        src="/images/A.png"
+        alt="Mona" />
+   </a>
+
+  
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Mona</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v4.2.0
+  </div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">主题 – <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> v7.7.2
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+</body>
+</html>

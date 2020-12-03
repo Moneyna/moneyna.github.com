@@ -151,6 +151,203 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/11/21/WIFI%E5%AE%A4%E5%86%85%E5%AE%9A%E4%BD%8D/Widar2%E4%BB%A3%E7%A0%81%E8%A7%A3%E6%9E%90/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/A.png">
+      <meta itemprop="name" content="Mona">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Moneyna 的杂货铺">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          
+            <a href="/2020/11/21/WIFI%E5%AE%A4%E5%86%85%E5%AE%9A%E4%BD%8D/Widar2%E4%BB%A3%E7%A0%81%E8%A7%A3%E6%9E%90/" class="post-title-link" itemprop="url">WIFI室内定位/Widar2代码解析</a>
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-11-21 20:07:23" itemprop="dateCreated datePublished" datetime="2020-11-21T20:07:23+08:00">2020-11-21</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/WIFI%E5%AE%A4%E5%86%85%E5%AE%9A%E4%BD%8D/" itemprop="url" rel="index"><span itemprop="name">WIFI室内定位</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h3 id="1-前言"><a href="#1-前言" class="headerlink" title="1 前言"></a>1 前言</h3><p><a href="http://tns.thss.tsinghua.edu.cn/wifiradar/index_chi.html" target="_blank" rel="noopener">代码地址</a></p>
+<h3 id="2-细节"><a href="#2-细节" class="headerlink" title="2 细节"></a>2 细节</h3><p>SAGE：EM算法的变形，用于迭代估计参数TOF、AoA、DFS</p>
+<blockquote>
+<p>sage_set_const.m<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">function sage_const &#x3D; sage_set_const(T, F, A, L, N, FI, TI, AS, TR, AR, DR, UR)</span><br><span class="line">% SAGE_SET_CONST: Set parameters for SAGE.</span><br><span class="line">    sage_const &#x3D; struct(&#39;T&#39;, T, &#39;F&#39;, F, &#39;A&#39;, A, &#39;L&#39;, L, &#39;N&#39;, N, ...</span><br><span class="line">        &#39;frequency_interval&#39;, FI, &#39;time_interval&#39;, TI, &#39;antenna_spatio&#39;, AS, ...</span><br><span class="line">        &#39;tof_range&#39;, TR, &#39;aoa_range&#39;, AR, &#39;doppler_range&#39;, DR, ...</span><br><span class="line">        &#39;update_ratio&#39;, UR);</span><br><span class="line">end</span><br></pre></td></tr></table></figure></p>
+</blockquote>
+<p>顺着理解代码太复杂了，倒着来</p>
+<p>最后的绘图<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">figure;</span><br><span class="line">plot(ground_truth(1,:), ground_truth(2,:), &#39;b--*&#39;); hold on;</span><br><span class="line">plot(location(1,:), location(2,:), &#39;r-*&#39;);hold on;</span><br><span class="line">ylim([yb(1)-1,yb(2)+1]);xlim([xb(1)-1,xb(2)+1]);</span><br></pre></td></tr></table></figure></p>
+<p>ylim与xlim是用于控制图片x、y轴范围<br>提问：<br>ground_truth、yb、xb的来历？</p>
+<p><strong>xb、yb定义于device_config.mat,表示地图的x范围和y范围，主要是为了绘图</strong><br><img src="/images/device_config.mat" alt="device_config.mat"></p>
+<p>c=299792458是光速<br>carrier_frequency是5.825GHz<br><strong>以上维持不变</strong><br>sample_rate是接收频率</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">% Localization</span><br><span class="line">%aoa: Arrival of angle </span><br><span class="line">location &#x3D; sage_localization(range, aoa, rx_loc, xb, yb);</span><br><span class="line">for ii &#x3D; 1:size(location,1)</span><br><span class="line">    location(ii,:) &#x3D; smooth(location(ii,:), round(0.5*(sample_rate&#x2F;T)));</span><br><span class="line">end</span><br></pre></td></tr></table></figure>
+<p>算了== ，还是顺着来</p>
+<p>static_file是什么？难道是指一个静态环境？<br><img src="/images/S01.png" alt="S01.mat中数据"></p>
+<p><img src="/images/T01.png" alt="T01.mat中数据"></p>
+<p>其中的csi_data以及time_stamp是从csi_tool中提取而来的吗？</p>
+<p>time_stamp可以直接提取，<del>而csi_data则是处理后得到的一个矩阵？</del><br>后者第二维为90</p>
+<p>90的来源是<a href="http://dhalperi.github.io/linux-80211n-csitool/faq.html" target="_blank" rel="noopener">http://dhalperi.github.io/linux-80211n-csitool/faq.html</a><br>提到的处理方法</p>
+<p>该方法最后的结果是1<em>3</em>30,而在这份代码中所有数据都被压缩到了一维</p>
+<blockquote>
+<p>function sage_const = sage_set_const(T, F, A, L, N, FI, TI, AS, TR, AR, DR, UR)<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">function sage_const &#x3D; sage_set_const(T, F, A, L, N, FI, TI, AS, TR, AR, DR, UR)</span><br><span class="line">% SAGE_SET_CONST: Set parameters for SAGE.</span><br><span class="line">    sage_const &#x3D; struct(&#39;T&#39;, T, &#39;F&#39;, F, &#39;A&#39;, A, &#39;L&#39;, L, &#39;N&#39;, N, ...</span><br><span class="line">        &#39;frequency_interval&#39;, FI, &#39;time_interval&#39;, TI, &#39;antenna_spatio&#39;, AS, ...</span><br><span class="line">        &#39;tof_range&#39;, TR, &#39;aoa_range&#39;, AR, &#39;doppler_range&#39;, DR, ...</span><br><span class="line">        &#39;update_ratio&#39;, UR);</span><br><span class="line">end</span><br></pre></td></tr></table></figure></p>
+<p>function sage_const = sage_generate_steering_vector(sage_const)</p>
+</blockquote>
+<p>从结构体里取出来是为了最下面三个公式的编码<br>但看不出三个公式在论文中的对应关系</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">function sage_const &#x3D; sage_generate_steering_vector(sage_const)</span><br><span class="line">% SAGE_GENERATE_STEERING_VECTOR: Generate steering vectors of time, frequency and space.</span><br><span class="line">    T &#x3D; sage_const.T;</span><br><span class="line">    F &#x3D; sage_const.F;</span><br><span class="line">    A &#x3D; sage_const.A;</span><br><span class="line">    frequency_interval &#x3D; sage_const.frequency_interval;</span><br><span class="line">    time_interval &#x3D; sage_const.time_interval;</span><br><span class="line">    antenna_spatio &#x3D; sage_const.antenna_spatio;</span><br><span class="line">    doppler_range &#x3D; sage_const.doppler_range;</span><br><span class="line">    aoa_range &#x3D; sage_const.aoa_range;</span><br><span class="line">    tof_range &#x3D; sage_const.tof_range;</span><br><span class="line">    </span><br><span class="line">    sage_const.tof_candidates &#x3D; exp(-1j * 2 * pi * frequency_interval * (0:F-1).&#39; * tof_range);</span><br><span class="line">    sage_const.aoa_candidates &#x3D; exp(-1j * 2 * pi * antenna_spatio * (0:A-1).&#39; * cos(aoa_range));</span><br><span class="line">    sage_const.doppler_candidates &#x3D; exp(1j * 2 * pi * time_interval * (0:T-1).&#39; * doppler_range);</span><br><span class="line">end</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>function result = csi_sanitization(csi_data)</p>
+</blockquote>
+<p>论文中CSI Cleaning部分<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line">function result &#x3D; csi_sanitization(csi_data)</span><br><span class="line">% CSI_SANITIZATION: Sanitize CSI by removing linear phase component.</span><br><span class="line">% F(x,y) &#x3D; Ax^2+2Bxy+Cy^2+2Dx+2Ey+F,</span><br><span class="line">% x_&#123;opt&#125; &#x3D; BE-CD&#x2F;(AC-B^2), </span><br><span class="line">% y_&#123;opt&#125; &#x3D; BD-AE&#x2F;(AC-B^2).</span><br><span class="line"></span><br><span class="line">    M&#x3D;3; % Antenna number</span><br><span class="line">    N&#x3D;30; % Subcarrier number</span><br><span class="line">    freq_delta &#x3D; 2*312.5e3; % Subcarrier frequency difference</span><br><span class="line">    </span><br><span class="line">    % Unwrap the csi phase</span><br><span class="line">    csi_phase &#x3D; zeros(1,M*N);</span><br><span class="line">    for jj &#x3D; 1:M</span><br><span class="line">        if jj &#x3D;&#x3D; 1</span><br><span class="line">            % angle()：求相位角</span><br><span class="line">            % unwrap(): 平移相位角</span><br><span class="line">            csi_phase((jj-1)*N+1:jj*N) &#x3D; unwrap(angle(csi_data((jj-1)*N+1:jj*N)));</span><br><span class="line">        else</span><br><span class="line">            % 求共轭</span><br><span class="line">            csi_diff &#x3D; angle(csi_data((jj-1)*N+1:jj*N).*conj(csi_data((jj-2)*N+1:(jj-1)*N)));</span><br><span class="line">            csi_phase((jj-1)*N+1:jj*N) &#x3D; unwrap(csi_phase((jj-2)*N+1:(jj-1)*N) + csi_diff);</span><br><span class="line">        end</span><br><span class="line">    end</span><br><span class="line">    </span><br><span class="line">    % Linear fitting</span><br><span class="line">    ai &#x3D; 2*pi*freq_delta*repmat((0:N-1),1,M);</span><br><span class="line">    bi &#x3D; ones(1, length(csi_phase));</span><br><span class="line">    ci &#x3D; csi_phase;</span><br><span class="line">    A &#x3D; ai * ai.&#39;;</span><br><span class="line">    B &#x3D; ai * bi.&#39;;</span><br><span class="line">    C &#x3D; bi * bi.&#39;;</span><br><span class="line">    D &#x3D; ai * ci.&#39;;</span><br><span class="line">    E &#x3D; bi * ci.&#39;;</span><br><span class="line">%     F &#x3D; ci * ci.&#39;;</span><br><span class="line">    rho_opt &#x3D; (B*E-C*D)&#x2F;((A*C-B^2));</span><br><span class="line">    beta_opt &#x3D; (B*D-A*E)&#x2F;((A*C-B^2));</span><br><span class="line">    </span><br><span class="line">    % Sanitization</span><br><span class="line">    csi_phase &#x3D; csi_phase + 2*pi*freq_delta*repmat((0:N-1), 1, M)*rho_opt + beta_opt;</span><br><span class="line">    result &#x3D; abs(csi_data) .* exp(1j * csi_phase);</span><br><span class="line">end</span><br></pre></td></tr></table></figure></p>
+<p>脉络还挺清晰的<br>明天早上起来试试自己房间</p>
+<p>一个静态数据，一个走动数据</p>
+
+      
+    </div>
+
+    
+    
+    
+
+ 
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+        
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/11/10/WIFI%E5%AE%A4%E5%86%85%E5%AE%9A%E4%BD%8D/Ubuntu%E5%AE%89%E8%A3%85%E4%BD%8E%E7%89%88%E6%9C%AC%E5%86%85%E6%A0%B8%E8%AE%B0%E5%BD%95/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/A.png">
+      <meta itemprop="name" content="Mona">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Moneyna 的杂货铺">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          
+            <a href="/2020/11/10/WIFI%E5%AE%A4%E5%86%85%E5%AE%9A%E4%BD%8D/Ubuntu%E5%AE%89%E8%A3%85%E4%BD%8E%E7%89%88%E6%9C%AC%E5%86%85%E6%A0%B8%E8%AE%B0%E5%BD%95/" class="post-title-link" itemprop="url">WIFI室内定位/Ubuntu安装低版本内核记录</a>
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-11-10 10:29:23" itemprop="dateCreated datePublished" datetime="2020-11-10T10:29:23+08:00">2020-11-10</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/WIFI%E5%AE%A4%E5%86%85%E5%AE%9A%E4%BD%8D/" itemprop="url" rel="index"><span itemprop="name">WIFI室内定位</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p>为了装CSI Tool，内核版本要控制在3.2-4.2<br>对应的Ubuntu版本是12.04-14.04-4</p>
+<p>然而很可惜，14.04-3之前的版本内核在3.x左右，不支持ThinkPad x270的网卡驱动（网卡驱动版本要求内核4.1及以上），而14.04-3不知道什么原因，运行起来非常卡顿，而到了14.04-5、14.04-6内核版本已经到了4.4</p>
+<p>既然没办法获得准确的内核版本，就只能自己安装了，目标是在14.04-6中安装内核4.2</p>
+<p><strong>参考</strong><br><a href="https://blog.csdn.net/xin_yu_xin/article/details/42184899" target="_blank" rel="noopener">Ubuntu更换内核方法</a></p>
+<h3 id="步骤记录"><a href="#步骤记录" class="headerlink" title="步骤记录"></a>步骤记录</h3><ul>
+<li><p>1 下载并解压内核4.2.1<br><a href="https://mirrors.edge.kernel.org/pub/linux/kernel/v4.x/" target="_blank" rel="noopener">下载网址</a></p>
+</li>
+<li><p>2 配置内核</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">sudo cp &#x2F;boot&#x2F;config* .&#x2F;.config</span><br><span class="line">make menuconfig</span><br><span class="line"># 选择load后exit</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>3 编译内核</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">make</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>4 加入模块</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">make modules_install</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>5 生成内核引导文件</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">make bzImage</span><br><span class="line"># 生成后存放路径是 arch&#x2F;x86&#x2F;boot&#x2F;bzImage</span><br><span class="line">sudo cp arch&#x2F;x86&#x2F;boot&#x2F;bzImage &#x2F;boot&#x2F;vmlinuz-4.2.1</span><br><span class="line"># 拷贝到&#x2F;boot目录下，并重命名为vmlinuxz-4.2.1</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>6 将System.map复制到/boot下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo cp System.map &#x2F;boot&#x2F;System.map-4.2.1</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>7 生成initrd.img文件</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">#将内核4.2.1的配置文件复制到&#x2F;boot目录下</span><br><span class="line">sudo cp .config &#x2F;boot&#x2F;config-4.2.1</span><br><span class="line">cd &#x2F;lib&#x2F;modules&#x2F;4.2.1</span><br><span class="line">sudo update-initramfs -k 4.2.1 -c</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>8 更新grub2启动项</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo update-grub</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>如果对grub内容有什么不满，也可以直接修改/boot/grub/grub.cfg（记得用root权限）</p>
+<h3 id="后记"><a href="#后记" class="headerlink" title="后记"></a>后记</h3><p>Ubuntu 14.04-6原装内核是4.4.0版本，本身和4.2.1很接近，gcc编译器是4.8.4版本，天然兼容性很强</p>
+
+      
+    </div>
+
+    
+    
+    
+
+ 
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+        
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/11/09/WIFI%E5%AE%A4%E5%86%85%E5%AE%9A%E4%BD%8D/grub2%E5%BC%95%E5%AF%BC%E4%BF%AE%E5%A4%8D/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -381,7 +578,10 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><h4 id="1-安装参考"><a href="#1-安装参考" class="headerlink" title="1 安装参考"></a>1 安装参考</h4><ul>
+          <h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p>一定需要的东西<strong>5300网卡</strong></p>
+<p>本博客仅用于记录安装过程，本来打算是使用自己的Fedora 30 直接降低内核，再安装CSI Tool，但操作系统中gcc编译器牵扯太广，我的能力不足以支持直接降解，后来还是通过直接装低版本系统完成了降低内核</p>
+<p><a href="https://blog.csdn.net/u014645508/article/details/81359409" target="_blank" rel="noopener">完全无误的CsiTool安装指南</a></p>
+<h4 id="1-安装参考"><a href="#1-安装参考" class="headerlink" title="1 安装参考"></a>1 安装参考</h4><ul>
 <li><p>Fedora 安装低版本内核<br><a href="https://blog.csdn.net/weixin_34111790/article/details/93447617" target="_blank" rel="noopener">Fedora编译安装内核</a><br><a href="https://blog.csdn.net/ztguang/article/details/51319990" target="_blank" rel="noopener">dnf - Fedora 23 - kernel - 安装低版本内核</a><br><a href="https://www.cnblogs.com/Jelline/articles/2063565.html" target="_blank" rel="noopener">Ubuntu高版本内核编译低版本内核全过程</a></p>
 </li>
 <li><p>CSI tool 安装指南<br><a href="dhalperi.github.io/linux-80211n-csitool/installation.html">官网地址</a><br><a href="https://blog.csdn.net/qq_20604671/article/details/53996239" target="_blank" rel="noopener">CSI Tool安装使用讲解</a><br><a href="https://blog.csdn.net/u014645508/article/details/81359409" target="_blank" rel="noopener">Linux 802.11n CSI tool安装教程</a></p>
@@ -589,9 +789,6 @@
 <h2 id="四、CSI处理"><a href="#四、CSI处理" class="headerlink" title="四、CSI处理"></a>四、CSI处理</h2><h3 id="1-Monitor模式和AP模式下获取WiFi的CSI信号"><a href="#1-Monitor模式和AP模式下获取WiFi的CSI信号" class="headerlink" title="1 Monitor模式和AP模式下获取WiFi的CSI信号"></a>1 Monitor模式和AP模式下获取WiFi的CSI信号</h3><p><a href="https://blog.csdn.net/qq_20386411/article/details/83240781" target="_blank" rel="noopener">博客</a></p>
 <h3 id="2-原创-Linux-802-11n-CSI-tool-Monitor模式"><a href="#2-原创-Linux-802-11n-CSI-tool-Monitor模式" class="headerlink" title="2 [原创]Linux 802.11n CSI tool Monitor模式"></a>2 [原创]Linux 802.11n CSI tool Monitor模式</h3><p><a href="https://blog.csdn.net/u014645508/article/details/82993718?utm_source=blogxgwz1" target="_blank" rel="noopener">博客</a></p>
 <h3 id="3-CSI信号的处理"><a href="#3-CSI信号的处理" class="headerlink" title="3 CSI信号的处理"></a>3 CSI信号的处理</h3><p><a href="https://blog.csdn.net/qq_20386411/article/details/83384614" target="_blank" rel="noopener">博客</a></p>
-<h3 id="4"><a href="#4" class="headerlink" title="4"></a>4</h3><p><a href="">博客</a></p>
-<h3 id="5"><a href="#5" class="headerlink" title="5"></a>5</h3><p><a href="">博客</a></p>
-<h3 id="6"><a href="#6" class="headerlink" title="6"></a>6</h3><p><a href="">博客</a></p>
 
       
     </div>
@@ -986,160 +1183,6 @@
   
   
 
-        
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/04/24/Python-&&-ML/Django%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/A.png">
-      <meta itemprop="name" content="Mona">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Moneyna 的杂货铺">
-    </span>
-      <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">
-          
-            <a href="/2020/04/24/Python-&&-ML/Django%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95/" class="post-title-link" itemprop="url">Django学习记录</a>
-        </h1>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2020-04-24 17:44:28" itemprop="dateCreated datePublished" datetime="2020-04-24T17:44:28+08:00">2020-04-24</time>
-            </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Python/" itemprop="url" rel="index"><span itemprop="name">Python</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p>为了构建前后端交互的全球疫情爬虫系统，既然选择了使用python来爬虫，干脆就学Django。<br>前端采用的是Vue.</p>
-<p><a href="https://www.djangoproject.com" target="_blank" rel="noopener">Django官网</a><br>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2020/04/24/Python-&&-ML/Django%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-
- 
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-        
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/04/17/%E5%89%8D%E7%AB%AF/%E5%89%8D%E7%AB%AF%E6%A8%A1%E6%9D%BF%E5%AD%A6%E4%B9%A0/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/A.png">
-      <meta itemprop="name" content="Mona">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Moneyna 的杂货铺">
-    </span>
-      <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">
-          
-            <a href="/2020/04/17/%E5%89%8D%E7%AB%AF/%E5%89%8D%E7%AB%AF%E6%A8%A1%E6%9D%BF%E5%AD%A6%E4%B9%A0/" class="post-title-link" itemprop="url">前端模板学习</a>
-        </h1>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2020-04-17 20:47:57" itemprop="dateCreated datePublished" datetime="2020-04-17T20:47:57+08:00">2020-04-17</time>
-            </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E5%89%8D%E7%AB%AF/" itemprop="url" rel="index"><span itemprop="name">前端</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h3 id="1-前言"><a href="#1-前言" class="headerlink" title="1 前言"></a>1 前言</h3><p>因为自己纯原创前端被队友嫌弃太丑了……所以学习、借鉴一下模板的内容。</p>
-<p><a href="www.cssmoban.com/cssthemes/houtaimoban/">模板下载网站</a></p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2020/04/17/%E5%89%8D%E7%AB%AF/%E5%89%8D%E7%AB%AF%E6%A8%A1%E6%9D%BF%E5%AD%A6%E4%B9%A0/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-
- 
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
   </div>
 
   
@@ -1212,7 +1255,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">118</span>
+          <span class="site-state-item-count">120</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -1223,7 +1266,7 @@
         <span class="site-state-item-name">分类</span></a>
       </div>
       <div class="site-state-item site-state-tags">
-        <span class="site-state-item-count">79</span>
+        <span class="site-state-item-count">80</span>
         <span class="site-state-item-name">标签</span>
       </div>
   </nav>
