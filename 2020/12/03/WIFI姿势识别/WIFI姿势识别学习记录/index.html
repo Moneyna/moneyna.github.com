@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/A.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-minimal.min.css">
+  <script src="/lib/pace/pace.min.js"></script>
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"yoursite.com","root":"/","scheme":"Pisces","version":"7.7.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="前言毕业设计项目是“基于WIFI动作识别的架子鼓模拟软件”第一步先学动作识别吧 至于WIFI识别最基础的CSI获取参照“WIFI室内定位”分类 基于WiFi的公开手势数据集WiDAR—清华大学 小记录：  常见的动作识别包括哪些动作？  中文论文或博客不管怎么说，母语的接收信息能力总是更强一点 1 基于WiFi信号的人体动作识别系统论文 动作识别是采用先收集数据再对比的方式得出的 采用了SRC分类">
+<meta property="og:type" content="article">
+<meta property="og:title" content="WIFI姿势识别学习记录">
+<meta property="og:url" content="http://yoursite.com/2020/12/03/WIFI%E5%A7%BF%E5%8A%BF%E8%AF%86%E5%88%AB/WIFI%E5%A7%BF%E5%8A%BF%E8%AF%86%E5%88%AB%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95/index.html">
+<meta property="og:site_name" content="Moneyna 的杂货铺">
+<meta property="og:description" content="前言毕业设计项目是“基于WIFI动作识别的架子鼓模拟软件”第一步先学动作识别吧 至于WIFI识别最基础的CSI获取参照“WIFI室内定位”分类 基于WiFi的公开手势数据集WiDAR—清华大学 小记录：  常见的动作识别包括哪些动作？  中文论文或博客不管怎么说，母语的接收信息能力总是更强一点 1 基于WiFi信号的人体动作识别系统论文 动作识别是采用先收集数据再对比的方式得出的 采用了SRC分类">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2020-12-03T13:08:38.000Z">
+<meta property="article:modified_time" content="2020-12-08T01:37:59.921Z">
+<meta property="article:author" content="Mona">
+<meta property="article:tag" content="WIFI">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://yoursite.com/2020/12/03/WIFI%E5%A7%BF%E5%8A%BF%E8%AF%86%E5%88%AB/WIFI%E5%A7%BF%E5%8A%BF%E8%AF%86%E5%88%AB%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true
+  };
+</script>
+
+  <title>WIFI姿势识别学习记录 | Moneyna 的杂货铺</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Moneyna 的杂货铺</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">人生得意需尽欢</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+  </ul>
+
+</nav>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/12/03/WIFI%E5%A7%BF%E5%8A%BF%E8%AF%86%E5%88%AB/WIFI%E5%A7%BF%E5%8A%BF%E8%AF%86%E5%88%AB%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/A.png">
+      <meta itemprop="name" content="Mona">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Moneyna 的杂货铺">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          WIFI姿势识别学习记录
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-12-03 21:08:38" itemprop="dateCreated datePublished" datetime="2020-12-03T21:08:38+08:00">2020-12-03</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/WIFI%E5%A7%BF%E5%8A%BF%E8%AF%86%E5%88%AB/" itemprop="url" rel="index"><span itemprop="name">WIFI姿势识别</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p>毕业设计项目是“基于WIFI动作识别的架子鼓模拟软件”<br>第一步先学动作识别吧</p>
+<p>至于WIFI识别最基础的CSI获取参照“WIFI室内定位”分类</p>
+<p><a href="tns.thss.tsinghua.edu.cn/widar3.0/">基于WiFi的公开手势数据集WiDAR—清华大学</a></p>
+<p>小记录：</p>
+<ol>
+<li>常见的动作识别包括哪些动作？</li>
+</ol>
+<h3 id="中文论文或博客"><a href="#中文论文或博客" class="headerlink" title="中文论文或博客"></a>中文论文或博客</h3><p>不管怎么说，母语的接收信息能力总是更强一点</p>
+<h4 id="1-基于WiFi信号的人体动作识别系统"><a href="#1-基于WiFi信号的人体动作识别系统" class="headerlink" title="1 基于WiFi信号的人体动作识别系统"></a>1 基于WiFi信号的人体动作识别系统</h4><p><a href="html.rhhz.net/buptjournal/html/20180320.htm">论文</a></p>
+<p>动作识别是采用先收集数据再对比的方式得出的</p>
+<p>采用了SRC分类算法</p>
+<p>（我的软件也可以先采集动作，再识别。类似健身环大冒险）</p>
+<h4 id="2-基于无线信号的手势识别研究现状调查"><a href="#2-基于无线信号的手势识别研究现状调查" class="headerlink" title="2 基于无线信号的手势识别研究现状调查"></a>2 基于无线信号的手势识别研究现状调查</h4><p><a href="https://blog.csdn.net/qq_16166139/article/details/51793472" target="_blank" rel="noopener">【博客】基于无线信号的手势识别研究现状调查</a></p>
+<p>提到了几种姿势识别软件/系统</p>
+<ol>
+<li><p>WiTrace<br>可以追踪轨迹与动作，值得研究</p>
+</li>
+<li><p>WiSee<br><a href="wisee.cs.washington.edu">官网</a><br>检测多普勒频移</p>
+</li>
+<li><p>WiG （2015年）<br>基于5300网卡，最适合参考</p>
+</li>
+</ol>
+<h4 id="3-信道状态信息在动作识别中的应用与异常分析"><a href="#3-信道状态信息在动作识别中的应用与异常分析" class="headerlink" title="3 信道状态信息在动作识别中的应用与异常分析"></a>3 信道状态信息在动作识别中的应用与异常分析</h4><p><a href="https://kns.cnki.net/kcms/detail/detail.aspx?dbcode=CJFD&amp;dbname=CJFDLAST2017&amp;filename=XXAQ201702012&amp;v=2TBM5JCBvGzAcpByn3k6lKy9tuXNp%25mmd2FJdG6v8YTrBWje4DuHv82b%25mmd2FVrWHM6MlrzKP" target="_blank" rel="noopener">论文</a></p>
+<p>介绍到了什么是CSI，CSI优势是什么</p>
+<p>CSI只能从WIFI无线网卡获得，而RSSI却很方便获得</p>
+<p>介绍到WIFI键值识别，很像我之前想做的钢琴，键盘精度应该和钢琴差别不大</p>
+<p>提到了一种异常数据处理方法，也许只后用得到</p>
+<h4 id="4-基于WiFi信号的人体动作识别系统"><a href="#4-基于WiFi信号的人体动作识别系统" class="headerlink" title="4 基于WiFi信号的人体动作识别系统"></a>4 基于WiFi信号的人体动作识别系统</h4><p><a href="https://kns.cnki.net/kcms/detail/detail.aspx?dbcode=CJFD&amp;dbname=CJFDLAST2018&amp;filename=BJYD201803020&amp;v=sjT9j2XTV%25mmd2BxjB7IM%25mmd2B0NqbW6TT%25mmd2B7x7rOd5qmumn9H13xvWrsqKLvAZXc9v5mpkPZM" target="_blank" rel="noopener">论文</a><br><a href="html.rhhz.net/buptjournal/html/20180320.htm">地址2</a></p>
+<p>提供了另一种处理方式，大致流程是先采集数据，再提取特征，然后比较</p>
+<h4 id="5-一种基于WiFi信道状态信息的人体动作识别方法"><a href="#5-一种基于WiFi信道状态信息的人体动作识别方法" class="headerlink" title="5 一种基于WiFi信道状态信息的人体动作识别方法"></a>5 一种基于WiFi信道状态信息的人体动作识别方法</h4><p><a href="https://kns.cnki.net/kcms/detail/detail.aspx?dbcode=CJFD&amp;dbname=CJFDLAST2019&amp;filename=CGJS201911015&amp;v=8gUZSeCt02J79rbO30rbl5d7m5ass4stEoptteqqLrUtnNlPxAnLXFXN1Z77ub3o" target="_blank" rel="noopener">论文</a></p>
+<p>思路可以借鉴，相比而言方式比较新</p>
+<h4 id="6"><a href="#6" class="headerlink" title="6"></a>6</h4><p><a href=""></a></p>
+<h4 id="7"><a href="#7" class="headerlink" title="7"></a>7</h4><p><a href=""></a></p>
+<h4 id="8"><a href="#8" class="headerlink" title="8"></a>8</h4><p><a href=""></a></p>
+<h4 id="9"><a href="#9" class="headerlink" title="9"></a>9</h4><p><a href=""></a></p>
+<h4 id="10"><a href="#10" class="headerlink" title="10"></a>10</h4><p><a href=""></a></p>
+<h4 id="11"><a href="#11" class="headerlink" title="11"></a>11</h4><p><a href=""></a></p>
+<h4 id="12"><a href="#12" class="headerlink" title="12"></a>12</h4><p><a href=""></a></p>
+<h4 id="13"><a href="#13" class="headerlink" title="13"></a>13</h4><p><a href=""></a></p>
+<h4 id="14"><a href="#14" class="headerlink" title="14"></a>14</h4><p><a href=""></a></p>
+<h4 id="15"><a href="#15" class="headerlink" title="15"></a>15</h4><p><a href=""></a></p>
+<h4 id="16"><a href="#16" class="headerlink" title="16"></a>16</h4><p><a href=""></a></p>
+<h4 id="17"><a href="#17" class="headerlink" title="17"></a>17</h4><p><a href=""></a></p>
+<h4 id="18"><a href="#18" class="headerlink" title="18"></a>18</h4><p><a href=""></a></p>
+<h4 id="19"><a href="#19" class="headerlink" title="19"></a>19</h4><p><a href=""></a></p>
+<h3 id="英文论文或博客"><a href="#英文论文或博客" class="headerlink" title="英文论文或博客"></a>英文论文或博客</h3><h4 id="1-【待看】WIFI信号-深度学习，MIT-可穿墙透视评估人体姿态"><a href="#1-【待看】WIFI信号-深度学习，MIT-可穿墙透视评估人体姿态" class="headerlink" title="1 【待看】WIFI信号+深度学习，MIT 可穿墙透视评估人体姿态"></a>1 【待看】WIFI信号+深度学习，MIT 可穿墙透视评估人体姿态</h4><p><a href="https://www.jiqizhixin.com/articles/2018-06-13-5" target="_blank" rel="noopener">论文内容概述</a></p>
+<p>MIT 的 “RF-Pose”系统，可以实现动作识别，从视频看精度似乎挺高的，不知到论文中内容可不可以学习</p>
+<p>论文是2018年的，但使用了WIFI+CV的方式对神经网络进行训练，不知道实际有用信息有多少</p>
+<h4 id="2"><a href="#2" class="headerlink" title="2"></a>2</h4><p><a href=""></a></p>
+<h4 id="3"><a href="#3" class="headerlink" title="3"></a>3</h4><p><a href=""></a></p>
+<h4 id="4"><a href="#4" class="headerlink" title="4"></a>4</h4><p><a href=""></a></p>
+<h4 id="5"><a href="#5" class="headerlink" title="5"></a>5</h4><p><a href=""></a></p>
+<h4 id="6-1"><a href="#6-1" class="headerlink" title="6"></a>6</h4><p><a href=""></a></p>
+<h4 id="7-1"><a href="#7-1" class="headerlink" title="7"></a>7</h4><p><a href=""></a></p>
+<h4 id="8-1"><a href="#8-1" class="headerlink" title="8"></a>8</h4><p><a href=""></a></p>
+<h4 id="9-1"><a href="#9-1" class="headerlink" title="9"></a>9</h4><p><a href=""></a></p>
+<h4 id="10-1"><a href="#10-1" class="headerlink" title="10"></a>10</h4><p><a href=""></a></p>
+<h4 id="11-1"><a href="#11-1" class="headerlink" title="11"></a>11</h4><p><a href=""></a></p>
+<h4 id="12-1"><a href="#12-1" class="headerlink" title="12"></a>12</h4><p><a href=""></a></p>
+<h4 id="13-1"><a href="#13-1" class="headerlink" title="13"></a>13</h4><p><a href=""></a></p>
+<h4 id="14-1"><a href="#14-1" class="headerlink" title="14"></a>14</h4><p><a href=""></a></p>
+<h4 id="15-1"><a href="#15-1" class="headerlink" title="15"></a>15</h4><p><a href=""></a></p>
+<h4 id="16-1"><a href="#16-1" class="headerlink" title="16"></a>16</h4><p><a href=""></a></p>
+<h4 id="17-1"><a href="#17-1" class="headerlink" title="17"></a>17</h4><p><a href=""></a></p>
+<h4 id="18-1"><a href="#18-1" class="headerlink" title="18"></a>18</h4><p><a href=""></a></p>
+<h4 id="19-1"><a href="#19-1" class="headerlink" title="19"></a>19</h4><p><a href=""></a></p>
+
+    </div>
+
+    
+    
+    
+
+ 
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/WIFI/" rel="tag"><i class="fa fa-tags" aria-hidden="true"></i>
+ WIFI</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2020/11/21/WIFI%E5%AE%A4%E5%86%85%E5%AE%9A%E4%BD%8D/Widar2%E4%BB%A3%E7%A0%81%E8%A7%A3%E6%9E%90/" rel="prev" title="WIFI室内定位/Widar2代码解析">
+      <i class="fa fa-chevron-left"></i> WIFI室内定位/Widar2代码解析
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2021/01/24/ACODTSP/%E6%95%B0%E6%8D%AE%E5%88%86%E6%9E%90/" rel="next" title="ACODTSP/数据分析">
+      ACODTSP/数据分析 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#前言"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#中文论文或博客"><span class="nav-number">2.</span> <span class="nav-text">中文论文或博客</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-基于WiFi信号的人体动作识别系统"><span class="nav-number">2.1.</span> <span class="nav-text">1 基于WiFi信号的人体动作识别系统</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-基于无线信号的手势识别研究现状调查"><span class="nav-number">2.2.</span> <span class="nav-text">2 基于无线信号的手势识别研究现状调查</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-信道状态信息在动作识别中的应用与异常分析"><span class="nav-number">2.3.</span> <span class="nav-text">3 信道状态信息在动作识别中的应用与异常分析</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-基于WiFi信号的人体动作识别系统"><span class="nav-number">2.4.</span> <span class="nav-text">4 基于WiFi信号的人体动作识别系统</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#5-一种基于WiFi信道状态信息的人体动作识别方法"><span class="nav-number">2.5.</span> <span class="nav-text">5 一种基于WiFi信道状态信息的人体动作识别方法</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#6"><span class="nav-number">2.6.</span> <span class="nav-text">6</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#7"><span class="nav-number">2.7.</span> <span class="nav-text">7</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#8"><span class="nav-number">2.8.</span> <span class="nav-text">8</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#9"><span class="nav-number">2.9.</span> <span class="nav-text">9</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#10"><span class="nav-number">2.10.</span> <span class="nav-text">10</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#11"><span class="nav-number">2.11.</span> <span class="nav-text">11</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#12"><span class="nav-number">2.12.</span> <span class="nav-text">12</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#13"><span class="nav-number">2.13.</span> <span class="nav-text">13</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#14"><span class="nav-number">2.14.</span> <span class="nav-text">14</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#15"><span class="nav-number">2.15.</span> <span class="nav-text">15</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#16"><span class="nav-number">2.16.</span> <span class="nav-text">16</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#17"><span class="nav-number">2.17.</span> <span class="nav-text">17</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#18"><span class="nav-number">2.18.</span> <span class="nav-text">18</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#19"><span class="nav-number">2.19.</span> <span class="nav-text">19</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#英文论文或博客"><span class="nav-number">3.</span> <span class="nav-text">英文论文或博客</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-【待看】WIFI信号-深度学习，MIT-可穿墙透视评估人体姿态"><span class="nav-number">3.1.</span> <span class="nav-text">1 【待看】WIFI信号+深度学习，MIT 可穿墙透视评估人体姿态</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2"><span class="nav-number">3.2.</span> <span class="nav-text">2</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3"><span class="nav-number">3.3.</span> <span class="nav-text">3</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4"><span class="nav-number">3.4.</span> <span class="nav-text">4</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#5"><span class="nav-number">3.5.</span> <span class="nav-text">5</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#6-1"><span class="nav-number">3.6.</span> <span class="nav-text">6</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#7-1"><span class="nav-number">3.7.</span> <span class="nav-text">7</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#8-1"><span class="nav-number">3.8.</span> <span class="nav-text">8</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#9-1"><span class="nav-number">3.9.</span> <span class="nav-text">9</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#10-1"><span class="nav-number">3.10.</span> <span class="nav-text">10</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#11-1"><span class="nav-number">3.11.</span> <span class="nav-text">11</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#12-1"><span class="nav-number">3.12.</span> <span class="nav-text">12</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#13-1"><span class="nav-number">3.13.</span> <span class="nav-text">13</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#14-1"><span class="nav-number">3.14.</span> <span class="nav-text">14</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#15-1"><span class="nav-number">3.15.</span> <span class="nav-text">15</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#16-1"><span class="nav-number">3.16.</span> <span class="nav-text">16</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#17-1"><span class="nav-number">3.17.</span> <span class="nav-text">17</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#18-1"><span class="nav-number">3.18.</span> <span class="nav-text">18</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#19-1"><span class="nav-number">3.19.</span> <span class="nav-text">19</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Mona"
+      src="/images/A.png">
+  <p class="site-author-name" itemprop="name">Mona</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">122</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">42</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">81</span>
+        <span class="site-state-item-name">标签</span>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/moneyna" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;moneyna" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+	 
+   <a href="/">
+      <img class="site-author-image" itemprop="image"
+        src="/images/A.png"
+        alt="Mona" />
+   </a>
+
+  
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Mona</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v4.2.0
+  </div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">主题 – <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> v7.7.2
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+</body>
+</html>
